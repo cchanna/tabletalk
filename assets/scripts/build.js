@@ -54,6 +54,7 @@ measureFileSizesBeforeBuild(paths.appBuild)
   })
   .then(
     ({ stats, previousFileSizes, warnings }) => {
+
       if (warnings.length) {
         console.log(chalk.yellow('Compiled with warnings.\n'));
         console.log(warnings.join('\n\n'));
@@ -93,9 +94,6 @@ measureFileSizesBeforeBuild(paths.appBuild)
         useYarn
       );
 
-
-      console.log('Copying index.html');
-      fs.renameSync(path.join(paths.appBuild, 'index.html'), paths.appBuildHtml);
     },
     err => {
       console.log(chalk.red('Failed to compile.\n'));
@@ -137,6 +135,10 @@ function build(previousFileSizes) {
         );
         return reject(new Error(messages.warnings.join('\n\n')));
       }
+
+      console.log('Copying index.html');
+      fs.renameSync(path.join(paths.appBuild, 'index.html'), paths.appBuildHtml);
+
       return resolve({
         stats,
         previousFileSizes,
