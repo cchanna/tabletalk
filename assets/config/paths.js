@@ -41,8 +41,8 @@ function getServedPath(appPackageJson) {
 // config after eject: we're in ./config/
 module.exports = {
   dotenv: resolveApp('.env'),
-  appBuild: resolveApp('../api/priv/static'),
-  deployHtml: resolveApp('../api/lib/tabletalk_web/templates/page/index.html.eex'),
+  appBuild: resolveApp('../priv/static'),
+  deployHtml: resolveApp('../lib/tabletalk_web/templates/page/index.html.eex'),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
   appIndexJs: resolveApp('src/index.js'),
