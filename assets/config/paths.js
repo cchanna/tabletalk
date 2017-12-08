@@ -42,7 +42,7 @@ function getServedPath(appPackageJson) {
 module.exports = {
   dotenv: resolveApp('.env'),
   appBuild: resolveApp('../priv/static'),
-  deployHtml: resolveApp('../lib/tabletalk_web/templates/page/index.html.eex'),
+  appBuildHtml: resolveApp('../lib/tabletalk_web/templates/page/index.html.eex'),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
   appIndexJs: resolveApp('src/index.js'),

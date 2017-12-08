@@ -16,6 +16,7 @@ const Container = rx('div')`
   color: black;
   display: flex;
   flex-flow: column;
+  margin: 20px 0;
 `
 
 const Header = rx('div')`

@@ -13,9 +13,10 @@ rx`
 `
 
 const Container = rx('div')`
-  position: relative;
   width: 100%;
+  height: 100%;
   max-width: 800px;
+  padding: 40px;
 `
 
 const Title = rx('div')`
@@ -24,16 +25,21 @@ const Title = rx('div')`
   color: #B24592;
   font-size: 80px;
   margin: 10px 0;
+  position: relative;
   text-align: center;
 `
+
+const Content = rx('div')`
+
+`;
 
 const ReturnButton = rx('button')`
   @include button;
   font-family: "Icomoon";
   position: absolute;
   display: block;
-  top: 40px;
-  left: 20px;
+  top: 25px;
+  left: 10px;
   color: #B24592;
   font-size: 40px;
 `
@@ -130,8 +136,11 @@ class Games extends React.Component {
 
     return (
       <Container>
-        <Title>TableTalk</Title>
-        {returnButton}
+        <Title>
+          {returnButton}
+          TableTalk
+        </Title>
+        
         {content}
       </Container>
     )
