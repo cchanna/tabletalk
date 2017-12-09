@@ -20,7 +20,7 @@ defmodule Tabletalk.Mixfile do
   def application do
     [
       mod: {Tabletalk.Application, []},
-      extra_applications: [:logger, :runtime_tools, :crypto, :tesla, :public_key]
+      extra_applications: [:logger, :runtime_tools, :crypto, :tesla, :public_key, :httpc]
     ]
   end
 
