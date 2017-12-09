@@ -6,4 +6,4 @@ export version=$(ls _build/prod/rel/tabletalk/releases -v | tail -n 3 | head -n 
 mkdir ../deploy/releases/$version
 cp _build/prod/rel/tabletalk/releases/$version/tabletalk.tar.gz ../deploy/releases/$version
 echo successfully built upgrade version $version
-echo run \"./upgrade $version\" to upgrade
+echo run \"./upgrade.sh $version\" to upgrade
