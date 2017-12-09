@@ -50,7 +50,8 @@ const request = (urlInput, {method = "GET", queries, urlParams, body, jwt}) => {
     body: (method === "GET") ? undefined : JSON.stringify(body),
     headers
   }
-  return fetch(`${process.env.REACT_APP_API_URL}/${url}`, opts)
+  const finalUrl = process.env.NODE_ENV === "production" ? url : `${process.env.REACT_APP_API_URL}/${url}`;
+  return fetch(finalUrl, opts)
     .then(checkStatus)
     .then(deserialize);
 }
