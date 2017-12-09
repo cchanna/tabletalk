@@ -1,0 +1,1 @@
+../deploy/bin/tabletalk upgrade $1

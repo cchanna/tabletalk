@@ -1,2 +1,0 @@
-export TABLETALK_SECRET=UpwXKlyPgf0MlVBgzgnZlpdbI52nYehJMfSLfKKRxibcmXuFzNvm8XmMPhHsLpZG
-export GOOGLE_CLIENT_ID=472844306619-t6hdkqi1inqfebtl1uqlpbfp6od2leo6.apps.googleusercontent.com
