@@ -20,7 +20,7 @@ defmodule Tabletalk.Mixfile do
   def application do
     [
       mod: {Tabletalk.Application, []},
-      extra_applications: [:logger, :runtime_tools, :crypto, :tesla, :public_key, :httpc]
+      extra_applications: [:logger, :runtime_tools, :crypto, :public_key, :httpotion]
     ]
   end
 
@@ -41,7 +41,7 @@ defmodule Tabletalk.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:tesla, "~> 0.9.0"},
+      {:httpotion, "~> 3.0.2"},
       {:poison, ">= 1.0.0"},
       {:guardian, "~> 1.0"},
       {:json_web_token, "~> 0.2"},
