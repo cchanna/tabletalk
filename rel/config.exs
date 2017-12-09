@@ -34,7 +34,7 @@ use Mix.Releases.Config,
 # end
 
 environment :prod do
-  set include_erts: false
+  set include_erts: "/usr/lib/erlang"
   set include_src: false
   set cookie: :"nGy,(5vTjsCa]wCpt%Z(lfw=m0Ir|vn`&l5PQaHLq/WD(tQmK$v1HWX:/0W[j3Za"
 end
