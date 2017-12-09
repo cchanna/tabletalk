@@ -7,7 +7,7 @@ defmodule Tabletalk.Google.Certs do
   end
 
   defp get_from_server do
-    result = API.certs.body |> Enum.map(&(&1))
+    result = API.certs |> Enum.map(&(&1))
     :ok = Agent.update(__MODULE__, fn _state -> result end)
     result
   end
