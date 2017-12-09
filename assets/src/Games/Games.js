@@ -1,8 +1,9 @@
 import React from 'react';
 import rx from 'resplendence';
 
-import GameListItem from './GameListItem';
 import GameInfo from './GameInfo';
+import GamesList from './GamesList';
+import NewGameForm from './NewGameForm';
 import Spinner from 'common/components/Spinner';
 
 import { exactMatch } from 'utils/pathTools';
@@ -29,10 +30,6 @@ const Title = rx('div')`
   text-align: center;
 `
 
-const Content = rx('div')`
-
-`;
-
 const ReturnButton = rx('button')`
   @include button;
   font-family: "Icomoon";
@@ -45,29 +42,16 @@ const ReturnButton = rx('button')`
 `
 
 
-
-
-class GamesList extends React.Component {
-  render() {
-    const { games, openGame} = this.props;
-    const gameComponents = games.map((game) => <GameListItem key={game.id} kind={game.kind} id={game.id} name={game.name} openGame={openGame}/>);
-    return (
-      <div>
-        {gameComponents}
-      </div>
-    )
-  }
-}
-
-
 class Games extends React.Component {
   route = () => {
     const currentGame = this.currentGame();
     
     if (currentGame !== null) {
-      const { gamesById, getGame } = this.props;
-      if (gamesById === null || gamesById[currentGame] === undefined) {
-        getGame({id: currentGame});
+      if (currentGame !== 'new') {
+        const { gamesById, getGame } = this.props;
+        if (gamesById === null || gamesById[currentGame] === undefined) {
+          getGame({id: currentGame});
+        }
       }
     }
     else
@@ -106,13 +90,34 @@ class Games extends React.Component {
       goTo(["play", this.currentGame()]);
     }
   }
+
   render() {
     const { list, gamesById, playersById } = this.props;
+
+    const input = "test";
+    const newGame = {
+      name: null,
+      kind: null,
+      playerName: null
+    }
 
     let content;
     let returnButton;
     const currentGame = this.currentGame();
-    if (gamesById === null || (currentGame === null && list === null) || (currentGame !== null && gamesById[currentGame] === undefined)) {
+    if (
+      currentGame !== 'new' && 
+      (
+        gamesById === null || 
+        (
+          currentGame === null && 
+          list === null
+        ) || 
+        (
+          currentGame !== null && 
+          gamesById[currentGame] === undefined
+        )
+      )
+    ) {
       content = <Spinner/>
     }
     else if (currentGame === null) {
@@ -123,15 +128,20 @@ class Games extends React.Component {
         }
       })
       content = <GamesList openGame={this.openGame} games={listGames}/>
-    } 
+    }
     else {
-      const id = this.currentGame();
-      const game = gamesById[id];
-      if (game !== undefined) {
-        content = <GameInfo {...game} playersById={playersById} startGame={this.startGame}/>
-        returnButton = <ReturnButton onClick={this.return}>{"<"}</ReturnButton>
+      returnButton = <ReturnButton onClick={this.return}>{"<"}</ReturnButton>
+      
+      if (currentGame === 'new') {
+        content = <NewGameForm {...newGame} input={input}/>
       }
-
+      else {
+        const game = gamesById[currentGame];
+        if (game !== undefined) {
+          content = <GameInfo {...game} playersById={playersById} startGame={this.startGame}/>
+        }
+  
+      }
     }
 
     return (
@@ -140,7 +150,6 @@ class Games extends React.Component {
           {returnButton}
           TableTalk
         </Title>
-        
         {content}
       </Container>
     )

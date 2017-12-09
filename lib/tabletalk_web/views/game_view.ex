@@ -3,8 +3,6 @@ defmodule TabletalkWeb.GameView do
   alias TabletalkWeb.GameView
   alias TabletalkWeb.PlayerView
 
-  require Logger
-
   def render("index.json", %{games: games}) do
     render_many(games, GameView, "game.json")
   end
@@ -14,7 +12,6 @@ defmodule TabletalkWeb.GameView do
   end
 
   def render("game.json", %{game: game}) do
-    Logger.debug inspect game
     %{id: game.id,
       name: game.name,
       kind: game.kind,

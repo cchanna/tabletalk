@@ -44,10 +44,10 @@ const request = (urlInput, {method = "GET", queries, urlParams, body, jwt}) => {
   if (method !== "GET") {
     headers['Content-Type'] = 'application/json';
   }
-
+  
   const opts = {
     method,
-    body: (method === "GET") ? undefined : body,
+    body: (method === "GET") ? undefined : JSON.stringify(body),
     headers
   }
   return fetch(`${process.env.REACT_APP_API_URL}/${url}`, opts)

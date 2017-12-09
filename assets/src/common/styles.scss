@@ -8,13 +8,13 @@
   font-family: "League Spartan";
   text-align: center;
   text-shadow: -1px 1px 1px hsla(0, 0%, 0%, .1);
-  &.TheSprawl {
+  &.the-sprawl {
     background: linear-gradient(-45deg, #ff5ea3, #0d0d4f);
   }
-  &.BladesInTheDark {
+  &.blades-in-the-dark {
     background: linear-gradient(160deg, #17171c, #b22a2a);
   }
-  &.StrangerRoads {
+  &.stranger-roads {
     background: linear-gradient(20deg, #20befc, #fff9f9);
   }
 }
@@ -28,5 +28,10 @@
 @mixin button {
   background: none;
   border: none;
-  border-radius: none;
+  border-radius: none;  
+  cursor: pointer;
+  padding: 0;
+  &:focus {
+    outline: none;
+  }
 }

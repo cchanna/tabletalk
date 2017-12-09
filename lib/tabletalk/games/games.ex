@@ -39,7 +39,7 @@ defmodule Tabletalk.Games do
   #   |> Repo.insert()
   # end
 
-  def new_game(user_id, %{"player_name" => player_name, "game_name" => game_name, "kind" => kind}) do
+  def new_game(user_id, player_name, game_name, kind) do
     with {:ok, player} <- create_player(%{"name" => player_name, "admin" => true, "game" => %{"name" => game_name, "kind" => kind}, "user_id" => user_id}),
          do: {:ok, Repo.preload(player.game, :players)}
   end

@@ -11,19 +11,19 @@ defmodule TabletalkWeb.GameController do
     render(conn, "index.json", games: games)
   end
 
-  # def create(conn, %{"game" => game_params}) do
-  #   with {:ok, %Game{} = game} <- Games.create_game(game_params) do
-  #     conn
-  #     |> put_status(:created)
-  #     |> put_resp_header("location", game_path(conn, :show, game))
-  #     |> render("show.json", game: game)
-  #   end
-  # end
-
   def show(conn, %{"id" => id}) do
     user_id = Tabletalk.Guardian.Plug.current_resource(conn)
     game = Games.get_game!(id, user_id)
     render(conn, "show.json", game: game)
+  end
+
+  def create(conn, %{"player" => player_name, "name" => game_name, "kind" => kind}) do
+    user_id = Tabletalk.Guardian.Plug.current_resource(conn)
+    with {:ok, game} <- Games.new_game(user_id, player_name, game_name, kind) do
+      conn
+      |> put_status(:created)
+      render(conn, "show.json", game: game)
+    end
   end
 
   # def update(conn, %{"id" => id, "game" => game_params}) do

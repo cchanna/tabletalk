@@ -1,7 +1,7 @@
 import React from 'react';
 import rx from 'resplendence';
 import {
-  kindsById
+  kindsById, toClassName
 } from "common/gameKinds";
 
 rx`
@@ -90,7 +90,7 @@ class GameInfo extends React.Component {
     });
     return (
       <Container>
-        <Header rx={kindsById[kind]}>{name}</Header>
+        <Header rx={toClassName(kindsById[kind])}>{name}</Header>
         <EnterButton rx={kindsById[kind]} onClick={startGame}>{(me === null) ? "Join" : "Enter"}</EnterButton>
         <Players>
           {playerComponents}

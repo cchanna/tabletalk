@@ -5,11 +5,19 @@ import Games from './Games';
 import { goTo } from 'Routing/actionCreators';
 import { getGames, getGame } from './actionCreators';
 
-const mapStateToProps = ({games}, {path, here}) => ({
-  ...games,
-  path,
-  here
-})
+const mapStateToProps = ({games}, {path, here}) => {
+  const { list, gamesById, playersById, error, lastLoaded } = games;
+  
+  return {
+    list,
+    gamesById,
+    playersById,
+    error,
+    lastLoaded,
+    path,
+    here
+  }
+}
 
 const mapDispatchToProps = {goTo, getGames, getGame};
 

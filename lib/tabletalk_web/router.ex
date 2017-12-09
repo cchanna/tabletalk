@@ -35,7 +35,7 @@ defmodule TabletalkWeb.Router do
     pipe_through [:api, :auth]
 
     resources "/users", UserController, only: [:create, :delete]
-    resources "/games", GameController, only: [:index, :show]
+    resources "/games", GameController, only: [:create, :index, :show]
   end
 
   scope "/", TabletalkWeb do

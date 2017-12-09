@@ -1,7 +1,7 @@
 import React from 'react';
 import rx from 'resplendence';
 import {
-  kindsById
+  kindsById, toClassName
 } from "common/gameKinds";
 
 rx`
@@ -16,7 +16,6 @@ const Container = rx('button')`
   box-shadow: -1px 1px 1px 1px hsla(0, 0%, 0%, .1), -1px 1px 1px 1px hsla(0, 0%, 0%, .1) inset;
   margin: 20px 0;
   min-width: 300px;
-  flex: 1 0 260px;
   border: 15px solid white;
   transition: box-shadow .15s, margin .15s, width .15s;
 
@@ -40,7 +39,7 @@ class Game extends React.Component {
   render() {
     const { name, kind } = this.props;
     return (
-      <Container onClick={this.handleClick} rx={kindsById[kind]}>
+      <Container onClick={this.handleClick} rx={toClassName(kindsById[kind])}>
         {name}
       </Container>
     )

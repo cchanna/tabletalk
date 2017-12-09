@@ -1,8 +1,10 @@
 export const kindsById = [
-  "TheSprawl",
-  "BladesInTheDark",
-  "StrangerRoads"
+  "The Sprawl",
+  "Blades in the Dark",
+  "Stranger Roads"
 ]
+
+export const toClassName = kind => kind.toLowerCase().replace(/\s/g, "-");
 
 export const kindsByName = {};
 for (let i=0; i < kindsById.length; i++) {

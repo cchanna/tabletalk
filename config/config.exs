@@ -13,7 +13,7 @@ config :tabletalk,
 config :tabletalk, TabletalkWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "03I0GC+5Pc084wIF3LMUV+hF1Z8Ts+KGa/Bh1/tpjx9iAaZqrp+tVSv2YRzzL8nC",
-  render_errors: [view: TabletalkWeb.ErrorView, accepts: ~w(html json)],
+  render_errors: [view: TabletalkWeb.ErrorView, accepts: ~w(json), format: "json"],
   pubsub: [name: Tabletalk.PubSub,
            adapter: Phoenix.PubSub.PG2]
 

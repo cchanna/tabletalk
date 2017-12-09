@@ -2,15 +2,19 @@ import {
   GAMES_START_LOADING,
   GAMES_SET_LIST,
   GAMES_ADD,
-  GAMES_FAIL_LOADING
+  GAMES_FLAG_RELOAD,
+  GAMES_FAIL_LOADING,
+  GAMES_SET_INPUT
 } from "common/actions"
 import actionCreator from 'utils/actionCreator';
 import api from './api';
 
 const startLoadingGames = actionCreator(GAMES_START_LOADING);
 const setGamesList = actionCreator(GAMES_SET_LIST, "list");
+const failLoadingGames = actionCreator(GAMES_FAIL_LOADING);
+const flagReload = actionCreator(GAMES_FLAG_RELOAD);
 const addGames = actionCreator(GAMES_ADD, "gamesById", "playersById");
-const failLoadingGames = actionCreator(GAMES_FAIL_LOADING)
+export const setInput = actionCreator(GAMES_SET_INPUT, "input");
 
 const mapGames = games => {
   const list = [];
@@ -54,4 +58,10 @@ export const getGame = ({id}) => (dispatch, getState) => {
       console.error(err);
       dispatch(failLoadingGames());
     });
+}
+
+export const addNewGame = game => dispatch => {
+  const { gamesById, playersById } = mapGames([game]);
+  dispatch(addGames({gamesById, playersById}));
+  dispatch(flagReload());
 }

@@ -20,6 +20,15 @@ const Container = rx('div')`
   user-select: none;
 `
 
+const DownMessage = rx('div')`
+  color: white;
+  font-family: "League Spartan";
+  max-width: 900px;
+  font-size: 50px;
+  text-shadow: -1px 1px 1px hsla(0, 0%, 0%, .1);
+  text-align: center;
+`
+
 class App extends Component {
   componentDidMount() {
     const { getStatus } = this.props;
@@ -49,7 +58,7 @@ class App extends Component {
     }
   }
   render() {
-    const { loggedIn, ready, path } = this.props;
+    const { up, loggedIn, ready, path } = this.props;
 
     const paths = [
       {
@@ -59,7 +68,10 @@ class App extends Component {
     ]
 
     let content;
-    if (!ready) content = <Spinner/>;
+    if (up === false) {
+      content = <DownMessage>Sorry, Tabletalk is down for maintenence. Check back later!</DownMessage>;
+    }
+    else if (!ready) content = <Spinner/>;
     else if (loggedIn) {
       for (let i=0; i < paths.length; i++) {
         const entry = paths[i];
