@@ -9,6 +9,8 @@ import {
 import actionCreator from 'utils/actionCreator';
 import api from './api';
 
+import { goTo } from 'Routing/actionCreators';
+
 const startLoadingGames = actionCreator(GAMES_START_LOADING);
 const setGamesList = actionCreator(GAMES_SET_LIST, "list");
 const failLoadingGames = actionCreator(GAMES_FAIL_LOADING);
@@ -65,3 +67,5 @@ export const addNewGame = game => dispatch => {
   dispatch(addGames({gamesById, playersById}));
   dispatch(flagReload());
 }
+
+export const openGame = game => goTo(["games", game]);

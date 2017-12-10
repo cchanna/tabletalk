@@ -68,11 +68,6 @@ class Games extends React.Component {
       this.route();
     }
   }
-
-  openGame = (id) => {
-    const { goTo, here } = this.props;
-    goTo([...here, id]);
-  }
   return = () => {
     const { goTo, here } = this.props;
     goTo(here);
@@ -92,7 +87,7 @@ class Games extends React.Component {
   }
 
   render() {
-    const { list, gamesById, playersById } = this.props;
+    const { list, gamesById, playersById, openGame, openNewGame } = this.props;
 
     const input = "test";
     const newGame = {
@@ -127,7 +122,7 @@ class Games extends React.Component {
           id, kind, name
         }
       })
-      content = <GamesList openGame={this.openGame} games={listGames}/>
+      content = <GamesList openGame={openGame} openNewGame={openNewGame} games={listGames}/>
     }
     else {
       returnButton = <ReturnButton onClick={this.return}>{"<"}</ReturnButton>

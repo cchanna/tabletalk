@@ -10,14 +10,13 @@ import {
 import actionCreator from 'utils/actionCreator';
 import api from 'Games/api';
 
-import { addNewGame } from 'Games/actionCreators';
-import { goTo } from 'Routing/actionCreators';
+import { addNewGame, openGame } from 'Games/actionCreators';
 
 export const setInput = actionCreator(GAMES_NEW_SET_INPUT, "input");
 export const setKind = actionCreator(GAMES_NEW_SET_KIND, "kind");
 export const setName = actionCreator(GAMES_NEW_SET_NAME);
 export const stepBack = actionCreator(GAMES_NEW_STEP_BACK);
-export const reset = actionCreator(GAMES_NEW_RESET);
+const reset = actionCreator(GAMES_NEW_RESET);
 const submit = actionCreator(GAMES_NEW_SUBMIT);
 const fail = actionCreator(GAMES_NEW_SUBMIT_FAIL);
 
@@ -29,10 +28,15 @@ export const create = () => (dispatch, getState) => {
   api.create({name, kind, player: input}, jwt)
     .then(data => {
       dispatch(addNewGame(data));
-      dispatch(goTo(["games", data.id]));
+      dispatch(openGame(data.id));
     })
     .catch(err => {
       console.error(err);
       dispatch(fail());
     })
+}
+
+export const openNewGame = () => dispatch => {
+  dispatch(reset());
+  dispatch(openGame("new"));
 }

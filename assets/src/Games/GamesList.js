@@ -32,17 +32,13 @@ const NewGame = rx('button')`
 
 
 class GamesList extends React.Component {
-  openNewGame = () => {
-    const { openGame } = this.props;
-    openGame('new');
-  }
   render() {
-    const { games, openGame } = this.props;
+    const { games, openGame, openNewGame } = this.props;
     const gameComponents = games.map((game) => <GameListItem key={game.id} kind={game.kind} id={game.id} name={game.name} openGame={openGame}/>);
     return (
       <Container>
         {gameComponents}
-        <NewGame onClick={this.openNewGame}>New Game</NewGame>
+        <NewGame onClick={openNewGame}>New Game</NewGame>
       </Container>
     )
   }
