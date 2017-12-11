@@ -11,7 +11,13 @@ export const GAMES_SET_LIST = "games set list";
 export const GAMES_ADD = "games add";
 export const GAMES_FLAG_RELOAD = "games flag reload";
 export const GAMES_FAIL_LOADING = "games fail loading";
-export const GAMES_SET_INPUT = "games set input";
+export const GAMES_JOIN_START = "games join start";
+export const GAMES_JOIN_CANCEL = "games join cancel";
+export const GAMES_JOIN_SET_INPUT = "games join set input";
+export const GAMES_JOIN = "games join";
+export const GAMES_JOIN_SUCCEED = "games join succeed";
+export const GAMES_JOIN_FAIL = "games join fail";
+
 
 export const GAMES_NEW_SET_INPUT = "games new set input";
 export const GAMES_NEW_SET_KIND = "games new set kind";

@@ -34,7 +34,7 @@ const NewGame = rx('button')`
 class GamesList extends React.Component {
   render() {
     const { games, openGame, openNewGame } = this.props;
-    const gameComponents = games.map((game) => <GameListItem key={game.id} kind={game.kind} id={game.id} name={game.name} openGame={openGame}/>);
+    const gameComponents = games.map((game) => <GameListItem key={game.slug} kind={game.kind} slug={game.slug} name={game.name} openGame={openGame}/>);
     return (
       <Container>
         {gameComponents}

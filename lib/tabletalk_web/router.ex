@@ -36,6 +36,7 @@ defmodule TabletalkWeb.Router do
 
     resources "/users", UserController, only: [:create, :delete]
     resources "/games", GameController, only: [:create, :index, :show]
+    post "/games/:slug/join", GameController, :join
   end
 
   scope "/", TabletalkWeb do

@@ -11,22 +11,17 @@ defmodule Tabletalk.Games.Game do
     field :max_players, :integer
     field :name, :string
     field :me, :boolean, virtual: true
+    field :slug, :string
 
     has_many :players, Tabletalk.Games.Player, on_delete: :delete_all
 
     timestamps()
   end
 
-  def log(changeset) do
-    Logger.debug inspect changeset
-    changeset
-  end  
-
   @doc false
   def changeset(%Game{} = game, attrs) do
     game
-    |> cast(attrs, [:name, :kind, :max_players])
-    |> log()
-    |> validate_required([:name, :kind])
+    |> cast(attrs, [:name, :kind, :max_players, :slug])
+    |> validate_required([:name, :kind, :slug])
   end
 end

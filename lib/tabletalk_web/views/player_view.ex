@@ -7,12 +7,12 @@ defmodule TabletalkWeb.PlayerView do
   end
 
   def render("show.json", %{player: player}) do
-    %{data: render_one(player, PlayerView, "player.json")}
+    render_one(player, PlayerView, "player.json")
   end
 
-  def render("player.json", %{player: player}) do
-    %{id: player.id,
-      name: player.name,
-      admin: player.admin}
+  def render("player.json", %{player: %{id: id, name: name, admin: admin}}) do
+    %{id: id,
+      name: name,
+      admin: admin}
   end
 end

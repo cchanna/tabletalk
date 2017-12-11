@@ -3,23 +3,26 @@ import { connect } from 'react-redux';
 import Games from './Games';
 
 import { goTo } from 'Routing/actionCreators';
-import { getGames, getGame, openGame } from './actionCreators';
+import { getGames, getGame, openGame, joinGame, startJoinGame, cancelJoinGame, setInput } from './actionCreators';
 import { openNewGame } from './NewGameForm/actionCreators';
 
 const mapStateToProps = ({games}, {path, here}) => {
-  const { list, gamesById, playersById, error, lastLoaded } = games;
+  const { list, gamesBySlug, playersById, error, lastLoaded, loading, failed, join } = games;
   
   return {
     list,
-    gamesById,
+    gamesBySlug,
     playersById,
     error,
     lastLoaded,
+    loading,
+    failed,
     path,
-    here
+    here,
+    join
   }
 }
 
-const mapDispatchToProps = {goTo, getGames, getGame, openGame, openNewGame};
+const mapDispatchToProps = {goTo, getGames, getGame, openGame, openNewGame, joinGame, startJoinGame, cancelJoinGame, setInput};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Games);

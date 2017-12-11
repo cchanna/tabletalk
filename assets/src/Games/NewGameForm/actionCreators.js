@@ -28,7 +28,7 @@ export const create = () => (dispatch, getState) => {
   api.create({name, kind, player: input}, jwt)
     .then(data => {
       dispatch(addNewGame(data));
-      dispatch(openGame(data.id));
+      dispatch(openGame(data.slug));
     })
     .catch(err => {
       console.error(err);

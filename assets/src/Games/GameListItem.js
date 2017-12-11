@@ -33,8 +33,8 @@ const Container = rx('button')`
 
 class Game extends React.Component {
   handleClick = () => {
-    const { id, openGame } = this.props;
-    openGame(id);
+    const { slug, openGame } = this.props;
+    openGame(slug);
   }
   render() {
     const { name, kind } = this.props;

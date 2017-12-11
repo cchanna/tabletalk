@@ -22,15 +22,24 @@ defmodule Tabletalk.Games do
     Repo.all query
   end
 
-  def get_game!(id, user_id) do
-    player = get_player(id, user_id) 
+  def get_game!(slug, user_id) do
     game = Game
-    |> Repo.get!(id)
+    |> Repo.get_by!(slug: slug)
     |> Repo.preload(:players)
+    player = get_player(game.id, user_id) 
     case player do
       %{id: id} -> %{game | me: id}
       nil -> game
     end
+  end
+
+  defp game_with_players(game, player_id) do
+    %{Repo.preload(game, :players) | me: player_id}
+  end
+
+  defp game_from_player(player) do
+    Repo.preload(player, :game).game
+    |> game_with_players(player.id)
   end
 
   # defp create_game(attrs) do
@@ -40,8 +49,35 @@ defmodule Tabletalk.Games do
   # end
 
   def new_game(user_id, player_name, game_name, kind) do
-    with {:ok, player} <- create_player(%{"name" => player_name, "admin" => true, "game" => %{"name" => game_name, "kind" => kind}, "user_id" => user_id}),
-         do: {:ok, Repo.preload(player.game, :players)}
+    opts = %{"name" => player_name, "admin" => true, "game" => %{"name" => game_name, "kind" => kind, "slug" => UUID.uuid1}, "user_id" => user_id}
+    with {:ok, player} <- create_player(opts) do
+      {:ok, game_with_players(player.game, player.id)}
+    end
+  end
+
+  defp check_already_joined(game) do
+    if game.me != nil do
+      {:error, :already_joined}
+    else
+      :ok
+    end
+  end
+
+  defp check_max_players(game) do
+    if game.max_players != nil and Enum.count(game.players) do
+      {:error, :too_many_players}
+    else
+      :ok
+    end
+  end
+
+  def join(user_id, player_name, slug) do
+    game = get_game!(slug, user_id)
+    
+    with :ok <- check_already_joined(game),
+         :ok <- check_max_players(game),
+         {:ok, player} <- create_player(%{"name" => player_name, "admin" => false, "game_id" => game.id, "user_id" => user_id}),
+         do: {:ok, game_from_player(player)}
   end
 
   # defp update_game(%Game{} = game, attrs) do

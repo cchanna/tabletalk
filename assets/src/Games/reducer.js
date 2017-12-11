@@ -5,7 +5,12 @@ import {
   GAMES_ADD,
   GAMES_FLAG_RELOAD,
   GAMES_FAIL_LOADING,
-  GAMES_SET_INPUT
+  GAMES_JOIN_SET_INPUT,
+  GAMES_JOIN_START,
+  GAMES_JOIN_CANCEL,
+  GAMES_JOIN,
+  GAMES_JOIN_SUCCEED,
+  GAMES_JOIN_FAIL
 } from 'common/actions';
 
 import newGame from './NewGameForm/reducer';
@@ -24,12 +29,12 @@ export default combineReducers({
     }
   },
 
-  gamesById: (state = null, action) => {
+  gamesBySlug: (state = null, action) => {
     switch(action.type) {
       case GAMES_START_LOADING:
         return null;
       case GAMES_ADD:
-        return {...state, ...action.gamesById}
+        return {...state, ...action.gamesBySlug}
       default:
         return state;
     }
@@ -68,12 +73,51 @@ export default combineReducers({
     }
   },
 
-  input: (state = "", action) => {
-    switch(action.type) {
-      case GAMES_SET_INPUT:
-        return action.input;
-      default:
-        return state;
+  
+  join: combineReducers({
+    joining: (state = false, action) => {
+      switch(action.type) {
+        case GAMES_JOIN_START:
+          return true;
+        case GAMES_JOIN_CANCEL:
+        case GAMES_JOIN_SUCCEED:
+          return false;
+        default:
+          return state;
+      }
+    },
+
+    input: (state = "", action) => {
+      switch(action.type) {
+        case GAMES_JOIN_SET_INPUT:
+          return action.input;
+        default:
+          return state;
+      }
+    },
+    
+    loading: (state = false, action) => {
+      switch(action.type) {
+        case GAMES_JOIN:
+          return true;
+        case GAMES_JOIN_FAIL:
+        case GAMES_JOIN_SUCCEED:
+          return false;
+        default:
+          return state;
+      }
+    },
+  
+    failed: (state = false, action) => {
+      switch(action.type) {
+        case GAMES_JOIN:
+          return false;
+        case GAMES_JOIN_FAIL:
+          return true;
+        default: 
+          return state;
+      }
     }
-  },
+  })
+
 })

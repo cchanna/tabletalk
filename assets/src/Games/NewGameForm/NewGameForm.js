@@ -6,44 +6,13 @@ import { string, number, func, bool } from 'prop-types';
 import { kindsById, toClassName } from 'common/gameKinds';
 
 import Spinner from 'common/components/Spinner';
+import Form from 'Games/Form';
+import TextForm from 'Games/TextForm';
 
 rx`
 @import "~common/styles";
 @import "~common/colors";
 `
-
-
-const Container = rx('div')`
-  @include card;
-  padding: 20px;
-`
-
-const Label = rx('div')`
-  color: $background-1;
-  font-family: "Junction";
-  font-size: 20px;
-  text-align: center;
-  padding: 10px;
-`
-
-
-let Input = props => <input type="text" {...props}/>
-Input = rx(Input)`
-  border: none;
-  display: block;
-  background: none;
-  font-family: "Junction";
-  color: $background-1;
-  font-size: 20px;
-  padding: 5px;
-  text-align: center;
-  &:focus {
-    outline: none;
-  }
-  border-bottom: 2px solid $background-1;
-`
-
-const TextBox = ({value, onChange, onSubmit}) => <form onSubmit={onSubmit}><Input value={value} onChange={onChange}/></form>
 
 const Kind = rx('button')`
   @include game-kind-background;
@@ -62,26 +31,6 @@ const Kind = rx('button')`
   transition: opacity .15s;
   &:focus, &:hover {
     opacity: 1;
-  }
-`
-
-const Content = rx('div')`
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-  position: relative;
-`
-
-const Back = rx('button')`
-  @include button;
-  font-family: "League Spartan";
-  color: $background-1;
-  position: absolute;
-  left: 10px;
-  top: 10px;
-  font-size: 18px;
-  &:hover, &:focus {
-    color: $background-2;
   }
 `
 
@@ -109,8 +58,7 @@ class NewGameForm extends React.Component {
   handleChange = ({target}) => {
     this.props.setInput({input: target.value});
   }
-  handleSubmit = e => {
-    e.preventDefault();
+  handleSubmit = () => {
     const { kind, name, input, setName, create } = this.props;
     if (kind !== null && input.trim() !== "") {
       if (name === null) {
@@ -122,7 +70,7 @@ class NewGameForm extends React.Component {
     }
   }
   render() {
-    const { kind, name, loading, failed, input, stepBack } = this.props;
+    const { kind, name, loading, failed, input, stepBack, setInput } = this.props;
 
     let result;
     if (failed) {
@@ -132,36 +80,24 @@ class NewGameForm extends React.Component {
       result = <Spinner/>;
     }
     else {
-      let content;
       if (kind === null) {
         const kinds = kindsById.map((k, i) => (
           <Kind key={k} rx={toClassName(k)} onClick={this.setKind[i]}>{k}</Kind> 
         ))
-        content = (
-          <Content>
-            <Label>What kind of game?</Label>
+        result = (
+          <Form label="What kind of game?">
             {kinds}
-          </Content>
+          </Form>
         )
       }
       else {
         let label;
         if (name === null) label = "What should it be named?";
         else label = "What's your name? (Not your character's)";
-        content = (
-          <Content>
-            <Back onClick={stepBack}>Go Back</Back>
-            <Label>{label}</Label>
-            <TextBox value={input} onChange={this.handleChange} onSubmit={this.handleSubmit}/>
-          </Content>
+        result = (
+          <TextForm label={label} goBack={stepBack} input={input} setInput={setInput} submit={this.handleSubmit}/>
         )
       }
-  
-      result = (
-        <Container>
-          {content}
-        </Container>
-      )
     }
     return result;
   }

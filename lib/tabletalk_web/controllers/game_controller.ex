@@ -11,9 +11,9 @@ defmodule TabletalkWeb.GameController do
     render(conn, "index.json", games: games)
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"id" => slug}) do
     user_id = Tabletalk.Guardian.Plug.current_resource(conn)
-    game = Games.get_game!(id, user_id)
+    game = Games.get_game!(slug, user_id)
     render(conn, "show.json", game: game)
   end
 
@@ -22,7 +22,16 @@ defmodule TabletalkWeb.GameController do
     with {:ok, game} <- Games.new_game(user_id, player_name, game_name, kind) do
       conn
       |> put_status(:created)
-      render(conn, "show.json", game: game)
+      |> render("show.json", game: game)
+    end
+  end
+
+  def join(conn, %{"slug" => slug, "player" => player}) do
+    user_id = Tabletalk.Guardian.Plug.current_resource(conn)
+    with {:ok, game} <- Games.join(user_id, player, slug) do
+      conn
+      |> put_status(200)
+      |> render("show.json", game: game)
     end
   end
 

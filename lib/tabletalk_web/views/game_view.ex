@@ -12,11 +12,13 @@ defmodule TabletalkWeb.GameView do
   end
 
   def render("game.json", %{game: game}) do
-    %{id: game.id,
+    %{
+      slug: game.slug,
       name: game.name,
       kind: game.kind,
       players: render_many(game.players, PlayerView, "player.json"),
       me: game.me,
-      maxPlayers: game.max_players}
+      maxPlayers: game.max_players
+    }
   end
 end

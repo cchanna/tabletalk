@@ -46,7 +46,8 @@ defmodule Tabletalk.Mixfile do
       {:guardian, "~> 1.0"},
       {:json_web_token, "~> 0.2"},
       {:cors_plug, "~> 1.2"},
-      {:distillery, "~> 1.5", runtime: false}
+      {:distillery, "~> 1.5", runtime: false},
+      {:uuid, "~> 1.1"}
     ]
   end
 

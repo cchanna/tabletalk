@@ -1,5 +1,6 @@
 import React from 'react';
 import rx from 'resplendence';
+import { string, bool, object, shape, instanceOf, arrayOf, func } from 'prop-types';
 
 import GameInfo from './GameInfo';
 import GamesList from './GamesList';
@@ -43,13 +44,41 @@ const ReturnButton = rx('button')`
 
 
 class Games extends React.Component {
+  static propTypes = {
+    path: arrayOf(string).isRequired,
+    here: arrayOf(string).isRequired,
+
+    list: arrayOf(string),
+    gamesBySlug: object,
+    playersById: object,
+
+    error: bool.isRequired,
+    lastLoaded: instanceOf(Date),
+
+    getGame: func.isRequired,
+    goTo: func.isRequired,
+    openGame: func.isRequired,
+    openNewGame: func.isRequired,
+    joinGame: func.isRequired,
+    startJoinGame: func.isRequired,
+    cancelJoinGame: func.isRequired,
+    setInput: func.isRequired,
+
+    join: shape({
+      joining: bool.isRequired,
+      failed: bool.isRequired,
+      loading: bool.isRequired,
+      input: string.isRequired
+    }).isRequired,
+  }
+
   route = () => {
     const currentGame = this.currentGame();
     
     if (currentGame !== null) {
       if (currentGame !== 'new') {
-        const { gamesById, getGame } = this.props;
-        if (gamesById === null || gamesById[currentGame] === undefined) {
+        const { gamesBySlug, getGame } = this.props;
+        if (gamesBySlug === null || gamesBySlug[currentGame] === undefined) {
           getGame({id: currentGame});
         }
       }
@@ -75,26 +104,22 @@ class Games extends React.Component {
   currentGame = () => this.props.path.length > 0 ? this.props.path[0] : null;
 
   startGame = () => {
-    const { goTo, gamesById } = this.props;
-    const id = this.currentGame();
-    const game = gamesById[id];
-    if (game.me === undefined) {
-      // TODO join game
-    }
-    else {
+    const { goTo, gamesBySlug } = this.props;
+    const slug = this.currentGame();
+    const game = gamesBySlug[slug];
+    if (game.me !== undefined) {
       goTo(["play", this.currentGame()]);
     }
   }
 
-  render() {
-    const { list, gamesById, playersById, openGame, openNewGame } = this.props;
+  joinGame = () => {
+    const { joinGame, join } = this.props;
+    const slug = this.currentGame();
+    joinGame({slug, player: join.input});
+  }
 
-    const input = "test";
-    const newGame = {
-      name: null,
-      kind: null,
-      playerName: null
-    }
+  render() {
+    const { list, gamesBySlug, loading, failed } = this.props;
 
     let content;
     let returnButton;
@@ -102,38 +127,53 @@ class Games extends React.Component {
     if (
       currentGame !== 'new' && 
       (
-        gamesById === null || 
+        loading ||
+        gamesBySlug === null || 
         (
           currentGame === null && 
           list === null
         ) || 
         (
           currentGame !== null && 
-          gamesById[currentGame] === undefined
+          gamesBySlug[currentGame] === undefined
         )
       )
     ) {
       content = <Spinner/>
     }
+    else if (failed) {
+      content = "Failed!"
+    }
     else if (currentGame === null) {
-      const listGames = list.map(id => {
-        const { kind, name } = gamesById[id];
+      const { openGame, openNewGame } = this.props;
+
+      const listGames = list.map(slug => {
+        const { kind, name } = gamesBySlug[slug];
         return {
-          id, kind, name
+          slug, kind, name
         }
       })
-      content = <GamesList openGame={openGame} openNewGame={openNewGame} games={listGames}/>
+      content = <GamesList openGame={openGame} openNewGame={openNewGame} games={listGames} />
     }
     else {
       returnButton = <ReturnButton onClick={this.return}>{"<"}</ReturnButton>
       
       if (currentGame === 'new') {
-        content = <NewGameForm {...newGame} input={input}/>
+        content = <NewGameForm/>
       }
       else {
-        const game = gamesById[currentGame];
+        const { playersById, startJoinGame, cancelJoinGame, setInput, join } = this.props;
+
+        const game = gamesBySlug[currentGame];
+
+        const props = {
+          ...game, ...join, 
+          playersById, startJoinGame, cancelJoinGame, setInput, 
+          joinGame: this.joinGame,
+          startGame: this.startGame
+        }
         if (game !== undefined) {
-          content = <GameInfo {...game} playersById={playersById} startGame={this.startGame}/>
+          content = <GameInfo {...props}/>
         }
   
       }
