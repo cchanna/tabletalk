@@ -20,7 +20,7 @@ defmodule Tabletalk.Mixfile do
   def application do
     [
       mod: {Tabletalk.Application, []},
-      extra_applications: [:logger, :runtime_tools, :crypto, :public_key, :httpotion]
+      extra_applications: [:logger, :runtime_tools, :crypto, :public_key, :httpotion, :proper_case]
     ]
   end
 
@@ -47,7 +47,8 @@ defmodule Tabletalk.Mixfile do
       {:json_web_token, "~> 0.2"},
       {:cors_plug, "~> 1.2"},
       {:distillery, "~> 1.5", runtime: false},
-      {:uuid, "~> 1.1"}
+      {:uuid, "~> 1.1"},
+      {:proper_case, "~> 1.0.2"}
     ]
   end
 

@@ -10,14 +10,18 @@ import {
   GAMES_JOIN_CANCEL,
   GAMES_JOIN,
   GAMES_JOIN_SUCCEED,
-  GAMES_JOIN_FAIL
+  GAMES_JOIN_FAIL,
+
+  GAMES_NEW_SET_INPUT,
+  GAMES_NEW_SET_KIND,
+  GAMES_NEW_SET_NAME,
+  GAMES_NEW_STEP_BACK,
+  GAMES_NEW_RESET,
+  GAMES_NEW_SUBMIT,
+  GAMES_NEW_SUBMIT_FAIL
 } from 'common/actions';
 
-import newGame from './NewGameForm/reducer';
-
 export default combineReducers({
-  newGame,
-
   list: (state = null, action) => {
     switch(action.type) {
       case GAMES_START_LOADING:
@@ -71,53 +75,6 @@ export default combineReducers({
       default:
         return state;
     }
-  },
-
-  
-  join: combineReducers({
-    joining: (state = false, action) => {
-      switch(action.type) {
-        case GAMES_JOIN_START:
-          return true;
-        case GAMES_JOIN_CANCEL:
-        case GAMES_JOIN_SUCCEED:
-          return false;
-        default:
-          return state;
-      }
-    },
-
-    input: (state = "", action) => {
-      switch(action.type) {
-        case GAMES_JOIN_SET_INPUT:
-          return action.input;
-        default:
-          return state;
-      }
-    },
-    
-    loading: (state = false, action) => {
-      switch(action.type) {
-        case GAMES_JOIN:
-          return true;
-        case GAMES_JOIN_FAIL:
-        case GAMES_JOIN_SUCCEED:
-          return false;
-        default:
-          return state;
-      }
-    },
-  
-    failed: (state = false, action) => {
-      switch(action.type) {
-        case GAMES_JOIN:
-          return false;
-        case GAMES_JOIN_FAIL:
-          return true;
-        default: 
-          return state;
-      }
-    }
-  })
+  }
 
 })

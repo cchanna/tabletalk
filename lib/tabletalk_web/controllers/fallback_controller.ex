@@ -13,8 +13,8 @@ defmodule TabletalkWeb.FallbackController do
 
   defp add_property_error(acc, property, message) do
     case acc[property] do
-      nil -> %{acc | property => [message]}
-      array -> %{acc | property => [message | array]}
+      nil -> Map.put(acc, property, message)
+      array -> Map.put(acc, property, [message | array])
     end
   end
 
@@ -33,8 +33,8 @@ defmodule TabletalkWeb.FallbackController do
   def call(conn, {:error, %Ecto.Changeset{changes: %{game: %Ecto.Changeset{errors: errors}}}}) do
     Logger.error(inspect errors)
     conn
-    |> put_status(400)
-    |> json(%{errors: errors})
+    |> put_status(422)
+    |> json(%{errors: format_errors(errors)})
   end
 
   def call(conn, error) do

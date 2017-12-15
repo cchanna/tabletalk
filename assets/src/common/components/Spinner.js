@@ -12,9 +12,10 @@ const Spinner = rx('div')`
   }
   @include shared;
   color: #ffffff;
-  font-size: 10px;
-  margin: 80px auto;
+  margin: auto;
   position: relative;
+  font-size: 10px;
+  top: -2.5em;
   text-indent: -9999em;
   -webkit-transform: translateZ(0);
   -ms-transform: translateZ(0);

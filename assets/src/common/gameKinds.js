@@ -4,6 +4,8 @@ export const kindsById = [
   "Stranger Roads"
 ]
 
+export const kindsOrder = [1, 0, 2];
+
 export const toClassName = kind => kind.toLowerCase().replace(/\s/g, "-");
 
 export const kindsByName = {};

@@ -18,10 +18,20 @@ defmodule Tabletalk.Games.Game do
     timestamps()
   end
 
+  def filter_slug(slug) do
+    slug
+    |> String.trim
+    |> String.replace(~r/\s/, "-")
+    |> String.replace(~r/[^a-zA-Z0-9-_]/, "")
+    |> String.downcase
+  end
+
   @doc false
   def changeset(%Game{} = game, attrs) do
     game
     |> cast(attrs, [:name, :kind, :max_players, :slug])
-    |> validate_required([:name, :kind, :slug])
+    |> validate_required([:name, :kind, :max_players, :slug])
+    |> update_change(:slug, &filter_slug/1)
+    |> unique_constraint(:slug)
   end
 end

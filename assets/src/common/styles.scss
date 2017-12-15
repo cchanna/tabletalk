@@ -1,5 +1,7 @@
+@import "./colors.scss";
+
 @mixin card {
-  background: hsla(0, 100%, 100%, 1);
+  background: $card-background-light;
   box-shadow: -1px 1px 1px 1px hsla(0, 0%, 0%, .1);
 }
 

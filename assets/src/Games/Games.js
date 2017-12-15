@@ -3,7 +3,7 @@ import rx from 'resplendence';
 import { string, bool, object, shape, instanceOf, arrayOf, func } from 'prop-types';
 
 import GameInfo from './GameInfo';
-import GamesList from './GamesList';
+import GameListItem from './GameListItem';
 import NewGameForm from './NewGameForm';
 import Spinner from 'common/components/Spinner';
 
@@ -12,19 +12,25 @@ import expired from 'utils/expired';
 
 rx`
 @import "~common/styles";
+@import "~common/colors";
 `
 
 const Container = rx('div')`
   width: 100%;
   height: 100%;
+  max-height: 100%;
+  overflow: hidden;
   max-width: 800px;
-  padding: 40px;
+  padding: 40px 40px 0px 40px;
+  display: flex;
+  flex-flow: column;
 `
 
 const Title = rx('div')`
   @include card;
+  background: $card-background-dark;
+  color: $color-light;
   font-family: "Marvin Visions";
-  color: #B24592;
   font-size: 80px;
   margin: 10px 0;
   position: relative;
@@ -38,8 +44,66 @@ const ReturnButton = rx('button')`
   display: block;
   top: 25px;
   left: 10px;
-  color: #B24592;
+  color: $color-light;
+  text-shadow: -1px 1px 1px hsla(0, 0%, 0%, 0.1);
   font-size: 40px;
+  transform-properties: color, font-size, top, left;
+  transform-duration: 0.15s;
+  &:hover, &:focus {
+    top: 22px;
+    left: 7px;
+    color: $link-hover;
+    font-size: 46px;
+  }
+`
+
+const GamesList = rx('div')`
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+  padding: 20px;
+  overflow-y: scroll;
+  flex: 1 0 0;
+
+  box-sizing: border-box;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    $background: fade-out($color-dark, 0.5);
+    background-color: $background;
+    background-clip: padding-box;
+    border-radius: 5px;
+    box-shadow: -1px 1px 1px 1px hsla(0, 0%, 0%, 0.1);
+    &:hover {
+      background-color: lighten($background, 2%);
+    }
+    &:active {
+      background-color: lighten($background, 4%);
+    }
+  }
+`
+
+const NewGame = rx('button')`
+  @include button;
+  font-family: "League Spartan";
+  color: $color-light;
+  display: block;
+  font-size: 30px;
+  margin: 20px 0;
+  text-shadow: -2px 2px 1px rgba(0, 0, 0, .4);
+  transition-properties: color, text-shadow, font-size, left, top;
+  transition-duration: 0.15s;
+  position: relative;
+  top: 0;
+  left: 0;
+  &:hover, &:focus {
+    text-shadow: -2px 2px 2px rgba(0, 0, 0, .4);
+    color: $link-hover;
+    font-size: 32px;
+    top: -1px;
+    left: -1px;
+  }
 `
 
 
@@ -60,16 +124,6 @@ class Games extends React.Component {
     openGame: func.isRequired,
     openNewGame: func.isRequired,
     joinGame: func.isRequired,
-    startJoinGame: func.isRequired,
-    cancelJoinGame: func.isRequired,
-    setInput: func.isRequired,
-
-    join: shape({
-      joining: bool.isRequired,
-      failed: bool.isRequired,
-      loading: bool.isRequired,
-      input: string.isRequired
-    }).isRequired,
   }
 
   route = () => {
@@ -112,10 +166,10 @@ class Games extends React.Component {
     }
   }
 
-  joinGame = () => {
-    const { joinGame, join } = this.props;
+  joinGame = (player) => {
+    const { joinGame } = this.props;
     const slug = this.currentGame();
-    joinGame({slug, player: join.input});
+    return joinGame({slug, player});
   }
 
   render() {
@@ -147,13 +201,17 @@ class Games extends React.Component {
     else if (currentGame === null) {
       const { openGame, openNewGame } = this.props;
 
-      const listGames = list.map(slug => {
+      const gameComponents = list.map(slug => {
         const { kind, name } = gamesBySlug[slug];
-        return {
-          slug, kind, name
-        }
-      })
-      content = <GamesList openGame={openGame} openNewGame={openNewGame} games={listGames} />
+        return <GameListItem key={slug} kind={kind} slug={slug} name={name} openGame={openGame}/>
+      });
+
+      content = (
+        <GamesList>
+          {gameComponents}
+          <NewGame onClick={openNewGame}>New Game</NewGame>
+        </GamesList>
+      )
     }
     else {
       returnButton = <ReturnButton onClick={this.return}>{"<"}</ReturnButton>

@@ -47,9 +47,12 @@ defmodule Tabletalk.Games do
   #   |> Game.changeset(attrs)
   #   |> Repo.insert()
   # end
+  
 
-  def new_game(user_id, player_name, game_name, kind) do
-    opts = %{"name" => player_name, "admin" => true, "game" => %{"name" => game_name, "kind" => kind, "slug" => UUID.uuid1}, "user_id" => user_id}
+  def new_game(user_id, params = %{}) do
+    {%{"player" => player_name}, game} = Map.split(params, ["player"]) 
+
+    opts = %{"name" => player_name, "admin" => true, "game" => game, "user_id" => user_id}
     with {:ok, player} <- create_player(opts) do
       {:ok, game_with_players(player.game, player.id)}
     end
@@ -64,7 +67,7 @@ defmodule Tabletalk.Games do
   end
 
   defp check_max_players(game) do
-    if game.max_players != nil and Enum.count(game.players) do
+    if game.max_players != nil and Enum.count(game.players) >= game.max_players do
       {:error, :too_many_players}
     else
       :ok

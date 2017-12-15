@@ -10,16 +10,17 @@ defmodule Tabletalk.Repo.Migrations.AddSlugGames do
       add :slug, :string, length: 36
     end
 
-    flush
+    flush()
     
     Enum.each Repo.all(Game), fn game -> 
       uuid = UUID.uuid4()
-      from(g in "games", where: g.id == ^game.id, update: [set: [slug: ^uuid]]) 
+      from(g in "games", where: g.id == ^game.id, update: [set: [slug: ^uuid], set: [max_players: 6]]) 
       |> Repo.update_all([])
     end
 
     alter table(:games) do
       modify :slug, :string, null: false
+      modify :max_players, :integer, null: false
     end
 
     create index :games, [:slug], unique: true
@@ -30,6 +31,7 @@ defmodule Tabletalk.Repo.Migrations.AddSlugGames do
 
     alter table(:games) do
       remove :slug
+      modify :max_players, :integer, null: true
     end
   end
 end

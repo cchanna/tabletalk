@@ -6,28 +6,35 @@ import {
 
 rx`
 @import "~common/styles";
+@import "~common/colors";
 `
 
 const Container = rx('button')`
-  color: black;
-  display: block;
-  width: 100%;
-  background: transparent;
-  box-shadow: -1px 1px 1px 1px hsla(0, 0%, 0%, .1), -1px 1px 1px 1px hsla(0, 0%, 0%, .1) inset;
-  margin: 20px 0;
-  min-width: 300px;
-  border: 15px solid white;
-  transition: box-shadow .15s, margin .15s, width .15s;
-
-  @include game-kind-header;
-
-  &:hover, &:focus {
-    margin: 20px -5px;
-    width: calc(100% + 10px);
-    box-shadow: -2px 2px 2px 2px hsla(0, 0%, 0%, .3), -1px 1px 3px 3px hsla(0, 0%, 0%, .3) inset;
-    outline: none;
-    cursor: pointer;
+  @include button;
+  position: relative;
+  left: 0;
+  padding: 10px 0;
+  color: $color-light;
+  font-family: "Junction";
+  font-size: 25px;
+  font-weight: bold;
+  text-shadow: -1px 1px 1px rgba(0, 0, 0, .3);
+  transition-properties: color, left, text-shadow;
+  transition-duration: 0.15s;
+  &:focus, &:hover {
+    color: hsl($hue2, 90%, 75%);
+    left: 2px;
+    text-shadow: -1px 1px 2px rgba(0, 0, 0, .5);
   }
+`
+
+const Icon = rx('span')`
+  font-family: "Icomoon";
+  display: inline-block;
+  position: relative;
+  top: 1px;
+  margin-right: 10px;
+  text-shadow: -1px 1px 1px rgba(0, 0, 0, .3);
 `
 
 
@@ -40,6 +47,7 @@ class Game extends React.Component {
     const { name, kind } = this.props;
     return (
       <Container onClick={this.handleClick} rx={toClassName(kindsById[kind])}>
+        <Icon>*</Icon>
         {name}
       </Container>
     )

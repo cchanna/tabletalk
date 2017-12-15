@@ -1,2 +1,14 @@
 $background-1: #B24592;
 $background-2: #F15F79;
+
+$hue1: 156;
+$hue2: 349;
+
+$color-light: hsl($hue1, 22%, 90%);
+$color-dark: hsl($hue1, 22%, 40%);
+$card-background-dark: linear-gradient(50deg, hsl($hue1, 22%, 30%), hsl(($hue1 + 5), 22%, 40%));
+$card-background-light: linear-gradient(50deg, hsl($hue1, 22%, 90%), hsl(($hue1 + 5), 22%, 95%));
+
+$link-hover: hsl($hue2, 90%, 75%);
+
+

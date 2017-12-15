@@ -4,12 +4,6 @@ import {
   GAMES_ADD,
   GAMES_FLAG_RELOAD,
   GAMES_FAIL_LOADING,
-  GAMES_JOIN_START,
-  GAMES_JOIN_CANCEL,
-  GAMES_JOIN_SET_INPUT,
-  GAMES_JOIN,
-  GAMES_JOIN_SUCCEED,
-  GAMES_JOIN_FAIL
 } from "common/actions"
 import actionCreator from 'utils/actionCreator';
 import api from './api';
@@ -21,12 +15,6 @@ const setGamesList = actionCreator(GAMES_SET_LIST, "list");
 const failLoadingGames = actionCreator(GAMES_FAIL_LOADING);
 const flagReload = actionCreator(GAMES_FLAG_RELOAD);
 const addGames = actionCreator(GAMES_ADD, "gamesBySlug", "playersById");
-export const setInput = actionCreator(GAMES_JOIN_SET_INPUT, "input");
-const join = actionCreator(GAMES_JOIN);
-const joinSucceed = actionCreator(GAMES_JOIN_SUCCEED);
-const joinFail = actionCreator(GAMES_JOIN_FAIL);
-export const startJoinGame = actionCreator(GAMES_JOIN_START);
-export const cancelJoinGame = actionCreator(GAMES_JOIN_CANCEL);
 
 
 
@@ -74,27 +62,27 @@ export const getGame = ({id}) => (dispatch, getState) => {
     });
 }
 
+export const openGame = slug => goTo(["games", slug])
 
 export const joinGame = ({slug, player}) => (dispatch, getState) => {
   const { auth } = getState();
-  dispatch(join());
-  api.join({slug, player}, auth.jwt)
+  return api.join({slug, player}, auth.jwt)
     .then(game => {
-      dispatch(joinSucceed());
       const {gamesBySlug, playersById} = mapGames([game]);
       dispatch(addGames({gamesBySlug, playersById}));
     })
-    .catch(err => {
-      console.error(err);
-      dispatch(joinFail());
+}
+
+export const create = ({kind, name, slug, player, maxPlayers}) => (dispatch, getState) => {
+  const { games, auth } = getState();
+  const { jwt } = auth;
+  return api.create({kind, name, slug, player, maxPlayers}, jwt)
+    .then(data => {
+      const { gamesBySlug, playersById } = mapGames([data]);
+      dispatch(addGames({gamesBySlug, playersById}));
+      dispatch(flagReload());
+      dispatch(openGame(slug));
     })
-
 }
 
-export const addNewGame = game => dispatch => {
-  const { gamesBySlug, playersById } = mapGames([game]);
-  dispatch(addGames({gamesBySlug, playersById}));
-  dispatch(flagReload());
-}
-
-export const openGame = game => goTo(["games", game]);
+export const openNewGame = () => openGame("new")

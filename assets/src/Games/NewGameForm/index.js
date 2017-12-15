@@ -1,15 +1,12 @@
 import { connect } from 'react-redux';
+import { withFormik } from 'formik';
 
 import NewGameForm from './NewGameForm';
 
-import { setInput, setName, create, setKind, stepBack } from './actionCreators';
+import { create } from 'Games/actionCreators';
 
-const mapStateToProps = ({games}) => {
-  const { form, loading, failed } = games.newGame;
-  const { name, player, kind, input } = form;
-  return { input, name, player, kind, loading, failed };
-}
+const mapStateToProps = ({games}) => ({})
 
-const mapDispatchToProps = {setInput, setName, create, setKind, stepBack };
+const mapDispatchToProps = { create }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewGameForm);
