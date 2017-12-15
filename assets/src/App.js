@@ -6,10 +6,16 @@ import Games from 'Games';
 import Auth from 'Auth';
 
 import { getStatus } from 'Status/actionCreators';
-import { login, loginReady } from 'Auth/actionCreators';
+import { login, loginReady, signout } from 'Auth/actionCreators';
 import { replace } from 'Routing/actionCreators';
 
 import Spinner from 'common/components/Spinner';
+
+rx`
+@import "~common/styles";
+@import "~common/colors";
+`
+
 
 const Container = rx('div')`
   display: flex;
@@ -18,6 +24,7 @@ const Container = rx('div')`
   justify-content: center;
   height: 100vh;
   user-select: none;
+  overflow: hidden;
 `
 
 const DownMessage = rx('div')`
@@ -27,6 +34,26 @@ const DownMessage = rx('div')`
   font-size: 50px;
   text-shadow: -1px 1px 1px hsla(0, 0%, 0%, .1);
   text-align: center;
+`
+
+const SignoutButton = rx('button')`
+  @include button;
+  font-family: "League Spartan";
+  color: fade-out($color-light, 0.6);
+  font-size: 16px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  height: 20px;
+  transition-properties: top, right, color, font-size, text-shadow;
+  transition-duration: .15s;
+  &:hover {
+    color: $link-hover;
+    text-shadow: -1px 1px 1px rgba(0, 0, 0, .2);
+    font-size: 20px;
+    top: 2px;
+    right: 3px;
+  }
 `
 
 class App extends Component {
@@ -58,7 +85,7 @@ class App extends Component {
     }
   }
   render() {
-    const { up, loggedIn, ready, path } = this.props;
+    const { up, loggedIn, ready, path, signout } = this.props;
 
     const paths = [
       {
@@ -83,9 +110,12 @@ class App extends Component {
       }
     }
 
+    const signoutButton = loggedIn ? <SignoutButton onClick={signout}>signout</SignoutButton> : null;
+
     return (
       <Container>
         <Auth/>
+        {signoutButton}
         {content}
       </Container>
     );
@@ -102,6 +132,6 @@ const mapStateToProps = ({auth, path, status}) => {
   }
 }
 
-const mapDispatchToProps = { getStatus, login, loginReady, replace };
+const mapDispatchToProps = { getStatus, login, loginReady, replace, signout };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -4,7 +4,8 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGIN_GOOGLE,
-  LOGIN_READY
+  LOGIN_READY,
+  LOGOUT
 } from 'common/actions';
 
 export default combineReducers({
@@ -33,6 +34,8 @@ export default combineReducers({
     switch(action.type) {
       case LOGIN_GOOGLE:
         return action.jwt;
+      case LOGOUT:
+        return null;
       default:
         return state;
     }
@@ -42,6 +45,8 @@ export default combineReducers({
     switch(action.type) {
       case LOGIN_SUCCESS: 
         return action.jwt;
+      case LOGOUT:
+        return null;
       default:
         return state;
     }

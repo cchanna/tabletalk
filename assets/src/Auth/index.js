@@ -4,6 +4,7 @@ import rx from 'resplendence';
 
 rx`
 @import "~common/styles";
+@import "~common/colors";
 `
 
 const Card = rx('div')`
@@ -20,7 +21,8 @@ const Card = rx('div')`
 
 const Title = rx('div')`
   font-family: "Marvin Visions";
-  color: #B24592;
+  color: $link-hover;
+  text-shadow: -1px 1px 2px rgba(0, 0, 0, .3);
   font-size: 160px;
   margin: 10px 0;
   text-align: center;
@@ -28,7 +30,7 @@ const Title = rx('div')`
 
 const Status = rx('div')`
   font-family: "League Spartan";
-  color: #F15F79;
+  color: $color-dark;
   font-size: 40px;
   margin: 10px 0;
   text-align: center;
