@@ -1,13 +1,8 @@
 defmodule Tabletalk.Status do
 
-  def path, do: Application.app_dir(:tabletalk) |> Path.join("../../TAKEDOWN")
-
-  require Logger
-
   def get do
-    Logger.debug path()
-    if File.exists? path() do
-      case File.read path() do
+    if File.exists? "TAKEDOWN" do
+      case File.read "TAKEDOWN" do
         {:ok, binary} -> {:down, binary}
         _else -> {:down, "Tabletalk is experiencing an issue right now. Sorry!"}
       end
@@ -16,5 +11,5 @@ defmodule Tabletalk.Status do
     end
   end
 
-  def down?, do: File.exists? path()
+  def down?, do: File.exists? "TAKEDOWN"
 end
