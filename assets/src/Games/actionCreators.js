@@ -74,8 +74,7 @@ export const joinGame = ({slug, player}) => (dispatch, getState) => {
 }
 
 export const create = ({kind, name, slug, player, maxPlayers}) => (dispatch, getState) => {
-  const { games, auth } = getState();
-  const { jwt } = auth;
+  const { jwt } = getState().auth;
   return api.create({kind, name, slug, player, maxPlayers}, jwt)
     .then(data => {
       const { gamesBySlug, playersById } = mapGames([data]);

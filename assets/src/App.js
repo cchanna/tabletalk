@@ -86,7 +86,6 @@ class App extends Component {
   }
   render() {
     const { up, loggedIn, ready, path, signout } = this.props;
-
     const paths = [
       {
         path: "games",

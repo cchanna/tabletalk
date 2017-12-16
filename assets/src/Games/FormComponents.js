@@ -1,7 +1,7 @@
 import React from 'react';
 import rx from 'resplendence';
 
-import { Field, Form } from 'formik';
+import { Field } from 'formik';
 import Spinner from 'common/components/Spinner';
 
 rx`

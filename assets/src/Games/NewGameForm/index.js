@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { withFormik } from 'formik';
 
 import NewGameForm from './NewGameForm';
 

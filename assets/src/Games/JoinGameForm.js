@@ -29,7 +29,7 @@ const FormBody = ({values, isSubmitting, errors}) => {
     <Container>
       <Section>
         <Label name="name">
-          {(errors.name == "duplicate") ? <Error>A player with that name already exists</Error> : "What's your username (not your character name)?"}
+          {(errors.name === "duplicate") ? <Error>A player with that name already exists</Error> : "What's your username (not your character name)?"}
         </Label>
         <Input type="text" name="name"/>
       </Section>

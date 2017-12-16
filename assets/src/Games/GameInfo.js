@@ -1,6 +1,6 @@
 import React from 'react';
 import rx from 'resplendence';
-import { string, number, object, arrayOf, bool, func } from 'prop-types';
+import { string, number, object, arrayOf, func } from 'prop-types';
 
 import {
   kindsById, toClassName

@@ -1,9 +1,9 @@
 import React from 'react';
 import rx from 'resplendence';
 
-import { string, number, func, bool } from 'prop-types';
+import { func } from 'prop-types';
 
-import { kindsById, kindsOrder, toClassName } from 'common/gameKinds';
+import { kindsById, kindsOrder } from 'common/gameKinds';
 
 import { InputStyle, Input, Select, Option, Label, Error, SubmitButton } from 'Games/FormComponents';
 // import Form from 'Games/Form';
@@ -49,7 +49,7 @@ const filterSlug = (name) => {
 
 const FormBody = ({values, isValid, errors, touched, isSubmitting, handleChange, setFieldValue}) => {
   const changeName = e => {
-    if (values.slug == "" || values.slug == convertToSlug(values.name)) {
+    if (values.slug === "" || values.slug === convertToSlug(values.name)) {
       setFieldValue("slug", convertToSlug(e.target.value));
     }
     handleChange(e);
@@ -69,13 +69,13 @@ const FormBody = ({values, isValid, errors, touched, isSubmitting, handleChange,
       </Section>
       <Section>
         <Label name="name" >What should it be called?</Label>
-        <InputStyle type="text" name="name" placeholder="name" onChange={changeName} value={values.name} rx={{empty: values.name == ""}} maxLength={36}/>
+        <InputStyle type="text" name="name" placeholder="name" onChange={changeName} value={values.name} rx={{empty: values.name === ""}} maxLength={36}/>
       </Section>
       <Section>
         <Label name="name">
-          {(touched && errors.slug == "duplicate") ? <Error>This slug is already in use, sorry!</Error> : "What url slug will it use?"}
+          {(touched && errors.slug === "duplicate") ? <Error>This slug is already in use, sorry!</Error> : "What url slug will it use?"}
         </Label>
-        <InputStyle type="text" name="slug" placeholder="slug" onChange={changeSlug} value={values.slug} rx={{empty: values.slug == "" || errors.slug}} maxLength={36}/>
+        <InputStyle type="text" name="slug" placeholder="slug" onChange={changeSlug} value={values.slug} rx={{empty: values.slug === "" || errors.slug}} maxLength={36}/>
       </Section>
       <Section>
         <Label name="name">What's your username (not your character name)?</Label>
@@ -110,7 +110,7 @@ class NewGameForm extends React.Component {
     const required = ['kind', 'name', 'player', 'slug']
     for (let i=0; i<required.length; i++) {
       const property = required[i];
-      if (values[property].trim() == "") {
+      if (values[property].trim() === "") {
         errors[property] = "required";
       }
     } 
@@ -119,16 +119,13 @@ class NewGameForm extends React.Component {
 
   handleSubmit = ({kind, name, slug, player, maxPlayers}, { setSubmitting, setErrors }) => {
     const { create } = this.props;
-    create({kind, name, slug, player, maxPlayers: parseInt(maxPlayers) })
+    create({kind, name, slug, player, maxPlayers: parseInt(maxPlayers, 10) })
       .catch(err => {
         setErrors({slug: "duplicate"});
         setSubmitting(false);
       })
   }
   render() {
-    const { kind, name, loading, failed, input, stepBack, setInput } = this.props;
-
-    let result;
     return (
       <Formik 
         initialValues={this.initialValues}

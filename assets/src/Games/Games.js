@@ -1,6 +1,6 @@
 import React from 'react';
 import rx from 'resplendence';
-import { string, bool, object, shape, instanceOf, arrayOf, func } from 'prop-types';
+import { string, bool, object, instanceOf, arrayOf, func } from 'prop-types';
 
 import GameInfo from './GameInfo';
 import GameListItem from './GameListItem';
