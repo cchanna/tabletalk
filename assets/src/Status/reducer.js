@@ -15,5 +15,15 @@ export default combineReducers({
       default:
         return state;
     }
+  },
+  message: (state = null, action) => {
+    switch(action.type) {
+      case STATUS_SET_UP:
+        return true;
+      case STATUS_SET_DOWN:
+        return action.reason;
+      default:
+        return state;
+    }
   }
 })

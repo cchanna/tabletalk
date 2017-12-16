@@ -7,12 +7,22 @@ import actionCreator from 'utils/actionCreator';
 import api from './api';
 
 const setStatusUp = actionCreator(STATUS_SET_UP);
-const setStatusDown = actionCreator(STATUS_SET_DOWN);
+const setStatusDown = actionCreator(STATUS_SET_DOWN, "reason");
 
 
+const defaultReason = "Sorry, something's going on our end.";
 
 export const getStatus = () => dispatch => {
   api.get()
     .then(_response => dispatch(setStatusUp()))
-    .catch(_error => dispatch(setStatusDown()));
+    .catch(error => {
+      if (error.response.status === 503) {
+        error.response.json()
+          .then(({reason}) => dispatch(setStatusDown({reason})))
+          .catch(() => dispatch(setStatusDown({reason: defaultReason})));
+      }
+      else {
+        dispatch(setStatusDown({reason: defaultReason}));
+      }
+    });
 }

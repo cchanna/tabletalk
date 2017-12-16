@@ -1,6 +1,8 @@
 defmodule TabletalkWeb.Router do
   use TabletalkWeb, :router
 
+
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -16,13 +18,17 @@ defmodule TabletalkWeb.Router do
     plug Guardian.Plug.LoadResource
   end
 
+  pipeline :require_up do
+    plug TabletalkWeb.Plug.Status
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
     plug ProperCase.Plug.SnakeCaseParams
   end
 
   scope "/auth", TabletalkWeb do
-    pipe_through :api
+    pipe_through [:require_up, :api]
 
     get "/login", AuthController, :login
   end
@@ -33,7 +39,7 @@ defmodule TabletalkWeb.Router do
   end
 
   scope "/api", TabletalkWeb do
-    pipe_through [:api, :auth]
+    pipe_through [:require_up, :api, :auth]
 
     resources "/users", UserController, only: [:create, :delete]
     resources "/games", GameController, only: [:create, :index, :show]

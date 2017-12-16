@@ -13,7 +13,6 @@ defmodule Tabletalk.Application do
       # Start the endpoint when the application starts
       supervisor(TabletalkWeb.Endpoint, []),
       worker(Tabletalk.Google.Certs, []),
-      worker(Tabletalk.Status, [])
       # Start your own worker by calling: Tabletalk.Worker.start_link(arg1, arg2, arg3)
       # worker(Tabletalk.Worker, [arg1, arg2, arg3]),
     ]

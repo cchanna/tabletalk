@@ -9,6 +9,7 @@ import {
 
 import actionCreator from 'utils/actionCreator';
 import api from 'Auth/api';
+import catchStatus from 'common/catchStatus';
 
 const startLogin = actionCreator(LOGIN_START);
 const setJWT = actionCreator(LOGIN_SUCCESS, "jwt");
@@ -22,6 +23,7 @@ export const login = () => (dispatch, getState) => {
     dispatch(startLogin());
     api.login("google", googleJwt)
     .then(({jwt}) => dispatch(setJWT({jwt})))
+    .catch(catchStatus(dispatch))
     .catch(error => dispatch(failLogin()));
   }
 }

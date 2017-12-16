@@ -7,6 +7,7 @@ import {
 } from "common/actions"
 import actionCreator from 'utils/actionCreator';
 import api from './api';
+import catchStatus from 'common/catchStatus';
 
 import { goTo } from 'Routing/actionCreators';
 
@@ -45,6 +46,7 @@ export const getGames = () => (dispatch, getState) => {
       dispatch(addGames({gamesBySlug, playersById}));
       dispatch(setGamesList({list}));
     })
+    .catch(catchStatus(dispatch))
     .catch(err => dispatch(failLoadingGames()));
 }
 
@@ -56,6 +58,7 @@ export const getGame = ({id}) => (dispatch, getState) => {
       const {gamesBySlug, playersById} = mapGames([game]);
       dispatch(addGames({gamesBySlug, playersById}));
     })
+    .catch(catchStatus(dispatch))
     .catch(err => {
       console.error(err);
       dispatch(failLoadingGames());
@@ -71,6 +74,7 @@ export const joinGame = ({slug, player}) => (dispatch, getState) => {
       const {gamesBySlug, playersById} = mapGames([game]);
       dispatch(addGames({gamesBySlug, playersById}));
     })
+    .catch(catchStatus(dispatch))
 }
 
 export const create = ({kind, name, slug, player, maxPlayers}) => (dispatch, getState) => {
@@ -82,6 +86,7 @@ export const create = ({kind, name, slug, player, maxPlayers}) => (dispatch, get
       dispatch(flagReload());
       dispatch(openGame(slug));
     })
+    .catch(catchStatus(dispatch))
 }
 
 export const openNewGame = () => openGame("new")

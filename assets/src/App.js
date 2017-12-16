@@ -85,7 +85,7 @@ class App extends Component {
     }
   }
   render() {
-    const { up, loggedIn, ready, path, signout } = this.props;
+    const { up, downMessage, loggedIn, ready, path, signout } = this.props;
     const paths = [
       {
         path: "games",
@@ -95,7 +95,7 @@ class App extends Component {
 
     let content;
     if (up === false) {
-      content = <DownMessage>Sorry, Tabletalk is down for maintenence. Check back later!</DownMessage>;
+      content = <DownMessage>{downMessage}</DownMessage>;
     }
     else if (!ready) content = <Spinner/>;
     else if (loggedIn) {
@@ -124,6 +124,7 @@ class App extends Component {
 const mapStateToProps = ({auth, path, status}) => {
   return {
     up: status.up,
+    downMessage: status.message,
     ready: auth.ready,
     googleLoggedIn: !!auth.googleJwt,
     loggedIn: !!auth.jwt,
