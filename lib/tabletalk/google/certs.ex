@@ -22,6 +22,7 @@ defmodule Tabletalk.Google.Certs do
       nil -> get_from_server()
       {_result, time} when time < now -> get_from_server()
       {result, _time} -> result
+      _else -> get_from_server()
     end
   end
 end
