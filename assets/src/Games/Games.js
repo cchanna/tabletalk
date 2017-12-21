@@ -18,12 +18,23 @@ rx`
 const Container = rx('div')`
   width: 100%;
   height: 100%;
-  max-height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+`
+
+const Body = rx('div')`
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   max-width: 800px;
   padding: 40px 40px 0px 40px;
   display: flex;
   flex-flow: column;
+  &.narrow-or-under {
+    padding: 0;
+  }
 `
 
 const Title = rx('div')`
@@ -35,6 +46,16 @@ const Title = rx('div')`
   margin: 10px 0;
   position: relative;
   text-align: center;
+  &.narrow-or-under {
+    margin: 0;
+    padding: 12px 0 0 0;
+  }
+  &.narrow {
+    font-size: 75px;
+  }
+  &.tiny {
+    font-size: 55px;
+  }
 `
 
 const ReturnButton = rx('button')`
@@ -54,6 +75,9 @@ const ReturnButton = rx('button')`
     left: 7px;
     color: $link-hover;
     font-size: 46px;
+  }
+  &.narrow {
+    top: 40px;
   }
 `
 
@@ -173,8 +197,7 @@ class Games extends React.Component {
   }
 
   render() {
-    const { list, gamesBySlug, loading, failed } = this.props;
-
+    const { list, gamesBySlug, loading, failed, sizes } = this.props;
     let content;
     let returnButton;
     const currentGame = this.currentGame();
@@ -203,7 +226,7 @@ class Games extends React.Component {
 
       const gameComponents = list.map(slug => {
         const { kind, name } = gamesBySlug[slug];
-        return <GameListItem key={slug} kind={kind} slug={slug} name={name} openGame={openGame}/>
+        return <GameListItem key={slug} {...{kind, slug, name, openGame, sizes}}/>
       });
 
       content = (
@@ -214,7 +237,7 @@ class Games extends React.Component {
       )
     }
     else {
-      returnButton = <ReturnButton onClick={this.return}>{"<"}</ReturnButton>
+      returnButton = <ReturnButton onClick={this.return} rx={sizes}>{"<"}</ReturnButton>
       
       if (currentGame === 'new') {
         content = <NewGameForm/>
@@ -225,7 +248,7 @@ class Games extends React.Component {
         const game = gamesBySlug[currentGame];
 
         const props = {
-          ...game, ...join, 
+          ...game, ...join, sizes,
           playersById, startJoinGame, cancelJoinGame, setInput, 
           joinGame: this.joinGame,
           startGame: this.startGame
@@ -239,11 +262,13 @@ class Games extends React.Component {
 
     return (
       <Container>
-        <Title>
-          {returnButton}
-          TableTalk
-        </Title>
-        {content}
+        <Body rx={sizes}>
+          <Title rx={sizes}>
+            {returnButton}
+            TableTalk
+          </Title>
+          {content}
+        </Body>
       </Container>
     )
   }

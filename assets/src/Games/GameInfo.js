@@ -24,10 +24,14 @@ const Container = rx('div')`
   display: flex;
   flex-flow: column;
   margin: 20px 0;
+  font-size: 20px;
+  &.narrow-or-under {
+    font-size: 16px;
+  }
 `
 
 const Header = rx('div')`
-  font-size: 50px;
+  font-size: 2.5em;
   text-align: center;
   font-family: "League Spartan";
   text-shadow: -1px 1px 1px hsla(0, 0%, 0%, .2);
@@ -44,26 +48,28 @@ const Players = rx('ul')`
 
 const Player = rx('li')`
   font-family: "Junction";
-  font-size: 20px;
   margin: 15px;  
 `
 
 const PlayerIcon = rx('span')`
   display: inline-block;
-  width: 30px;
-  height: 30px;
-  padding: 2px 2px 0 2px;
+  width: 1.4em;
+  height: 1.4em;
+  padding: .1em .1em 0 .1em;
   box-sizing: border-box;
   text-align: center;
-  font-size: 22px;
-  border-radius: 25px;
+  font-size: 1.1em;
+  border-radius: 1.25em;
   background: transparent;
   font-family: "Icomoon";
   position: relative;
-  top: 2px;
+  top: .1em;
   &.me {
     background: $card-background-dark;
     color: hsl($hue1, 22%, 90%);
+  }
+  &.admin {
+    padding-top: .15em;
   }
 `
 
@@ -72,7 +78,6 @@ const PlayerName = rx('span')`
 `
 
 const PlayerMessage = rx('div')`
-  font-size: 20px;
   font-family: "Junction";
   color: $link-hover;
   text-align: center;
@@ -86,7 +91,7 @@ const EnterRow = rx('div')`
 `
 
 const PlayersHeader = rx('h1')`
-  font-size: 24px;
+  font-size: 1.2em;
   font-family: "Junction";
   font-weight: bold;
 `
@@ -101,16 +106,17 @@ class GameInfo extends React.Component {
     playersById: object.isRequired,
     me: number,
     startGame: func.isRequired,
-    joinGame: func.isRequired
+    joinGame: func.isRequired,
+    sizes: arrayOf(string).isRequired
   }
 
   render() {
-    const { name, kind, players, maxPlayers, playersById, me, startGame, joinGame } = this.props;
+    const { name, kind, players, maxPlayers, playersById, me, startGame, joinGame, sizes } = this.props;
     const playerComponents = players.map(id => {
       const { name, admin } = playersById[id];
       return (
         <Player key={id}>
-          <PlayerIcon rx={{me: (me === id)}}>{admin ? "u" : "u"}</PlayerIcon>
+          <PlayerIcon rx={{me: (me === id), admin}}>{admin ? "*" : "u"}</PlayerIcon>
           <PlayerName>{name}</PlayerName>
         </Player>
       )
@@ -133,7 +139,7 @@ class GameInfo extends React.Component {
     }
 
     return (
-      <Container>
+      <Container rx={sizes}>
         <Header rx={toClassName(kindsById[kind])}>{name}</Header>
         {enterButton}
         <PlayersHeader>Players</PlayersHeader>

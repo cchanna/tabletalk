@@ -1,21 +1,31 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import rx from 'resplendence';
+import withSize from 'common/withSize';
 
 rx`
 @import "~common/styles";
 @import "~common/colors";
 `
 
+const Container = rx('div')`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
 const Card = rx('div')`
   @include card;
   padding: 40px;
-  display: none;
   flex-flow: column;
   align-items: center;
   max-width: 800px;
-  &.show {
-    display: flex;
+  &.narrow {
+    max-width: none;
+    width: 100%;
+    padding: 10px;
   }
 `
 
@@ -26,6 +36,12 @@ const Title = rx('div')`
   font-size: 160px;
   margin: 10px 0;
   text-align: center;
+  &.small {
+    font-size: 100px;
+  }
+  &.narrow {
+    font-size: 70px;
+  }
 `
 
 const Status = rx('div')`
@@ -40,27 +56,31 @@ let GoogleLoginButton = ({className}) => <div className={`g-signin2 ${className}
 
 class Auth extends React.Component {
   render() {
-    const {loggedIn, loggingIn, loginError, ready} = this.props;
+    const {loggingIn, loginError, sizes } = this.props;
     let status = null;
     if (loggingIn) status = <Status>....logging in</Status>
     else if (loginError) status = <Status>failed!</Status>
     return (
-      <Card rx={{show: (ready && !loggedIn && !loggingIn)}}>
-        <Title>Tabletalk</Title>
-        {status}
-        <GoogleLoginButton/>
-      </Card>
+      <Container>
+        <Card rx={sizes}>
+          <Title rx={sizes}>Tabletalk</Title>
+          {status}
+          <GoogleLoginButton/>
+        </Card>
+      </Container>
     )
   }
 }
 
-const mapStateToProps = ({auth}) => {
+const mapStateToProps = ({auth}, {size}) => {
   return {
-    ready: auth.ready,
-    loggedIn: !!auth.jwt,
     loggingIn: auth.pending,
-    loginError: auth.error
+    loginError: auth.error,
+    size
   }
 }
 
-export default connect(mapStateToProps, {})(Auth);
+export default compose(
+  connect(mapStateToProps, {}),
+  withSize({525: "narrow", 768: "small"})
+)(Auth);

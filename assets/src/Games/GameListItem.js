@@ -26,6 +26,9 @@ const Container = rx('button')`
     left: 2px;
     text-shadow: -1px 1px 2px rgba(0, 0, 0, .5);
   }
+  &.narrow-or-under {
+    font-size: 20px;
+  }
 `
 
 const Icon = rx('span')`
@@ -44,9 +47,9 @@ class Game extends React.Component {
     openGame(slug);
   }
   render() {
-    const { name, kind } = this.props;
+    const { name, kind, sizes } = this.props;
     return (
-      <Container onClick={this.handleClick} rx={toClassName(kindsById[kind])}>
+      <Container onClick={this.handleClick} rx={[toClassName(kindsById[kind]), ...sizes]}>
         <Icon>*</Icon>
         {name}
       </Container>

@@ -1,7 +1,7 @@
 import React from 'react';
 import rx from 'resplendence';
 
-import { func } from 'prop-types';
+import { func, arrayOf, string } from 'prop-types';
 
 import { kindsById, kindsOrder } from 'common/gameKinds';
 
@@ -21,6 +21,7 @@ const Container = rx(Form)`
   font-family: "Junction";
   color: $color-light;
   padding: 20px;
+  margin: 20px 0;
   background: $card-background-dark;
 `
 
@@ -78,7 +79,7 @@ const FormBody = ({values, isValid, errors, touched, isSubmitting, handleChange,
         <InputStyle type="text" name="slug" placeholder="slug" onChange={changeSlug} value={values.slug} rx={{empty: values.slug === "" || errors.slug}} maxLength={36}/>
       </Section>
       <Section>
-        <Label name="name">What's your username (not your character name)?</Label>
+        <Label name="name">What's&nbsp;your&nbsp;username (not&nbsp;your&nbsp;character&nbsp;name)?</Label>
         <Input type="text" name="player" placeholder="username" maxLength={50} />
       </Section>
       <Section>
@@ -95,6 +96,7 @@ const FormBody = ({values, isValid, errors, touched, isSubmitting, handleChange,
 class NewGameForm extends React.Component {
   static propTypes = {
     create: func.isRequired,
+    sizes: arrayOf(string).isRequired
   }
 
   initialValues = {

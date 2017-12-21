@@ -8,9 +8,25 @@ defmodule Tabletalk.Games do
 
   alias Tabletalk.Games.Game
   alias Tabletalk.Games.Player
+  alias Tabletalk.Games.Permission
   
   require Logger
 
+
+
+  defp make_permission!(game_id, players) do
+    %Permission{}
+    |> Permission.changeset(%{"game_id" => game_id, "players" => players})
+    |> Repo.insert!
+  end
+
+  def permission_for!(game_id, players) when game_id !== nil and is_list(players) do
+    players_string = players |> Enum.sort() |> Enum.join(" ")
+    case Repo.get_by(Permission, game_id: game_id, players: players_string) do
+      nil -> make_permission!(game_id, players_string)
+      permission -> permission
+    end
+  end
 
   def list_games(user_id) do
     query = from g in Game,

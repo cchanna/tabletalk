@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
 import rx from 'resplendence';
 
@@ -47,12 +48,25 @@ const SignoutButton = rx('button')`
   height: 20px;
   transition-properties: top, right, color, font-size, text-shadow;
   transition-duration: .15s;
+  z-index: 1;
   &:hover {
     color: $link-hover;
     text-shadow: -1px 1px 1px rgba(0, 0, 0, .2);
     font-size: 20px;
     top: 2px;
     right: 3px;
+  }
+`
+
+const FloatAbove = rx('div')`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: none;
+  &.show {
+    display: block;
   }
 `
 
@@ -85,7 +99,7 @@ class App extends Component {
     }
   }
   render() {
-    const { up, downMessage, loggedIn, ready, path, signout } = this.props;
+    const { up, downMessage, loggedIn, loggingIn, ready, path, signout } = this.props;
     const paths = [
       {
         path: "games",
@@ -113,7 +127,9 @@ class App extends Component {
 
     return (
       <Container>
-        <Auth/>
+        <FloatAbove rx={{show: (ready && !loggedIn && !loggingIn)}}>
+          <Auth/>
+        </FloatAbove>
         {signoutButton}
         {content}
       </Container>
@@ -128,10 +144,14 @@ const mapStateToProps = ({auth, path, status}) => {
     ready: auth.ready,
     googleLoggedIn: !!auth.googleJwt,
     loggedIn: !!auth.jwt,
+    loggingIn: auth.pending,
     path
   }
 }
 
 const mapDispatchToProps = { getStatus, login, loginReady, replace, signout };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+const enhance = compose(
+  connect(mapStateToProps, mapDispatchToProps)
+)
+export default enhance(App);
