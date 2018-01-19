@@ -1,0 +1,1 @@
+export default (bonus, space=false) => ((bonus >= 0) ? "+" : "−") + (space ? " " : "") + Math.abs(bonus)

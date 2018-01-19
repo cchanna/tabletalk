@@ -26,7 +26,7 @@ const Container = rx('button')`
     left: 2px;
     text-shadow: -1px 1px 2px rgba(0, 0, 0, .5);
   }
-  &.narrow-or-under {
+  &.under-max {
     font-size: 20px;
   }
 `

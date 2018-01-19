@@ -1,10 +1,8 @@
 export const kindsById = [
-  "The Sprawl",
-  "Blades in the Dark",
-  "Stranger Roads"
+  "Monsterhearts",
 ]
 
-export const kindsOrder = [1, 0, 2];
+export const kindsOrder = [0];
 
 export const toClassName = kind => kind.toLowerCase().replace(/\s/g, "-");
 

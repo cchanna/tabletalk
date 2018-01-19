@@ -1,0 +1,59 @@
+@import '~common/styles';
+@import './colors';
+@import './fonts';
+
+@mixin button-style {
+  @include button;
+  font-family: $interact;
+  font-size: 20px;
+  color: transparent;
+  transition: 150ms color;
+  &:not(:disabled) {
+    color: $foreground;
+    &:focus {
+      color: lighten($accent, 20%);
+    }
+    &:hover {
+      color: $accent;
+    }
+    &:active {
+      color: darken($accent, 30%);
+    }
+  }
+}
+
+@mixin input-style {
+  @include input;
+  background: lighten($background, 30%);
+  color: $foreground;
+  font-size: 20px;
+  font-family: $body;
+  padding: 5px;
+  resize: none;
+  background: transparent;
+  border-left: 2px solid transparent;
+  transition-property: color, background-color, border;
+  transition-duration: 150ms;
+  cursor: default;
+  &::placeholder {
+    color: darken($foreground, 50%);
+  }
+  &:not(:disabled) {
+    cursor: text;
+    color: $foreground;
+    border-color: $foreground;
+    &::placeholder {
+      color: darken($foreground, 30%);
+    }
+    &:hover {
+      background: lighten($background, 10%);
+    }
+    &:focus {
+      color: $background;
+      background: $foreground;
+      &::placeholder {
+        color: transparent;
+      }
+    }
+  }
+}

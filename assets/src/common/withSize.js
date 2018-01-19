@@ -1,32 +1,28 @@
 import React from 'react'
-import rx from 'resplendence';
-
-const Container = rx('div')`
-  width: 100%;
-  height: 100%;
-`
 
 const convertWidthToBreakpoint = (width, breakPoints) => {
   const result = [];
-  const breakValues = Object.keys(breakPoints).sort();
+  const breakValues = Object.keys(breakPoints).sort((a, b) => (a - b));
   let i;
   for (i=0; i < breakValues.length; i++) {
     const breakValue = breakValues[i];
     const breakName = breakPoints[breakValue];
-    if (i !== 0) {
-      result.push(breakName + "-or-over");
-    }
     if (width <= breakValue) {
       result.push(breakName);
       break;
     }
+    result.push("over-" + breakName);
   }
-  for (i; i < breakValues.length; i++) {
-    if (i !== 0) {
-      const breakValue = breakValues[i];
-      const breakName = breakPoints[breakValue];
-      result.push(breakName + "-or-under");
-    }
+  for (i++; i < breakValues.length; i++) {
+    const breakValue = breakValues[i];
+    const breakName = breakPoints[breakValue];
+    result.push("under-" + breakName);
+  }
+  if (width > breakValues[breakValues.length - 1]) {
+    result.push("max");
+  }
+  else {
+    result.push("under-max");
   }
   return result;
 }
@@ -72,9 +68,9 @@ export default breakpoints => Node => {
       const props = this.props;
       const { sizes } = this.state;
       return (
-        <Container innerRef={this.handleRef}>
+        <div style={{width: "100%", height: "100%"}} ref={this.handleRef}>
           <Node {...props} sizes={sizes}/>
-        </Container>
+        </div>
       )
     }
   }

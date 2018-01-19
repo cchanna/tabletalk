@@ -32,7 +32,7 @@ const Body = rx('div')`
   padding: 40px 40px 0px 40px;
   display: flex;
   flex-flow: column;
-  &.narrow-or-under {
+  &.under-max {
     padding: 0;
   }
 `
@@ -46,7 +46,7 @@ const Title = rx('div')`
   margin: 10px 0;
   position: relative;
   text-align: center;
-  &.narrow-or-under {
+  &.under-max {
     margin: 0;
     padding: 12px 0 0 0;
   }
@@ -154,10 +154,10 @@ class Games extends React.Component {
     const currentGame = this.currentGame();
     
     if (currentGame !== null) {
-      if (currentGame !== 'new') {
+      if (currentGame !== 'new') { // TODO need to disallow "new" as slug
         const { gamesBySlug, getGame } = this.props;
         if (gamesBySlug === null || gamesBySlug[currentGame] === undefined) {
-          getGame({id: currentGame});
+          getGame({slug: currentGame});
         }
       }
     }

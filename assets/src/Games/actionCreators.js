@@ -50,10 +50,10 @@ export const getGames = () => (dispatch, getState) => {
     .catch(err => dispatch(failLoadingGames()));
 }
 
-export const getGame = ({id}) => (dispatch, getState) => {
+export const getGame = ({slug}) => (dispatch, getState) => {
   const { auth } = getState();
   dispatch(startLoadingGames());
-  api.get(id, auth.jwt)
+  api.get(slug, auth.jwt)
     .then(game => {
       const {gamesBySlug, playersById} = mapGames([game]);
       dispatch(addGames({gamesBySlug, playersById}));

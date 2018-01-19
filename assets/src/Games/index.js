@@ -4,8 +4,8 @@ import Games from './Games';
 
 import { goTo } from 'Routing/actionCreators';
 import { getGames, getGame, openGame, joinGame, openNewGame } from './actionCreators';
-import { compose } from '../../../../../Users/castl/AppData/Local/Microsoft/TypeScript/2.6/node_modules/redux';
-import withSize from '../common/withSize';
+import { compose } from 'redux';
+import withSize from 'common/withSize';
 
 const mapStateToProps = ({games}, {path, here}) => {
   const { list, gamesBySlug, playersById, error, lastLoaded, loading, failed, join } = games;

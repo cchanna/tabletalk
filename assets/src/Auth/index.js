@@ -19,7 +19,8 @@ const Container = rx('div')`
 const Card = rx('div')`
   @include card;
   padding: 40px;
-  flex-flow: column;
+  display: flex;
+  flex-flow: column nowrap;
   align-items: center;
   max-width: 800px;
   &.narrow {
@@ -52,7 +53,7 @@ const Status = rx('div')`
   text-align: center;
 `
 
-let GoogleLoginButton = ({className}) => <div className={`g-signin2 ${className}`} data-onsuccess="onSignIn"/>;
+const GoogleLoginButton = ({className}) => <div className={`g-signin2 ${className}`} data-onsuccess="onSignIn"/>;
 
 class Auth extends React.Component {
   render() {

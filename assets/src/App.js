@@ -4,13 +4,16 @@ import { connect } from 'react-redux';
 import rx from 'resplendence';
 
 import Games from 'Games';
+import Play from 'Play';
 import Auth from 'Auth';
 
 import { getStatus } from 'Status/actionCreators';
 import { login, loginReady, signout } from 'Auth/actionCreators';
 import { replace } from 'Routing/actionCreators';
+import route from 'Routing/route';
 
 import Spinner from 'common/components/Spinner';
+import "./index.scss";
 
 rx`
 @import "~common/styles";
@@ -98,29 +101,28 @@ class App extends Component {
       }
     }
   }
+
+  pages = [
+    {
+      path: "games",
+      component: Games
+    },
+    {
+      path: "play",
+      component: Play
+    }
+  ]
+
   render() {
     const { up, downMessage, loggedIn, loggingIn, ready, path, signout } = this.props;
-    const paths = [
-      {
-        path: "games",
-        className: Games
-      }
-    ]
 
-    let content;
+    let content
     if (up === false) {
       content = <DownMessage>{downMessage}</DownMessage>;
     }
     else if (!ready) content = <Spinner/>;
     else if (loggedIn) {
-      for (let i=0; i < paths.length; i++) {
-        const entry = paths[i];
-        const [here, ...tail] = path;
-        if (here === entry.path) {
-          const Node = entry.className;
-          content = <Node here={[here]} path={tail}/>
-        }
-      }
+      content = route(path, [], this.pages);
     }
 
     const signoutButton = loggedIn ? <SignoutButton onClick={signout}>signout</SignoutButton> : null;

@@ -30,10 +30,28 @@
 @mixin button {
   background: none;
   border: none;
-  border-radius: none;  
-  cursor: pointer;
+  border-radius: 0;  
   padding: 0;
+  font-size: inherit;
   &:focus {
     outline: none;
   }
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@mixin link {
+  text-decoration: none;
+  color: black;
+  &.active {
+    cursor: default;
+  }
+}
+
+@mixin input {
+  border: 0;
+  &:focus {
+    outline: 0;
+  } 
 }

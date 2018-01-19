@@ -25,7 +25,7 @@ const Container = rx('div')`
   flex-flow: column;
   margin: 20px 0;
   font-size: 20px;
-  &.narrow-or-under {
+  &.under-max {
     font-size: 16px;
   }
 `
