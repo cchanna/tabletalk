@@ -28,7 +28,8 @@ import {
   MONSTERHEARTS_CHARACTER_CONDITION_DELETE,
   MONSTERHEARTS_STRING_ADD,
   MONSTERHEARTS_STRING_SPEND,
-  MONSTERHEARTS_STRING_CREATE
+  MONSTERHEARTS_STRING_CREATE,
+  MONSTERHEARTS_CHAT
 
 } from "common/actions";
 
@@ -61,6 +62,8 @@ export default combineReducers({
     switch(action.type) {
       case MONSTERHEARTS_LOAD:
         return action.chats;
+      case MONSTERHEARTS_CHAT:
+        return [...state, action.id];
       default: return state;
     }
   },
@@ -68,6 +71,16 @@ export default combineReducers({
     switch(action.type) {
       case MONSTERHEARTS_LOAD:
         return action.chatsById;
+      case MONSTERHEARTS_CHAT:
+        return update(state, {
+          [action.id]: {
+            $set: {
+              playerId: action.playerId,
+              talk: action.talk,
+              roll: action.roll
+            }
+          }
+        })
       default: return state;
     }
   },
@@ -100,7 +113,6 @@ export default combineReducers({
             name: action.name,
             notes: action.notes,
             conditions: action.conditions,
-            hidden: action.hidden,
             mainCharacter: action.mainCharacter
           }
         }

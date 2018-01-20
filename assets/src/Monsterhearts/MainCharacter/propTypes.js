@@ -3,7 +3,6 @@ import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 
 export const characterProperties = {
   name: string, 
-  hidden: bool.isRequired, 
   notes: string, 
   conditions: arrayOf(string).isRequired,
 }

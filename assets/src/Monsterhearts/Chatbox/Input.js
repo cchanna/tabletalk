@@ -38,7 +38,7 @@ class Input extends React.Component {
   }
   handleKeyDown(e) {
     if (e.key == 'Enter' && !e.shiftKey) {
-      this.props.onChat(this.state.value);
+      this.props.onChat({text: this.state.value});
       this.setState({value: ""});
       e.preventDefault();
     }

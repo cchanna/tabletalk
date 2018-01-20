@@ -11,7 +11,8 @@ import {
   MONSTERHEARTS_CHARACTER_MOVE_CREATE,
   MONSTERHEARTS_CHARACTER_SIDE_CREATE,
   MONSTERHEARTS_STRING_ADD,
-  MONSTERHEARTS_STRING_CREATE
+  MONSTERHEARTS_STRING_CREATE,
+  MONSTERHEARTS_CHAT
 } from 'common/actions';
 import { setTimeout } from 'timers';
 
@@ -61,7 +62,6 @@ const mockSlowAction = (action) => {
         ...action,
         id: randomId(),
         name: null,
-        hidden: false,
         notes: "",
         conditions: [],
         mainCharacter: {
@@ -97,7 +97,6 @@ const mockSlowAction = (action) => {
         name: action.name,
         notes: action.notes,
         conditions: [],
-        hidden: false,
         mainCharacter: null
       }
     case MONSTERHEARTS_CHARACTER_MOVE_CREATE:
@@ -108,6 +107,33 @@ const mockSlowAction = (action) => {
         name: action.name,
         notes: ""
       }
+    case MONSTERHEARTS_CHAT: {
+      if (action.text === "/roll 1") {
+        return {
+          type: MONSTERHEARTS_CHAT,
+          id: randomId(),
+          playerId: 58,
+          talk: null,
+          roll: {
+            dice: [3, 5],
+            bonus: 1
+          }
+        } 
+      }
+      else {
+        return {
+          type: MONSTERHEARTS_CHAT,
+          id: randomId(),
+          playerId: 58,
+          talk: {
+            message: action.text,
+            isLog: false
+          },
+          roll: null
+        }
+      }
+    }
+      
   }
 }
 

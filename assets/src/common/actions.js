@@ -45,6 +45,8 @@ export const MONSTERHEARTS_CHARACTER_CONDITION_CREATE = "monsterhearts_character
 export const MONSTERHEARTS_CHARACTER_CONDITION_DELETE = "monsterhearts_character_condition_delete";
 export const MONSTERHEARTS_CHARACTER_MOVE_EDIT_NOTES = "monsterhearts_character_edit_notes";
 
+export const MONSTERHEARTS_CHAT = "monsterhearts_chat";
+
 export const MONSTERHEARTS_STRING_ADD = "monsterhearts_string_add";
 export const MONSTERHEARTS_STRING_SPEND = "monsterhearts_string_spend";
 export const MONSTERHEARTS_STRING_CREATE = "monsterhearts_string_create";

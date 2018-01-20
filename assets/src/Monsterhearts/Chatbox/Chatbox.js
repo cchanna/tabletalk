@@ -4,6 +4,7 @@ import rx from 'resplendence'
 
 import Input from './Input';
 import Chat from './Chat';  
+import DiceRoller from './DiceRoller';
 
 rx`
 @import '~Monsterhearts/fonts';
@@ -29,6 +30,7 @@ const Container = rx('div')`
   -ms-user-select: text;
   user-select: text;
   cursor: text;
+  position: relative;
   &.overlay {
     box-shadow: 0px -6px 2px 1px fade-out(black, .5);
     width: 100%;
@@ -52,11 +54,16 @@ const Toggle = rx('div')`
   width: 100%;
   height: 36px;
   border: none;
-  text-align: center;
   box-shadow: 0 1px 1px 1px fade-out(black, .8);
   padding: 0;
   color: black;
-  background-color: white;
+  background-color: $foreground;
+  position: relative;
+  top: 0px;
+  transition-property: height, top, padding;
+  transition-duration: 150ms;
+  box-sizing: border-box;
+  text-align: center;
   &:focus {
     outline: none;
   }
@@ -132,7 +139,8 @@ class Chatbox extends Component {
   static propTypes = {
     overlay: bool.isRequired,
     collapsed: bool.isRequired,
-    setChatboxCollapsed: func.isRequired
+    setChatboxCollapsed: func.isRequired,
+    chat: func.isRequired
   }
 
   conversation = null;
@@ -148,6 +156,7 @@ class Chatbox extends Component {
   scrollToBottom = () => {
     if (this.conversation) {
       this.conversation.scrollTop = this.conversation.scrollHeight;
+      this.atBottom = true;
     }
   }
 
@@ -160,11 +169,20 @@ class Chatbox extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.collapsed && !this.props.collapsed) {
-      setTimeout(this.scrollToBottom.bind(this), 700);
+      setTimeout(this.scrollToBottom, 700);
     }
     else if (this.atBottom) {
       this.scrollToBottom();
     }
+  }
+
+  componentDidMount() {
+    setTimeout(this.scrollToBottom, 700);
+  }
+
+  handleChat = ({text}) => {
+    const { chat } = this.props;
+    chat({text});
   }
 
   render() {
@@ -193,6 +211,7 @@ class Chatbox extends Component {
     return (
       <Container rx={{overlay, collapsed}}>
         {toggle}
+        <DiceRoller onChat={this.handleChat} {...{overlay, collapsed}}/>
         <Body rx={{overlay, collapsed}}>
           <Conversation innerRef={this.handleRef}>
             <ChatList>
@@ -200,7 +219,7 @@ class Chatbox extends Component {
             </ChatList>
           </Conversation>
           <Divider/>
-          <Input onChat={() => {}}/>
+          <Input onChat={this.handleChat}/>
         </Body>
       </Container>
     );

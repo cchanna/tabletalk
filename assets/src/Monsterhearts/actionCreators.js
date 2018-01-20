@@ -7,7 +7,6 @@ import {
 
 import * as api from './api';
 
-export const setChatboxCollapsed = actionCreator(MONSTERHEARTS_CHATBOX_SET_COLLAPSED, "collapsed");
 const resolveLoad = actionCreator(
   MONSTERHEARTS_LOAD, 
   "players", "playersById", "chats", "chatsById", "me",
@@ -297,7 +296,6 @@ export const load = () => (dispatch, getState) => {
     charactersById: {
       12: {
         name: "Claire",
-        hidden: false,
         notes: "notes notes notes",
         conditions: ["moody", "naive"],
         mainCharacter: {
@@ -321,7 +319,6 @@ export const load = () => (dispatch, getState) => {
       },
       13: {
         name: "Test",
-        hidden: false,
         notes: "",
         conditions: [],
         mainCharacter: {
@@ -345,14 +342,12 @@ export const load = () => (dispatch, getState) => {
       },
       1004: {
         name: "Lexa",
-        hidden: false,
         notes: "hello!",
         conditions: ["slutty"],
         mainCharacter: null,
       }, 
       1992: {
         name: "Sampson",
-        hidden: false,
         notes: "more notes hooray",
         conditions: [],
         mainCharacter: {
