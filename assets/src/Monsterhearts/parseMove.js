@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 
+import Markdown from 'Monsterhearts/common/Markdown';
+
 const _parse = (array, ending) => {
   let result = [];
   let buffer = "";
@@ -43,10 +45,11 @@ const parse = (str) => {
   return _parse(array);
 }
 
-const parseMove = (text) => !text ? "" : text
+const parseMove = (text) => {
+  const result = !text ? "" : text
   .replace(/ *\n */g, "\n")
-  .split("\n\n")
-  .map(parse)
-  .map((p, i) => <p key={i}>{p}</p>);
-
+  .replace(/([^\n])\n([^\n-])/g, "$1 $2");
+  console.log(result);
+  return <Markdown text={result}/>;
+}
 export default parseMove;

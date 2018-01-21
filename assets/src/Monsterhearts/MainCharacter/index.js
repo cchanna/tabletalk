@@ -11,15 +11,20 @@ const mapStateToProps = ({monsterhearts}, {path, here}) => {
   const { charactersById, playersById, me } = monsterhearts;
   const id = parseInt(here[2], 10);
   const character = charactersById[id];
-  const { name, mainCharacter } = character;
+  let name = null;
   let playbook = null;
   let readOnly = true;
-  if (mainCharacter) {
-    playbook = mainCharacter.playbook;
-    const { playerId } = mainCharacter;
-    readOnly = (playerId !== me) && !playersById[me].isGM;
+  let editDone = true;
+  if (character) {
+    name = character.name;
+    const { mainCharacter } = character;
+    if (mainCharacter) {
+      playbook = mainCharacter.playbook;
+      const { playerId } = mainCharacter;
+      readOnly = (playerId !== me) && !playersById[me].isGM;
+    }
+    editDone = isEditDone(id, {monsterhearts}).allDone;
   }
-  const editDone = isEditDone(id, {monsterhearts}).allDone;
   return {
     path, here, editDone,
     id, name, playbook,

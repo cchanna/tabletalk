@@ -83,8 +83,6 @@ const BigName = rx('span')`
   font-size: 1.2em;
 `
 
-const parseMove = text => text;
-
 const Button = rx('button')`
   @include button;
   background: $accent;
@@ -130,7 +128,6 @@ class NewCharacter extends Component {
 
   componentDidUpdate(prevProps) {
     const {path, here, goTo, myCharacters} = this.props;
-    console.log(myCharacters, prevProps.myCharacters)
     if (myCharacters.length > prevProps.myCharacters.length) {
       myCharacters.forEach(id => {
         if (!prevProps.myCharacters.includes(id)) {

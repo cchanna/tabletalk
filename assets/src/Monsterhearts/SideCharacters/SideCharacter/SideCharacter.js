@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 import rx from 'resplendence'
   
-import parseMove from 'Monsterhearts/parseMove';
+import Markdown from 'Monsterhearts/common/Markdown';
 // import Conditions from 'Monsterhearts/common/Conditions';
 import Strings from 'Monsterhearts/common/Strings';
 import EditSideCharacter from './EditSideCharacter';
@@ -100,7 +100,7 @@ class SideCharacter extends Component {
             {name}
             <EditButton onClick={this.handleStartEditing}>Edit</EditButton>
           </Name>
-          {parseMove(notes)}
+          <Markdown text={notes}/>
         </Info>
       )
     }

@@ -1,7 +1,7 @@
 defmodule TabletalkWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :tabletalk
 
-  socket "/socket", TabletalkWeb.UserSocket
+  socket "/socket", TabletalkWeb.GameSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #

@@ -35,10 +35,6 @@ const pages = [
   {
     path: "new",
     component: NewCharacter
-  },
-  {
-    path: "*",
-    component: MainCharacter
   }
 ];
 
@@ -62,21 +58,27 @@ class TabPicker extends Component {
         };
       })
 
-    if (path.length === 0) {
+    let window = route(path, here, pages);
+    if (window === null) {
+      if (path.length > 0) {
+        const [id, ...newPath] = path;
+        if (charactersById[id]) {
+          const newHere = [...here, id];
+          window = <MainCharacter path={newPath} here={newHere}/>
+        }
+      } 
+    }
+    if (window === null) {
       return <BigTabList tabs={tabs} here={here}/>
     }
-    else {
-      const [tab, ...newPath] = path;
-      const window = route(path, here, pages);
-      return (
-        <Container>
-          <TabList tabs={tabs} here={here}/>
-          <Content>
-            {window}
-          </Content>
-        </Container>
-      )
-    }
+    return (
+      <Container>
+        <TabList tabs={tabs} here={here}/>
+        <Content>
+          {window}
+        </Content>
+      </Container>
+    )
   }
 }
 

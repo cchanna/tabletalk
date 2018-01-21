@@ -58,7 +58,7 @@ class Character extends Component {
   
   render() {
     const { name, notes, playbook } = this.props;
-    const paragraphs = !notes ? <p/> : notes
+    const paragraphs = (!notes || playbook) ? <p/> : notes
       .replace(/ *\n */g, "\n")
       .split("\n\n")
       .map((p, i) => <p key={i}>{p}</p>);

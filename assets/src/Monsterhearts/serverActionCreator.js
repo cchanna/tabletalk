@@ -1,10 +1,10 @@
 import actionCreator from 'utils/actionCreator';
 
 import {
-  MONSTERHEARTS_ACTION_STORE,
-  MONSTERHEARTS_ACTION_STORE_SLOW,
-  MONSTERHEARTS_ACTION_ANSWER,
-  MONSTERHEARTS_ACTION_ANSWER_SLOW,
+  MONSTERHEARTS_SOCKET_QUEUE,
+  MONSTERHEARTS_SOCKET_QUEUE_SLOW, 
+  MONSTERHEARTS_SOCKET_ANSWER,
+  MONSTERHEARTS_SOCKET_ANSWER_SLOW,
 } from 'common/actions';
 import {
   MONSTERHEARTS_CHARACTER_MAIN_CREATE,
@@ -23,34 +23,34 @@ const randomString = (length, chars) => {
 }
 const randomUniqueId = () => randomString(36, "abcdefghijklmnopqrstuvwxyz0123456789")
 
-const storeUnansweredAction = actionCreator(MONSTERHEARTS_ACTION_STORE, "action");
-const storeUnansweredSlowAction = actionCreator(MONSTERHEARTS_ACTION_STORE_SLOW, "action");
-const answerAction = actionCreator(MONSTERHEARTS_ACTION_ANSWER, "uniqueId");
-const answerSlowAction = actionCreator(MONSTERHEARTS_ACTION_ANSWER_SLOW, "uniqueId");
+const queueAction = actionCreator(MONSTERHEARTS_SOCKET_QUEUE, "action");
+const queueSlowAction = actionCreator(MONSTERHEARTS_SOCKET_QUEUE_SLOW, "action");
+// const answerAction = actionCreator(MONSTERHEARTS_ACTION_ANSWER, "uniqueId");
+// const answerSlowAction = actionCreator(MONSTERHEARTS_ACTION_ANSWER_SLOW, "uniqueId");
 
-const resolveServerAction = action => (dispatch, getState) => {
-  const { monsterhearts } = getState();
-  const { unansweredActions, unansweredSlowActions } = monsterhearts;
-  const { uniqueId } = action;
-  if (unansweredActions[uniqueId]) {
-    dispatch(answerAction({uniqueId}));
-  }
-  else {
-    if (unansweredSlowActions[uniqueId]) {
-      dispatch(answerSlowAction({uniqueId}));
-    }
-    dispatch(action);
-  }
-}
+// const resolveServerAction = action => (dispatch, getState) => {
+//   const { monsterhearts } = getState();
+//   const { unansweredActions, slowActionsById } = monsterhearts;
+//   const { uniqueId } = action;
+//   if (unansweredActions[uniqueId]) {
+//     dispatch(answerAction({uniqueId}));
+//   }
+//   else {
+//     if (slowActionsById[uniqueId]) {
+//       dispatch(answerSlowAction({uniqueId}));
+//     }
+//     dispatch(action);
+//   }
+// }
 
 export const serverActionCreator = (...actionCreatorArgs) => (...actionArgs) => (dispatch, getState) => {
   const action = actionCreator(...actionCreatorArgs)(...actionArgs);
   action.uniqueId = randomUniqueId();
-  dispatch(storeUnansweredAction({action}));
+  dispatch(queueAction({action}));
   dispatch(action);
-  setTimeout(() => {
-    dispatch(resolveServerAction(action));
-  });
+  // setTimeout(() => {
+  //   dispatch(resolveServerAction(action));
+  // });
 }
 
 
@@ -77,7 +77,8 @@ const mockSlowAction = (action) => {
           look: null,
           origin: null,
           advancements: [],
-          moves: []
+          moves: [],
+          moveNotesByName: {}
         }
       }
     case MONSTERHEARTS_STRING_CREATE:
@@ -140,10 +141,10 @@ const mockSlowAction = (action) => {
 export const slowServerActionCreator = (...actionCreatorArgs) => (...actionArgs) => (dispatch, getState) => {
   const action = actionCreator(...actionCreatorArgs)(...actionArgs);
   action.uniqueId = randomUniqueId();
-  dispatch(storeUnansweredSlowAction({action}));
-  setTimeout(() => {
-    dispatch(resolveServerAction(mockSlowAction(action)));
-  }, 150);
+  dispatch(queueSlowAction({action}));
+  // setTimeout(() => {
+  //   dispatch(resolveServerAction(mockSlowAction(action)));
+  // }, 150);
   return action.uniqueId;
 };
 export default serverActionCreator;

@@ -21,7 +21,7 @@ class NewString extends Component {
     id: number.isRequired, 
     characters: arrayOf(number).isRequired, 
     charactersById: object.isRequired,
-    unansweredSlowActions: object.isRequired,
+    slowActionsById: object.isRequired,
     createString: func.isRequired, 
     goBack: func.isRequired
   }
@@ -39,8 +39,8 @@ class NewString extends Component {
   componentWillUpdate(nextProps) {
     const { actionId } = this.state;
     if(actionId) {
-      const { unansweredSlowActions, goBack } = this.props;
-      if (unansweredSlowActions[actionId] && !nextProps.unansweredSlowActions[actionId]) {
+      const { slowActionsById, goBack } = this.props;
+      if (slowActionsById[actionId] && !nextProps.slowActionsById[actionId]) {
         goBack();
       }
     }

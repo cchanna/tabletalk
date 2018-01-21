@@ -5,7 +5,8 @@ import { spendString, deleteString } from './actionCreators';
 import { addString, createString } from '../actionCreators';
 
 const mapStateToProps = ({monsterhearts}, {id, path, here}) => {
-  const { charactersById, stringsById, strings, definitions, unansweredSlowActions, me, playersById } = monsterhearts;
+  const { charactersById, stringsById, strings, definitions, socket, me, playersById } = monsterhearts;
+  const { slowActionsById } = socket;
   const stringsTo = strings
     .filter(string => stringsById[string].from === id);
   const stringsFrom = strings
@@ -16,7 +17,7 @@ const mapStateToProps = ({monsterhearts}, {id, path, here}) => {
     readOnly = false;
   }
   return {
-    path, here, unansweredSlowActions,
+    path, here, slowActionsById,
     id, stringsTo, stringsFrom, stringsById, charactersById,
     readOnly
   };

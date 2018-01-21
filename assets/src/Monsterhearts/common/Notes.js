@@ -4,7 +4,7 @@ import rx from 'resplendence'
   
 import AutoSizeTextArea from 'react-autosize-textarea';
 
-import parseMove from 'Monsterhearts/parseMove';
+import Markdown from './Markdown';
 
 rx`
 @import '~Monsterhearts/styles';
@@ -44,9 +44,6 @@ const Display = rx('button')`
   }
   &.placeholder {
     color: darken($foreground, 50%);
-  }
-  p:not(:last-child) {
-    margin-bottom: 15px;
   }
   text-align: left;
 `
@@ -129,7 +126,7 @@ class Notes extends Component {
             placeholder: !this.props.value
           }}
         >
-          {!this.props.value ? "notes" : parseMove(this.props.value)}
+          <Markdown text={this.props.value || "notes"}/>
         </Display>
       </Container>
     );

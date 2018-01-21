@@ -19,7 +19,7 @@ const Name = rx('h1')`
 class Move extends Component {
   static propTypes = {
     name: string.isRequired,
-    text: string.isRequired
+    text: string
   }
   
   render() {

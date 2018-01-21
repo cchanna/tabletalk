@@ -76,25 +76,23 @@ const RollResult = rx('div')`
   }
 `
 
-// const convertLog = (text, playersById) => {
-//   const regex = /{(.+?):(\d+)}/g;
-//   const players = [];
-//   let m;
-//   while ((m = regex.exec(text)) !== null) {
-//     if (m.index === regex.lastIndex) {
-//       regex.lastIndex++;
-//     }
-    
-//     console.log(m);
-//     if (m[1] === "player" && !players.includes(m[2])) {
-//       players.push(m[2]);
-//     }
-//   }
-//   players.forEach(id => {
-//     text = text.replace(`{player:${id}}`, playersById[id].name);
-//   })
-//   return text;
-// }
+const convertLog = (text, playersById) => {
+  const regex = /{(.+?):(\d+)}/g;
+  const players = [];
+  let m;
+  while ((m = regex.exec(text)) !== null) {
+    if (m.index === regex.lastIndex) {
+      regex.lastIndex++;
+    }
+    if (m[1] === "player" && !players.includes(m[2])) {
+      players.push(m[2]);
+    }
+  }
+  players.forEach(id => {
+    text = text.replace(`{player:${id}}`, playersById[id].name);
+  })
+  return text;
+}
 
 const makeBonusString = bonus => {
   if (bonus >= 0) return "+ " + bonus; 
@@ -103,30 +101,31 @@ const makeBonusString = bonus => {
 
 class Chat extends Component {
   static propTypes = {
-    date: instanceOf(Date).isRequired,
+    insertedAt: string.isRequired,
     talk: shape({
-      message: string.isRequired,
+      text: string.isRequired,
       isLog: bool.isRequired
     }),
     roll: shape({
       dice: arrayOf(number).isRequired,
       bonus: number.isRequired
     }),
+    playersById: object.isRequired,
     mine: bool.isRequired
   }
   
   render() {
-    const { talk, roll, mine, newest } = this.props;
+    const { talk, roll, mine, newest, playersById } = this.props;
     let content = null;
 
     if (talk) {
       if (talk.isLog) {
         return (
-          <Log rx={{mine}}>{talk.message}</Log>
+          <Log rx={{mine}}>{convertLog(talk.text, playersById)}</Log>
         )
       }
       else {
-        const paragraphs = talk.message
+        const paragraphs = talk.text
           .trim()
           .split("\n")
           .map((paragraph, i) => <P key={i}>{paragraph}</P>);
@@ -149,6 +148,9 @@ class Chat extends Component {
           </RollResult>
         </Roll>
       );
+    }
+    else {
+      return null;
     }
   }
 }

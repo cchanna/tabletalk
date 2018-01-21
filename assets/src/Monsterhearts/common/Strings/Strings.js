@@ -30,7 +30,7 @@ class Strings extends Component {
   static propTypes = {
     path: arrayOf(string).isRequired, 
     here: arrayOf(string).isRequired, 
-    unansweredSlowActions: object.isRequired,
+    slowActionsById: object.isRequired,
     id: number.isRequired, 
     stringsTo: arrayOf(number).isRequired, 
     stringsFrom: arrayOf(number).isRequired, 
@@ -42,7 +42,7 @@ class Strings extends Component {
   render() {
     const { 
       id, stringsTo, stringsFrom, stringsById, charactersById, 
-      here, unansweredSlowActions, addString, createString, spendString,
+      here, slowActionsById, addString, createString, spendString,
       readOnly 
     } = this.props;
     
@@ -86,7 +86,7 @@ class Strings extends Component {
           key={`${id} ${them}`}
           name={fullName}
           myId={id} 
-          {...{unansweredSlowActions, toStringId, fromStringId, addString, createString, spendString, readOnly}}
+          {...{slowActionsById, toStringId, fromStringId, addString, createString, spendString, readOnly}}
           theirId={parseInt(them)} 
           myStrings={to} 
           theirStrings={from}
@@ -97,7 +97,7 @@ class Strings extends Component {
     
     let addLink = null;
     if (!readOnly) {
-      const linkTo = (here[2] === 'side') ? [...here, id, "newstring"] : [...here, "newstring"];
+      const linkTo = (here[2] === 'side') ? [...here, id.toString(), "newstring"] : [...here, "newstring"];
       addLink = <AddLink to={linkTo}>New string</AddLink>
     }
     return (

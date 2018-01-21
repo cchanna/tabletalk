@@ -13,17 +13,20 @@ const resolveLoad = actionCreator(
   "characters", "charactersById", "definitions", "stringsById", "strings", "movesById"
 );
 
+
+
 export const load = () => (dispatch, getState) => {
   const { path, auth } = getState();
   api.load(path[1], auth.jwt)
     .then(data => {
-
+      dispatch(resolveLoad(data));
     })
   .catch(err => {
     console.error(err);
   })
 
-  
+  /*
+
   const mockData = {
     chats: [1, 6, 3, 2, 7, 5, 4],
     chatsById: {
@@ -371,5 +374,7 @@ export const load = () => (dispatch, getState) => {
     characters: [12, 13, 1004, 1992]
   } 
   dispatch(resolveLoad(mockData));
+  */
+  
 }
 

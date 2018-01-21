@@ -6,7 +6,7 @@ import SideCharacterForm from '../SideCharacterForm';
 
 class NewSideCharacter extends Component {
   static propTypes = {
-    unansweredSlowActions: object.isRequired,
+    slowActionsById: object.isRequired,
     createSideCharacter: func.isRequired
   }
 
@@ -17,8 +17,8 @@ class NewSideCharacter extends Component {
   componentDidUpdate(prevProps) {
     const { actionId } = this.state;
     if (actionId) {
-      const { unansweredSlowActions } = this.props;
-      if (prevProps.unansweredSlowActions[actionId] && !unansweredSlowActions[actionId]) {
+      const { slowActionsById } = this.props;
+      if (prevProps.slowActionsById[actionId] && !slowActionsById[actionId]) {
         this.setState({actionId: null});
       }
     }

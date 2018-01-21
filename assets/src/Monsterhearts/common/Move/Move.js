@@ -4,7 +4,7 @@ import rx from 'resplendence'
   
 import AutoSizeTextArea from 'react-autosize-textarea';
 
-import parseMove from 'Monsterhearts/parseMove';
+import Markdown from 'Monsterhearts/common/Markdown';
 
 import CommonNotes from '../Notes';
 
@@ -22,10 +22,6 @@ const Container = rx('div')`
   padding: 0;
   margin-bottom: 40px;
   max-width: 600px;
-  p {
-    margin: 0;
-    line-height: 1.3em;
-  }
 `
 const Text = rx('div')`
   position: relative;
@@ -134,47 +130,6 @@ class Move extends Component {
       this.setState({notes});
     }
   }
-  
-  // render() {
-  //   const { name, text, disabled, readOnly, showNotes } = this.props;
-  //   const { notes, editing } = this.state;
-  //   let notesComponent = null;
-  //   if (showNotes && notes !== null) {
-  //     notesComponent = (
-  //       <Notes>
-  //         <NotesTextArea 
-  //           value={notes} 
-  //           onChange={this.handleChange} 
-  //           onBlur={this.handleBlur}
-  //           onFocus={this.handleFocus}
-  //           disabled={disabled || readOnly}
-  //           innerRef={this.handleRef}
-  //           rx={{hidden: !editing}}
-  //           placeholder="notes"/>
-  //         <NotesDisplay
-  //           focusIndex={0}
-  //           onClick={this.handleClick}
-  //           disabled={disabled || readOnly}
-  //           rx={{
-  //             hidden: editing,
-  //             placeholder: !notes
-  //           }}
-  //         >
-  //           {!notes ? "notes" : parseMove(this.props.notes)}
-  //         </NotesDisplay>
-  //       </Notes>
-  //     )
-  //   }
-  //   return (
-  //     <Container>
-  //       <Text className="text">
-  //         <Name>{name}</Name>
-  //         {parseMove(text)}
-  //       </Text>
-  //       {notesComponent}
-  //     </Container>
-  //   );
-  // }
 
   render() {
     const { name, text, disabled, readOnly, showNotes, notes } = this.props;
@@ -186,7 +141,7 @@ class Move extends Component {
       <Container>
         <Text className="text">
           <Name>{name}</Name>
-          {parseMove(text)}
+          <Markdown text={text}/>
         </Text>
         {notesComponent}
       </Container>

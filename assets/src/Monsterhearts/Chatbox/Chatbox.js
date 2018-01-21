@@ -160,7 +160,7 @@ class Chatbox extends Component {
     }
   }
 
-  componentWillUpdate(newProps, newState) {
+  componentWillUpdate() {
     if (this.conversation) {
       const { scrollTop, offsetHeight, scrollHeight } = this.conversation;
       this.atBottom = scrollTop + offsetHeight === scrollHeight;
@@ -172,7 +172,7 @@ class Chatbox extends Component {
       setTimeout(this.scrollToBottom, 700);
     }
     else if (this.atBottom) {
-      this.scrollToBottom();
+      setTimeout(this.scrollToBottom, 50);
     }
   }
 
@@ -205,7 +205,7 @@ class Chatbox extends Component {
       }
       prevPlayerId = chat.playerId;
       chatComponents.push(
-        <Chat key={id} mine={mine} newest={index === chats.length - 1} {...chat}/>
+        <Chat key={id} newest={index === chats.length - 1} {...{playersById, mine}} {...chat}/>
       );
     })
     return (

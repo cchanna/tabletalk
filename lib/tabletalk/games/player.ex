@@ -5,6 +5,8 @@ defmodule Tabletalk.Games.Player do
   alias Tabletalk.Accounts.User
   alias Tabletalk.Games.Game
 
+  alias Tabletalk.Monsterhearts.PlayerSettings
+
   require Logger
 
   schema "players" do
@@ -12,6 +14,8 @@ defmodule Tabletalk.Games.Player do
     field :name, :string
     belongs_to :user, User
     belongs_to :game, Game
+
+    has_one :monsterhearts_player_settings, PlayerSettings
 
     timestamps()
   end

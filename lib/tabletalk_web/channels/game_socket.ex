@@ -1,12 +1,15 @@
-defmodule TabletalkWeb.UserSocket do
+defmodule TabletalkWeb.GameSocket do
   use Phoenix.Socket
 
+  alias Tabletalk.Guardian
+
   ## Channels
-  # channel "room:*", TabletalkWeb.RoomChannel
+  channel "monsterhearts:*", TabletalkWeb.MonsterheartsChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
   # transport :longpoll, Phoenix.Transports.LongPoll
+
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -19,8 +22,14 @@ defmodule TabletalkWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket) do
-    {:ok, socket}
+  def connect(%{"jwt" => token}, socket) do
+    case Tabletalk.Guardian.resource_from_token(token) do
+      {:ok, resource, _claims} -> {:ok, assign(socket, :user_id, resource)}
+      _else -> {:error, %{reason: "unauthorized"}}
+    end
+  end
+  def connect(_, _) do
+    {:error, %{reason: "unauthorized"}}
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:

@@ -38,6 +38,11 @@ defmodule Tabletalk.Games do
     Repo.all query
   end
 
+  def get_game!(game_id) do
+    Game
+    |> Repo.get!(game_id)
+  end
+
   def get_game!(slug, user_id) do
     game = Game
     |> Repo.get_by!(slug: slug)
@@ -122,6 +127,12 @@ defmodule Tabletalk.Games do
     Player
     |> Repo.get_by(%{user_id: user_id, game_id: game_id})
   end
+
+  def get_player!(id) do
+    Player
+    |> Repo.get!(id)
+  end
+
 
   # def get_player!(id), do: Repo.get!(Player, id)
 

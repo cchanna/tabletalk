@@ -4,8 +4,8 @@ import NewSideCharacter from './NewSideCharacter';
 import { createSideCharacter } from './actionCreators';
 
 const mapStateToProps = ({monsterhearts}) => {
-  const { unansweredSlowActions } = monsterhearts;
-  return {unansweredSlowActions};
+  const { slowActionsById } = monsterhearts.socket;
+  return {slowActionsById};
 }
 
 const mapDispatchToProps = {createSideCharacter};

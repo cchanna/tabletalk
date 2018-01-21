@@ -12,8 +12,8 @@ const mapStateToProps = ({monsterhearts}, {here}) => {
   else {
     id = parseInt(here[2], 10);
   }
-  const { charactersById, strings, stringsById, unansweredSlowActions } = monsterhearts;
-  
+  const { charactersById, strings, stringsById, socket } = monsterhearts;
+  const { slowActionsById } = socket;
   const excludeFrom = strings
     .filter(s => stringsById[s].from === id)
     .map(s => stringsById[s].to);
@@ -36,7 +36,7 @@ const mapStateToProps = ({monsterhearts}, {here}) => {
       else if (cb.mainCharacter) return 1;
       else return ca.name.localeCompare(cb);
     })
-  return {id, characters, charactersById, unansweredSlowActions};
+  return {id, characters, charactersById, slowActionsById};
 };
 
 const mapDispatchToProps = {createString, goBack};

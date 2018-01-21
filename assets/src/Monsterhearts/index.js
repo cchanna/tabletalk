@@ -17,9 +17,11 @@ const mapStateToProps = ({path, here}) => {
 */
 
 const mapStateToProps = ({monsterhearts}, {path, here}) => {
+  const { loaded, socket } = monsterhearts;
+  const { connected } = socket;
   return {
     path, here,
-    loaded: monsterhearts.players !== null 
+    loaded, connected
   }
 }
 const mapDispatchToProps = {load};

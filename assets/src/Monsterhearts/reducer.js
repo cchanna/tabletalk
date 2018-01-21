@@ -3,10 +3,7 @@ import { combineReducers } from "redux";
 import {
   MONSTERHEARTS_CHATBOX_SET_COLLAPSED,
   MONSTERHEARTS_LOAD,
-  MONSTERHEARTS_ACTION_STORE,
-  MONSTERHEARTS_ACTION_ANSWER,
-  MONSTERHEARTS_ACTION_STORE_SLOW,
-  MONSTERHEARTS_ACTION_ANSWER_SLOW,
+  MONSTERHEARTS_SOCKET_DISCONNECT,
   
   MONSTERHEARTS_CHARACTER_MAIN_CREATE,
   MONSTERHEARTS_CHARACTER_SIDE_CREATE,
@@ -33,9 +30,22 @@ import {
 
 } from "common/actions";
 
+import socket from './SocketManager/reducer';
+
 import update from 'immutability-helper';
 
 export default combineReducers({
+  socket,
+  loaded: (state = false, action) => {
+    switch(action.type) {
+      case MONSTERHEARTS_LOAD:
+        return true;
+      case MONSTERHEARTS_SOCKET_DISCONNECT:
+        return false;
+      default:
+        return state;
+    }
+  },
   chatboxCollapsed: (state = true, action) => {
     switch(action.type) {
       case MONSTERHEARTS_CHATBOX_SET_COLLAPSED:
@@ -75,6 +85,7 @@ export default combineReducers({
         return update(state, {
           [action.id]: {
             $set: {
+              insertedAt: action.insertedAt,
               playerId: action.playerId,
               talk: action.talk,
               roll: action.roll
@@ -288,38 +299,6 @@ export default combineReducers({
       case MONSTERHEARTS_LOAD:
         return action.definitions;
       default: return state;
-    }
-  },
-  unansweredActions: (state = {}, action) => {
-    switch(action.type) {
-      case MONSTERHEARTS_ACTION_STORE: 
-        return {
-          ...state,
-          [action.action.uniqueId]: action.action
-        }
-      case MONSTERHEARTS_ACTION_ANSWER: {
-        const copy = Object.assign({}, state);
-        delete copy[action.uniqueId];
-        return copy;
-      }
-      default:
-        return state;
-    }
-  },
-  unansweredSlowActions: (state = {}, action) => {
-    switch(action.type) {
-      case MONSTERHEARTS_ACTION_STORE_SLOW: 
-        return {
-          ...state,
-          [action.action.uniqueId]: action.action
-        }
-      case MONSTERHEARTS_ACTION_ANSWER_SLOW: {
-        const copy = Object.assign({}, state);
-        delete copy[action.uniqueId];
-        return copy;
-      }
-      default:
-        return state;
     }
   }
 })

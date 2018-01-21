@@ -11,7 +11,7 @@ import Harm from './Harm';
 import Experience from './Experience';
 import Conditions from 'Monsterhearts/common/Conditions';
 
-import parseMove from 'Monsterhearts/parseMove';
+import Markdown from 'Monsterhearts/common/Markdown';
 
 rx`
 @import '~Monsterhearts/styles';
@@ -26,9 +26,6 @@ const Container = rx('div')`
   box-sizing: border-box;
   overflow-y: scroll;
   font-size: 20px;
-  p {
-    margin-top: 0;
-  }
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -102,13 +99,13 @@ class CharacterSheet extends Component {
           <Header>Strings</Header>
           <Strings {...{id, path, here}}/>
           <Header>Darkest Self</Header>
-          {parseMove(darkestSelf)}
+          <Markdown text={darkestSelf}/>
           <Header>Sex Move</Header>
-          {parseMove(sexMove)}
+          <Markdown text={sexMove}/>
           <Header>Moves</Header>
           {movesComponents}
           <Header>Playing the {playbook}</Header>
-          {parseMove(advice)}
+          <Markdown text={advice}/>
           <Notes id={id}/>
         </Wrapper>
       </Container>

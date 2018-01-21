@@ -119,14 +119,14 @@ class String extends Component {
 
   componentWillUpdate(nextProps) {
     const { giveActionId, takeActionId } = this.state;
-    const { unansweredSlowActions } = this.props;
+    const { slowActionsById } = this.props;
     if (giveActionId) {
-      if (unansweredSlowActions[giveActionId] && !nextProps.unansweredSlowActions[giveActionId]) {
+      if (slowActionsById[giveActionId] && !nextProps.slowActionsById[giveActionId]) {
         this.setState({giveActionId: null});
       }
     }
     if (takeActionId) {
-      if (unansweredSlowActions[takeActionId] && !nextProps.unansweredSlowActions[takeActionId]) {
+      if (slowActionsById[takeActionId] && !nextProps.slowActionsById[takeActionId]) {
         this.setState({takeActionId: null});
       }
     }

@@ -100,15 +100,15 @@ class MainCharacter extends Component {
   ]
 
   route = () => {
-    const { path, here, editDone, replace } = this.props;
-    if (path.length === 0 && !editDone) {
+    const { path, here, editDone, replace, readOnly } = this.props;
+    if (path.length === 0 && !editDone && !readOnly) {
       replace([...here, "edit"]);
     }
   }
 
   componentDidMount = this.route;
   componentDidUpdate(prevProps) {
-    if (!exactMatch(this.props.path, prevProps.path)) {
+    if (!exactMatch(this.props.path, prevProps.path) || !exactMatch(this.props.here, prevProps.here)) {
       this.route();
     }
   }
@@ -117,6 +117,7 @@ class MainCharacter extends Component {
     const { id, path, here, name, playbook, sizes, editDone, readOnly, goBack } = this.props;
     let content;
     let editLink;
+    if (playbook === null) return null;
     if (editDone && !readOnly) {
       if (path.length === 0) {
         editLink = (

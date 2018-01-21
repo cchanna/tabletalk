@@ -2,6 +2,7 @@ defmodule TabletalkWeb.GameController do
   use TabletalkWeb, :controller
 
   alias Tabletalk.Games
+  alias Tabletalk.Monsterhearts
 
   action_fallback TabletalkWeb.FallbackController
 
@@ -32,6 +33,28 @@ defmodule TabletalkWeb.GameController do
       conn
       |> put_status(200)
       |> render("show.json", game: game)
+    end
+  end
+
+  defp load_monsterhearts(conn, game_id, player_id) do
+    data = Monsterhearts.load(game_id, player_id)
+    conn
+    |> render(TabletalkWeb.MonsterheartsView, "load.json", data)
+  end
+
+  def load(conn, %{"slug" => slug}) do
+    user_id = Tabletalk.Guardian.Plug.current_resource(conn)
+    game = Games.get_game!(slug, user_id)
+    player = Games.get_player(game.id, user_id)
+    if player == nil do
+      conn 
+      |> put_status(401) 
+      |> json(%{message: "You are not a player in this game."})
+    else 
+      case game.kind do
+        0 -> conn |> load_monsterhearts(game.id, player.id)
+        _else -> conn |> put_status(500) |> json("oops!")
+      end
     end
   end
 
