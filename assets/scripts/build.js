@@ -82,6 +82,9 @@ measureFileSizesBeforeBuild(paths.appBuild)
       );
       console.log();
 
+      console.log('Copying index.html');
+      fs.renameSync(path.join(paths.appBuild, 'index.html'), paths.appBuildHtml);
+
       const appPackage = require(paths.appPackageJson);
       const publicUrl = paths.publicUrl;
       const publicPath = config.output.publicPath;
@@ -93,6 +96,8 @@ measureFileSizesBeforeBuild(paths.appBuild)
         buildFolder,
         useYarn
       );
+
+
 
     },
     err => {
@@ -135,9 +140,6 @@ function build(previousFileSizes) {
         );
         return reject(new Error(messages.warnings.join('\n\n')));
       }
-
-      console.log('Copying index.html');
-      fs.renameSync(path.join(paths.appBuild, 'index.html'), paths.appBuildHtml);
 
       return resolve({
         stats,
