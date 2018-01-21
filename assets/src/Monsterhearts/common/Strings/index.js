@@ -5,7 +5,7 @@ import { spendString, deleteString } from './actionCreators';
 import { addString, createString } from '../actionCreators';
 
 const mapStateToProps = ({monsterhearts}, {id, path, here}) => {
-  const { charactersById, stringsById, strings, definitions, socket, me, playersById } = monsterhearts;
+  const { charactersById, stringsById, strings, socket, me, playersById } = monsterhearts;
   const { slowActionsById } = socket;
   const stringsTo = strings
     .filter(string => stringsById[string].from === id);

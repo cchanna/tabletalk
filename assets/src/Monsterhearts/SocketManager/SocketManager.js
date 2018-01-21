@@ -69,6 +69,7 @@ class SocketManager extends Component {
   }
 
   componentDidMount() {
+    console.log("connecting?")
     const { slug, jwt, connect } = this.props;
     let baseUrl = (process.env.NODE_ENV === "production") ? "" : "ws://" + process.env.REACT_APP_API_URL;
     this.socket = new Socket(baseUrl + "/socket", {params: {jwt}});
@@ -76,12 +77,13 @@ class SocketManager extends Component {
     this.channel = this.socket.channel(`monsterhearts:${slug}`);
     this.channel.on("dispatch", this.dispatch);
     this.channel.join()
-      .receive("ok", connect)
-      .receive("error", ({reason}) => console.error("Failed join", reason))
-      .receive("timeout", () => console.log("Networking issue. Still waiting..."))
+    .receive("ok", connect)
+    .receive("error", ({reason}) => console.error("Failed join", reason))
+    .receive("timeout", () => console.log("Networking issue. Still waiting..."))
   }
-
+  
   componentWillUnmount() {
+    console.log("disconnecting?")
     const { disconnect } = this.props;
     this.channel.leave();
     this.socket.disconnect();

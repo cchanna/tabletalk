@@ -17,6 +17,9 @@ const Container = rx('div')`
   width: 100%;
   height: 100%;
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   ::-webkit-scrollbar-thumb {
     background: darken($foreground, 50%);
     &:hover {
@@ -48,6 +51,12 @@ class Monsterhearts extends Component {
   componentDidMount() {
     const { loaded, load } = this.props;
     if (!loaded) load();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.loaded && !this.props.loaded) {
+      this.props.load();
+    }
   }
   
   render() {

@@ -1,7 +1,6 @@
 import actionCreator from "utils/actionCreator";
 
 import {
-  MONSTERHEARTS_CHATBOX_SET_COLLAPSED,
   MONSTERHEARTS_LOAD
 } from "common/actions";
 

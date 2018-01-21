@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
+import { bool, func, arrayOf } from 'prop-types'
 import rx from 'resplendence'
   
 import RollButton from './RollButton';
@@ -72,7 +72,9 @@ const OpenButton = rx('button')`
 
 class DiceRoller extends Component {
   static propTypes = {
-    
+    overlay: bool.isRequired,
+    collapsed: bool.isRequired,
+    onChat: func.isRequired
   }
 
   state = {

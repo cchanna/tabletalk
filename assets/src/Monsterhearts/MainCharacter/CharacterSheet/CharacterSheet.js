@@ -67,6 +67,23 @@ const Header = rx('h2')`
 
 class CharacterSheet extends Component {
   static propTypes = {
+    id: number.isRequired,
+    hot: number,
+    cold: number,
+    volatile: number,
+    dark: number,
+    eyes: string,
+    look: string,
+    origin: string,
+    path: arrayOf(string).isRequired,
+    here: arrayOf(string).isRequired,
+    playbookDefinition: shape({
+      darkestSelf: string.isRequired,
+      sexMove: string.isRequired,
+      advice: string.isRequired
+    }),
+    moves: arrayOf(string).isRequired,
+    playbook: string.isRequired
   }
   
   render() {

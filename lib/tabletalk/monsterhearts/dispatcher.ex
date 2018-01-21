@@ -71,7 +71,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     old_name = character.name
     Monsterhearts.update_character!(character, %{"name" => name})
     if old_name == nil do
-      {:ok, "Named their #{character.playbook} \"#{name}\"."}
+      {:ok, "Named their #{character.main_character.playbook} \"#{name}\"."}
     else
       {:ok, "Changed #{old_name}'s name to #{name}."}
     end

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
+import { number, bool, func } from 'prop-types'
 import rx from 'resplendence'
   
 import makeCheckArray from 'common/components/makeCheckArray';

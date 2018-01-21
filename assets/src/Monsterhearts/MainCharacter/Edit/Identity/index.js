@@ -4,7 +4,7 @@ import Identity from './Identity';
 import { setName, setLook, setEyes, setOrigin } from './actionCreators';
 
 const mapStateToProps = ({monsterhearts}, {here}) => {
-  const id = parseInt(here[2]);
+  const id = parseInt(here[2], 10);
   const { charactersById, definitions } = monsterhearts;
   const { name, mainCharacter } = charactersById[id];
   const { look, eyes, origin, playbook } = mainCharacter;

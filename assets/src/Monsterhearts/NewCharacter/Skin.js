@@ -2,10 +2,21 @@ import React, { Component } from 'react'
 import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 import { playbookProperties } from '../propTypes';
 import rx from 'resplendence'
-import convertToParagraphs from './convertToParagraphs';
+
+import Markdown from 'Monsterhearts/common/Markdown';
 
 import Move from './Move';
 import mortalImg from './mortal.svg';
+import faeImg from './fae.svg';
+import ghostImg from './ghost.svg';
+import ghoulImg from './ghoul.svg';
+import hollowImg from './hollow.svg';
+import infernalImg from './infernal.svg';
+import queenImg from './queen.svg';
+import serpentineImg from './serpentine.svg';
+import vampireImg from './vampire.svg';
+import werewolfImg from './werewolf.svg';
+import witchImg from './witch.svg';
 import movesInstructions from '../movesInstructions';
 import BaseCheckbox from 'Monsterhearts/common/Checkbox';
 
@@ -126,6 +137,9 @@ const Divider = rx('div')`
 
 const Image = rx('img')`
   max-width: 400px;
+  path {
+    fill: $foreground;
+  }
 `
 const Section = rx('div')`
   -webkit-column-break-inside: avoid;
@@ -256,6 +270,36 @@ const StatArray = ({stats, sizes}) =>
   </StatsArrayContainer>
 
 
+const image = playbook => {
+  switch(playbook) {
+    case "Fae":
+      return faeImg;
+    case "Mortal":
+      return mortalImg;
+    case "Ghost":
+      return ghostImg;
+    case "Ghoul":
+      return ghoulImg;
+    case "Hollow":
+      return hollowImg;
+    case "Infernal":
+      return infernalImg;
+    case "Queen":
+      return queenImg;
+    case "Serpentine":
+      return serpentineImg;
+    case "Vampire":
+      return vampireImg;
+    case "Werewolf": 
+      return werewolfImg;
+    case "Witch":
+      return witchImg;
+    default:
+      return mortalImg;
+
+  }
+}
+
 class Skin extends Component {
   static propTypes = {
     name: string.isRequired,
@@ -267,19 +311,20 @@ class Skin extends Component {
   
   render() {
     const { 
-      name, movesByName, advancementsById, sexMove, 
+      name, movesByName, advancementsById, sexMove,
       names, looks, eyesList, origins, backstory, darkestSelf, advice, 
       flavour, advancements, stats, moves, startingMoves, startingMoveChoices,
       sizes
     } = this.props;
+    
     if (names === undefined) return null; 
     return (
       <Container rx={sizes}>
         <Wrapper rx={sizes}>
           <Section>
-            <Image src={mortalImg}/>
+            <Image src={image(name)}/>
             <Title>The {name}</Title>
-            <Flavour>{convertToParagraphs(flavour)}</Flavour>
+            <Flavour><Markdown text={flavour}/></Flavour>
           </Section>
           <Divider/>
           <Columns rx={sizes}>
@@ -309,11 +354,11 @@ class Skin extends Component {
           <Split rx={sizes}>
             <Section>
               <Header>Darkest Self</Header>
-              {convertToParagraphs(darkestSelf)}
+              <Markdown text={darkestSelf}/>
             </Section>
             <Section>
               <Header>Sex Move</Header>
-              {convertToParagraphs(sexMove)}
+              <Markdown text={sexMove}/>
             </Section>
           </Split>
           <Divider/>
@@ -327,7 +372,7 @@ class Skin extends Component {
           <Divider/>
           <Section rx={sizes}>
             <Header>Playing the {name}</Header>
-            {convertToParagraphs(advice)}
+            <Markdown text={advice}/>
           </Section>
         </Wrapper>
       </Container>

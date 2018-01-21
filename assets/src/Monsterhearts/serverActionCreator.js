@@ -2,19 +2,17 @@ import actionCreator from 'utils/actionCreator';
 
 import {
   MONSTERHEARTS_SOCKET_QUEUE,
-  MONSTERHEARTS_SOCKET_QUEUE_SLOW, 
-  MONSTERHEARTS_SOCKET_ANSWER,
-  MONSTERHEARTS_SOCKET_ANSWER_SLOW,
+  MONSTERHEARTS_SOCKET_QUEUE_SLOW
 } from 'common/actions';
-import {
-  MONSTERHEARTS_CHARACTER_MAIN_CREATE,
-  MONSTERHEARTS_CHARACTER_MOVE_CREATE,
-  MONSTERHEARTS_CHARACTER_SIDE_CREATE,
-  MONSTERHEARTS_STRING_ADD,
-  MONSTERHEARTS_STRING_CREATE,
-  MONSTERHEARTS_CHAT
-} from 'common/actions';
-import { setTimeout } from 'timers';
+// import {
+//   MONSTERHEARTS_CHARACTER_MAIN_CREATE,
+//   MONSTERHEARTS_CHARACTER_MOVE_CREATE,
+//   MONSTERHEARTS_CHARACTER_SIDE_CREATE,
+//   MONSTERHEARTS_STRING_ADD,
+//   MONSTERHEARTS_STRING_CREATE,
+//   MONSTERHEARTS_CHAT
+// } from 'common/actions';
+// import { setTimeout } from 'timers';
 
 const randomString = (length, chars) => {
   var result = '';
@@ -54,89 +52,89 @@ export const serverActionCreator = (...actionCreatorArgs) => (...actionArgs) => 
 }
 
 
-const randomId = () => Math.floor(Math.random() * 9999999)
-const mockSlowAction = (action) => {
-  switch(action.type) {
-    case MONSTERHEARTS_CHARACTER_MAIN_CREATE:
-      return {
-        ...action,
-        id: randomId(),
-        name: null,
-        notes: "",
-        conditions: [],
-        mainCharacter: {
-          playerId: 58,
-          playbook: action.playbook,
-          harm: 0,
-          experience: 0,
-          hot: null,
-          cold: null,
-          volatile: null,
-          dark: null,
-          eyes: null,
-          look: null,
-          origin: null,
-          advancements: [],
-          moves: [],
-          moveNotesByName: {}
-        }
-      }
-    case MONSTERHEARTS_STRING_CREATE:
-      return {
-        type: MONSTERHEARTS_STRING_CREATE,
-        uniqueId: action.uniqueId,
-        id: randomId(),
-        from: action.from,
-        to: action.to,
-        value: 1
-      }
-    case MONSTERHEARTS_CHARACTER_SIDE_CREATE:
-      return {
-        type: MONSTERHEARTS_CHARACTER_SIDE_CREATE,
-        id: randomId(),
-        uniqueId: action.uniqueId,
-        name: action.name,
-        notes: action.notes,
-        conditions: [],
-        mainCharacter: null
-      }
-    case MONSTERHEARTS_CHARACTER_MOVE_CREATE:
-      return {
-        type: MONSTERHEARTS_CHARACTER_MOVE_CREATE,
-        id: randomId(),
-        characterId: action.characterId,
-        name: action.name,
-        notes: ""
-      }
-    case MONSTERHEARTS_CHAT: {
-      if (action.text === "/roll 1") {
-        return {
-          type: MONSTERHEARTS_CHAT,
-          id: randomId(),
-          playerId: 58,
-          talk: null,
-          roll: {
-            dice: [3, 5],
-            bonus: 1
-          }
-        } 
-      }
-      else {
-        return {
-          type: MONSTERHEARTS_CHAT,
-          id: randomId(),
-          playerId: 58,
-          talk: {
-            message: action.text,
-            isLog: false
-          },
-          roll: null
-        }
-      }
-    }
+// const randomId = () => Math.floor(Math.random() * 9999999)
+// const mockSlowAction = (action) => {
+//   switch(action.type) {
+//     case MONSTERHEARTS_CHARACTER_MAIN_CREATE:
+//       return {
+//         ...action,
+//         id: randomId(),
+//         name: null,
+//         notes: "",
+//         conditions: [],
+//         mainCharacter: {
+//           playerId: 58,
+//           playbook: action.playbook,
+//           harm: 0,
+//           experience: 0,
+//           hot: null,
+//           cold: null,
+//           volatile: null,
+//           dark: null,
+//           eyes: null,
+//           look: null,
+//           origin: null,
+//           advancements: [],
+//           moves: [],
+//           moveNotesByName: {}
+//         }
+//       }
+//     case MONSTERHEARTS_STRING_CREATE:
+//       return {
+//         type: MONSTERHEARTS_STRING_CREATE,
+//         uniqueId: action.uniqueId,
+//         id: randomId(),
+//         from: action.from,
+//         to: action.to,
+//         value: 1
+//       }
+//     case MONSTERHEARTS_CHARACTER_SIDE_CREATE:
+//       return {
+//         type: MONSTERHEARTS_CHARACTER_SIDE_CREATE,
+//         id: randomId(),
+//         uniqueId: action.uniqueId,
+//         name: action.name,
+//         notes: action.notes,
+//         conditions: [],
+//         mainCharacter: null
+//       }
+//     case MONSTERHEARTS_CHARACTER_MOVE_CREATE:
+//       return {
+//         type: MONSTERHEARTS_CHARACTER_MOVE_CREATE,
+//         id: randomId(),
+//         characterId: action.characterId,
+//         name: action.name,
+//         notes: ""
+//       }
+//     case MONSTERHEARTS_CHAT: {
+//       if (action.text === "/roll 1") {
+//         return {
+//           type: MONSTERHEARTS_CHAT,
+//           id: randomId(),
+//           playerId: 58,
+//           talk: null,
+//           roll: {
+//             dice: [3, 5],
+//             bonus: 1
+//           }
+//         } 
+//       }
+//       else {
+//         return {
+//           type: MONSTERHEARTS_CHAT,
+//           id: randomId(),
+//           playerId: 58,
+//           talk: {
+//             message: action.text,
+//             isLog: false
+//           },
+//           roll: null
+//         }
+//       }
+//     }
       
-  }
-}
+//   }
+// }
 
 export const slowServerActionCreator = (...actionCreatorArgs) => (...actionArgs) => (dispatch, getState) => {
   const action = actionCreator(...actionCreatorArgs)(...actionArgs);

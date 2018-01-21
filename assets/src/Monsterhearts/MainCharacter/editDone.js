@@ -1,7 +1,7 @@
 export default (id, {monsterhearts}) => {
   const { charactersById, definitions, strings, stringsById } = monsterhearts;
   const character = charactersById[id];
-  const { name, notes, conditions, mainCharacter } = character;
+  const { name, mainCharacter } = character;
   const { look, eyes, origin, hot, cold, volatile, dark, moves } = mainCharacter;
   const { playbooksByName } = definitions;
   const { startingMoves, startingMoveChoices } = playbooksByName[mainCharacter.playbook];

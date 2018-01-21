@@ -2,7 +2,6 @@ defmodule Tabletalk.Monsterhearts.String do
   use Ecto.Schema
   import Ecto.Changeset
   
-  alias Tabletalk.Games.Game
   alias Tabletalk.Monsterhearts.Character
   alias Tabletalk.Monsterhearts.String
 

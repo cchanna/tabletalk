@@ -5,9 +5,9 @@ import Stats from './Stats';
 import { setStats } from './actionCreators';
 
 const mapStateToProps = ({monsterhearts}, {here}) => {
-  const id = parseInt(here[2]);
+  const id = parseInt(here[2], 10);
   const { charactersById, definitions } = monsterhearts;
-  const { name, mainCharacter } = charactersById[id];
+  const { mainCharacter } = charactersById[id];
   const { hot, cold, volatile, dark, playbook } = mainCharacter;
   const { playbooksByName } = definitions;
   const { stats } = playbooksByName[playbook];

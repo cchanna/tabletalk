@@ -1,11 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
 import { Provider } from 'react-redux';
-import reducer from './reducer';
 import { setGoogleJWT } from 'Auth/actionCreators';
-import { route } from 'Routing/actionCreators';
 import './fonts/fonts.scss';
 import configureStore from './configureStore';
 

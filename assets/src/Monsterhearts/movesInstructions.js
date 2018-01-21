@@ -3,7 +3,6 @@ const numberWords = ["zero", "one", "two", "three", "four"]
 export default (startingMoves, startingMoveChoices) => {
   let result = "";
   if (startingMoves.length === 0) {
-    let number = null;
     result = `Choose ${numberWords[startingMoveChoices]}`
   }
   else {

@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import Backstory from './Backstory';
 
 const mapStateToProps = ({monsterhearts}, {path, here}) => {
-  const id = parseInt(here[2]);
+  const id = parseInt(here[2], 10);
   const { definitions, charactersById } = monsterhearts;
   const { mainCharacter } = charactersById[id];
   const { playbook } = mainCharacter;

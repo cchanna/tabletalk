@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
+import { string, bool, func } from 'prop-types'
 import rx from 'resplendence'
   
-import AutoSizeTextArea from 'react-textarea-autosize';
 import CommonNotes from 'Monsterhearts/common/Notes';
 
 rx`

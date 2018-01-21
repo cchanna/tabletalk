@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
+import { string } from 'prop-types'
 import rx from 'resplendence'
-import convertToParagraphs from './convertToParagraphs';
+
+import Markdown from 'Monsterhearts/common/Markdown';
 
 const Container = rx('div')`
   -webkit-column-break-inside: avoid;
@@ -27,7 +28,7 @@ class Move extends Component {
     return (
       <Container>
         <Name>{name}</Name>
-        {convertToParagraphs(text)}
+        <Markdown text={text}/>
       </Container>
     );
   }
