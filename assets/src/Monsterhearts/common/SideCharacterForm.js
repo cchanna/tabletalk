@@ -36,7 +36,7 @@ const NotesTextArea = rx(AutosizeTextArea)`
   @include input-style;
   background: transparent;
   border-left: 2px solid $foreground;
-  min-height: 20px;
+  min-height: 25px;
   resize: none;
   height: auto;
   min-width: 250px;

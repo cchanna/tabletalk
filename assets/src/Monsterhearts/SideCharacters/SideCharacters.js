@@ -16,16 +16,18 @@ const Container = rx('div')`
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  overflow-y: scroll;
+  justify-content: flex-start;
   padding: 30px;
   font-size: 20px;
   font-family: $body;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-y: scroll;
 `
 const Wrapper = rx('div')`
   max-width: 600px;
-  display: flex;
   width: 100%;
-  flex-flow: column nowrap;
+  height: 100%;
 `
 
 class SideCharacters extends Component {

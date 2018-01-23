@@ -20,6 +20,7 @@ const TextArea = rx(AutoSizeTextArea)`
   @include input-style;
   width: 100%;
   box-sizing: border-box;
+  min-height: 25px;
   &.hidden {
     opacity: 0;
     position: absolute;

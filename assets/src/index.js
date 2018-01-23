@@ -8,7 +8,6 @@ import configureStore from './configureStore';
 
 
 
-
 const store = configureStore();
 
 window.onSignIn = (args) => {

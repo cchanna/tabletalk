@@ -53,9 +53,15 @@ const Status = rx('div')`
   text-align: center;
 `
 
-const GoogleLoginButton = ({className}) => <div className={`g-signin2 ${className}`} data-onsuccess="onSignIn"/>;
+const GoogleLoginButton = ({className}) => <div className={`g-signin2 ${className}`} data-onsuccess="onSignIn" data-uxmode="redirect"/>;
 
 class Auth extends React.Component {
+  componentDidMount() {
+    console.log(window.gapi);
+    // window.gapi.auth2.init({
+    //   ux_mode: "redirect"
+    // })
+  }
   render() {
     const {loggingIn, loginError, sizes } = this.props;
     let status = null;

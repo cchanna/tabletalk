@@ -25,6 +25,7 @@ const Container = rx('div')`
 const Content = rx('div')`
   flex: 1 0 0;
   width: 100%;
+  overflow: hidden;
 `
 
 const pages = [
