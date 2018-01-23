@@ -25,7 +25,8 @@ const Container = rx('div')`
   position: relative;
   font-size: 20px;
   font-family: $body;
-  padding: 30px;
+  padding: 30px 0 0 0;
+  overflow: hidden;
   box-sizing: border-box;
 `
 
@@ -48,7 +49,9 @@ const Playbook = rx(`span`)`
 const Content = rx('div')`
   width: 100%;
   flex: 1 1 0;
-  height: 0px;
+  padding: 0 30px 30px 30px;
+  box-sizing: border-box;
+  overflow-y: scroll;
 `
 const EditLink = rx(Link)`
   @include link;

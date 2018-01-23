@@ -41,21 +41,26 @@ const Strings = rx('button')`
   }
 `
 const Dot = rx('span')`
-  margin-left: 6px;
+  margin-right: 6px;
   transition: 150ms color;
 `
 const Plus = rx('button')`
   @include button-style;
-  font-family: "icomoon";
-  margin-left: 6px;
-  &:focus {
-    color: lighten($accent, 20%);
-  }
-  &:hover {
-    color: $accent;
-  }
-  &:active {
-    color: darken($accent, 30%);
+  margin-right: 6px;
+  position: relative;
+  font-size: 16px;
+  top: 3px;
+  &:not(:disabled) {
+    color: darken($foreground, 20%);
+    &:focus {
+      color: lighten($accent, 20%);
+    }
+    &:hover {
+      color: $accent;
+    }
+    &:active {
+      color: darken($accent, 30%);
+    }
   }
   &:disabled {
     color: transparent;
@@ -67,7 +72,8 @@ const Count = rx('span')`
   font-size: 27px;
   line-height: 1.3;
   margin-left: 20px;
-  min-width: 20px; 
+  margin-right: 8px;
+  min-width: 15px; 
 `
 
 class String extends Component {
@@ -149,10 +155,10 @@ class String extends Component {
     }
     const theirTotalStrings = giveActionId ? theirStrings + 1 : theirStrings;
     const takeButton = readOnly ? null : (
-      <Plus onClick={this.takeString} disabled={!!takeActionId}>+</Plus>
+      <Plus onClick={this.takeString} disabled={!!takeActionId}>take</Plus>
     );
     const giveButton = readOnly ? null : (
-      <Plus onClick={this.giveString} disabled={!!giveActionId}>{">"}</Plus>
+      <Plus onClick={this.giveString} disabled={!!giveActionId}>give</Plus>
     )
     return (
       <Container>

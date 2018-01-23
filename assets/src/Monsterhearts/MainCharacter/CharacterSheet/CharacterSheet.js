@@ -24,7 +24,6 @@ const Container = rx('div')`
   font-family: $body;
   height: 100%;
   box-sizing: border-box;
-  overflow-y: scroll;
   font-size: 20px;
   display: flex;
   flex-flow: column nowrap;
