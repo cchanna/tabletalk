@@ -25,9 +25,11 @@ const Container = rx('div')`
   position: relative;
   font-size: 20px;
   font-family: $body;
-  padding: 30px 0 0 0;
   overflow: hidden;
   box-sizing: border-box;
+  &.under-tablet {
+    padding-top: 0px;
+  }
 `
 
 const Name = rx('h1')`
@@ -37,11 +39,14 @@ const Name = rx('h1')`
   width: 100%;
   text-align: center;
   box-sizing: border-box;
-  padding: 0 80px;
+  padding: 0 80px 10px 80px;
   &.under-tablet {
     font-size: 20px;
-    padding: 0 50px;
+    padding: 0 50px 5px 50px;
   }
+  box-shadow: 0 1px 2px 1px $background;
+  position: relative;
+  z-index: 1;
 `
 const Playbook = rx(`span`)`
   color: $accent;
@@ -59,6 +64,7 @@ const EditLink = rx(Link)`
   position: absolute;
   right: 30px;
   top: 25px;
+  z-index: 2;
   &.under-tablet {
     font-size: 14px;
     top: 10px;
@@ -70,6 +76,7 @@ const BackButton = rx('button')`
   position: absolute;
   left: 30px;
   top: 25px;
+  z-index: 2;
   &.under-tablet {
     font-size: 14px;
     top: 10px;
@@ -131,10 +138,11 @@ class MainCharacter extends Component {
         editLink = <EditLink to={here} rx={sizes}>Done</EditLink>
       }
     }
-    content = route(path, here, MainCharacter.pages);
+    content = route(path, here, MainCharacter.pages, {sizes});
     let backButton = null;
-    if (path.length && path[0] !== 'edit') {
-      backButton = <BackButton onClick={goBack}>Back</BackButton>
+    console.log(sizes);
+    if (path.length && (path[0] !== 'edit' || (path.length > 1 && sizes.includes('under-max')) || path.length > 2)) {
+      backButton = <BackButton rx={sizes} onClick={goBack}>Back</BackButton>
     }
     let header;
     if (playbook) {
@@ -151,7 +159,7 @@ class MainCharacter extends Component {
     
     
     return (
-      <Container>
+      <Container rx={sizes}>
         {header}
         {backButton}
         {editLink}

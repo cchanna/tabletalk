@@ -109,29 +109,6 @@ const Details = rx('div')`
   box-sizing: border-box;
   overflow-y: scroll;
 `
-const BackButton = rx('button')`
-  @include button;
-  position: absolute;
-  top: -40px;
-  left: 30px;
-  font-family: $interact;
-  color: $foreground;
-  transition: 150ms color;
-  z-index: 100;
-  &:hover, &:focus {
-    color: $accent;
-  }
-  &.under-tablet {
-    font-size: 14px;
-    top: -25px;
-    left: 15px;
-  }
-  font-size: 20px;
-  &:not(.under-tablet).nested {
-    // left: 330px;
-    // top: 30px;
-  }
-`
 
 class Edit extends Component {
   static propTypes = {
@@ -193,7 +170,7 @@ class Edit extends Component {
 
     const { path, here } = this.props;
     let root = null;
-    const showBoth = !sizes.includes("under-laptop");
+    const showBoth = !sizes.includes("under-max");
     if (showBoth || path.length === 0) {
       const tabs = pages.map(({path, name, done}) => (
         <Tab to={[...here, path]} key={path} rx={{done}}>
@@ -217,14 +194,6 @@ class Edit extends Component {
           {route(path, here, pages, {showBackButton: showBoth})}
         </Details>
       )
-      const nested = (path.length >= 2);
-      if (!showBoth || nested) {
-        backButton = (
-          <BackButton rx={[...sizes, {nested}]} onClick={this.handleClickBack}>
-            Back
-          </BackButton>
-        )
-      }
     }
     return (
       <Container>

@@ -6,7 +6,7 @@ import withSize from 'common/withSize';
 import { goBack, replace } from 'Routing/actionCreators';
 import editDone from '../editDone';
 
-const mapStateToProps = (state, {here}) => {
+const mapStateToProps = (state, {here, sizes}) => {
   const id = parseInt(here[2]);
   const { monsterhearts } = state;
   const { charactersById, playersById, me } = monsterhearts;
@@ -22,6 +22,5 @@ const mapStateToProps = (state, {here}) => {
 const mapDispatchToProps = {goBack, replace}
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  withSize({425: "mobile", 768: "tablet", 1024: "laptop"})
+  connect(mapStateToProps, mapDispatchToProps)
 )(Edit);

@@ -36,5 +36,5 @@ const mapDispatchToProps = {replace, goBack};
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  withSize({425: "mobile", 768: "tablet", 425: "mobile"})
+  withSize({425: "mobile", 425: "mobile", 768: "tablet", 1024: "laptop"})
 )(MainCharacter);
