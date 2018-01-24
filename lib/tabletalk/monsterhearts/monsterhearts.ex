@@ -32,13 +32,17 @@ defmodule Tabletalk.Monsterhearts do
   end
 
   defp list_chats!(game_id) do
-    query = from c in Chat,
+    sq = from c in Chat,
       join: p in Games.Player, on: p.id == c.player_id,
       where: p.game_id == ^game_id,
       order_by: [desc: c.inserted_at],
-      preload: [:talk],
-      preload: [:roll],
       limit: 100
+
+    query = from c in Chat,
+      join: s in subquery(sq), on: s.id == c.id,
+      order_by: [asc: c.inserted_at],
+      preload: [:talk],
+      preload: [:roll]
     Repo.all(query)
   end
 

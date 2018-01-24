@@ -62,8 +62,8 @@ class Monsterhearts extends Component {
   render() {
     const { sizes, loaded, connected, path, here } = this.props;
     let content = null;
-    // const overlay = sizes.includes("mobile");
-    const overlay = true;
+    const overlay = sizes.includes("mobile");
+    // const overlay = true;
     if (loaded) {
       let content;
       if (connected) {
