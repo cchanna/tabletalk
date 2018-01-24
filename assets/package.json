@@ -56,7 +56,7 @@
     "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {
-    "resplendence": "^1.0.8-beta"
+    "resplendence": "^2.0.3"
   },
   "scripts": {
     "start": "node scripts/start.js",
