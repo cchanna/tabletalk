@@ -8,7 +8,7 @@ const mapStateToProps = ({monsterhearts}, {id}) => {
   const { conditions, mainCharacter } = charactersById[id];
   let readOnly = !playersById[me].isGM;
   if (readOnly && mainCharacter && me === mainCharacter.playerId) {
-    readOnly = true;
+    readOnly = false;
   }
   return {id, conditions, readOnly};
 };
