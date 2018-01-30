@@ -1,0 +1,11 @@
+@ scrolling is broken on the new character screen
+@ replace "+" and "->" with "take" and "give"
+@ scrolling is broken in side characters
+@ chats reload in reverse order lmao
+O non-GM players can't add conditions to their own characters
+O seating chart
+O advancements
+O basic moves
+O bargains and hexes
+O load historic chats
+O pull sockets code up to top (keep channels in game)
