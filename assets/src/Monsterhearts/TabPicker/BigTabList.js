@@ -77,7 +77,7 @@ class BigTabList extends Component {
   render() {
     const { tabs, here } = this.props;
     const tabComponents = tabs.map(({id, name, mine}) => 
-      <BigTab to={[...here, id.toString(), mine]} key={id}>{name}</BigTab>
+      <BigTab to={[...here, id.toString()]} key={id}>{name}</BigTab>
     )
     return (
       <Container>
