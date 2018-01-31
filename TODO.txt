@@ -3,9 +3,12 @@
 @ scrolling is broken in side characters
 @ chats reload in reverse order lmao
 @ non-GM players can't add conditions to their own characters
+@ advancements
+O advancements with follow-up
 O seating chart
-O advancements
 O basic moves
+O play sound on chat
 O bargains and hexes
 O load historic chats
+O display notification that new chats have loaded while scrolled up
 O pull sockets code up to top (keep channels in game)
