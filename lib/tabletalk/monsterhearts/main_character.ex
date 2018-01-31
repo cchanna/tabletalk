@@ -7,7 +7,7 @@ defmodule Tabletalk.Monsterhearts.MainCharacter do
   alias Tabletalk.Games.Player
   alias Tabletalk.Monsterhearts.Character
   alias Tabletalk.Monsterhearts.Move
-  # alias Tabletalk.Monsterhearts.Advancement
+  alias Tabletalk.Monsterhearts.Advancement
 
   schema "monsterhearts_main_characters" do
     belongs_to :character, Character
@@ -27,7 +27,7 @@ defmodule Tabletalk.Monsterhearts.MainCharacter do
     field :experience, :integer, default: 0
 
     has_many :moves, Move, on_delete: :delete_all
-    # has_many :advancements, Advancement, on_delete: :delete_all
+    has_many :advancements, Advancement, on_delete: :delete_all
 
     timestamps()
   end

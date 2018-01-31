@@ -251,6 +251,26 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     {:ok, "Updated the notes for #{get_name(character)}."}
   end
 
+  def dispatch("character_advancement_create", args = %{"id" => id, "advancementId" => name}, _player_id, _game_id) do
+    character = Monsterhearts.get_character!(id)
+    main_character = character.main_character
+    Monsterhearts.create_advancement!(%{"main_character_id" => main_character.id, "name" => name})
+    main_character
+    |> Monsterhearts.update_main_character!(%{"experience" => 0})
+    text = Definitions.advancements_by_id[name].text |> String.replace("{playbook}", main_character.playbook)
+    {:ok, "#{get_name(character)} advanced and chose \"#{text}\"."}
+  end
+
+  def dispatch("character_advancement_delete", args = %{"id" => id, "advancementId" => name}, _player_id, _game_id) do
+    character = Monsterhearts.get_character!(id)
+    main_character = character.main_character 
+    main_character.advancements 
+    |> Enum.find(fn c -> c.name === name end)
+    |> Monsterhearts.delete_advancement!()
+    text = Definitions.advancements_by_id[name].text |> String.replace("{playbook}", main_character.playbook)
+    {:ok, "#{get_name(character)} unselected their advancement \"#{text}\"."}
+  end
+
   def dispatch("chat", args = %{"text" => text}, player_id, game_id) do
     {:ok, nil, make_chat(text, player_id) |> to_json()}
   end

@@ -38,7 +38,8 @@ defmodule TabletalkWeb.MonsterheartsView do
       moveNotesByName: main_character.moves |> Enum.filter(fn x -> x.notes end) |> Enum.map(fn x -> {x.name, x.notes} end) |> Map.new,
       look: main_character.look,
       eyes: main_character.eyes,
-      origin: main_character.origin
+      origin: main_character.origin,
+      advancements: main_character.advancements |> Enum.map(fn x -> x.name end)
     }
   end
 

@@ -49,7 +49,6 @@ const parseMove = (text) => {
   const result = !text ? "" : text
   .replace(/ *\n */g, "\n")
   .replace(/([^\n])\n([^\n-])/g, "$1 $2");
-  console.log(result);
   return <Markdown text={result}/>;
 }
 export default parseMove;

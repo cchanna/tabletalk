@@ -31,7 +31,6 @@ class SocketManager extends Component {
   }
 
   dispatch = action => {
-    console.log("Message!", action);
     const { actionsById, slowActionsById, answer, answerSlow, chat, dispatch } = this.props;
     const { uniqueId, log } = action;
     if (log) {
@@ -69,7 +68,6 @@ class SocketManager extends Component {
   }
 
   componentDidMount() {
-    console.log("connecting?")
     const { slug, jwt, connect } = this.props;
     let baseUrl = (process.env.NODE_ENV === "production") ? "" : "ws://" + process.env.REACT_APP_API_URL;
     this.socket = new Socket(baseUrl + "/socket", {params: {jwt}});
@@ -83,7 +81,6 @@ class SocketManager extends Component {
   }
   
   componentWillUnmount() {
-    console.log("disconnecting?")
     const { disconnect } = this.props;
     this.channel.leave();
     this.socket.disconnect();

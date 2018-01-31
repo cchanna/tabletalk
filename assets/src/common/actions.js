@@ -39,6 +39,8 @@ export const MONSTERHEARTS_CHARACTER_MOVE_DELETE = "monsterhearts_character_move
 export const MONSTERHEARTS_CHARACTER_CONDITION_CREATE = "monsterhearts_character_condition_create";
 export const MONSTERHEARTS_CHARACTER_CONDITION_DELETE = "monsterhearts_character_condition_delete";
 export const MONSTERHEARTS_CHARACTER_MOVE_EDIT_NOTES = "monsterhearts_character_move_edit_notes";
+export const MONSTERHEARTS_CHARACTER_ADVANCEMENT_CREATE = "monsterhearts_character_advancement_create";
+export const MONSTERHEARTS_CHARACTER_ADVANCEMENT_DELETE = "monsterhearts_character_advancement_delete";
 
 export const MONSTERHEARTS_CHAT = "monsterhearts_chat";
 

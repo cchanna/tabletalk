@@ -140,7 +140,6 @@ class MainCharacter extends Component {
     }
     content = route(path, here, MainCharacter.pages, {sizes});
     let backButton = null;
-    console.log(sizes);
     if (path.length && (path[0] !== 'edit' || (path.length > 1 && sizes.includes('under-max')) || path.length > 2)) {
       backButton = <BackButton rx={sizes} onClick={goBack}>Back</BackButton>
     }

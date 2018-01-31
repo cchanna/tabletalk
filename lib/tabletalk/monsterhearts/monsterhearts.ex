@@ -11,6 +11,7 @@ defmodule Tabletalk.Monsterhearts do
   alias Tabletalk.Monsterhearts.Move
   alias Tabletalk.Monsterhearts.Condition
   alias Tabletalk.Monsterhearts.String
+  alias Tabletalk.Monsterhearts.Advancement
   alias Tabletalk.Games
 
   require Logger
@@ -50,7 +51,7 @@ defmodule Tabletalk.Monsterhearts do
     query = from c in Character,
       where: c.game_id == ^game_id,
       preload: [:conditions],
-      preload: [main_character: :moves]
+      preload: [main_character: :moves, main_character: :advancements]
     Repo.all(query)
   end
 
@@ -85,8 +86,9 @@ defmodule Tabletalk.Monsterhearts do
   def get_character!(id) do
     Character
     |> Repo.get!(id)
-    |> Repo.preload(main_character: :moves)
     |> Repo.preload(:conditions)
+    |> Repo.preload(main_character: :moves)
+    |> Repo.preload(main_character: :advancements)
   end
 
   def update_main_character!(%MainCharacter{} = main_character, attrs) do
@@ -101,6 +103,7 @@ defmodule Tabletalk.Monsterhearts do
     |> Repo.insert!()
     |> Repo.preload(:conditions)
     |> Repo.preload(main_character: :moves)
+    |> Repo.preload(main_character: :advancements)
   end
 
   def delete_move!(%Move{} = move) do
@@ -118,6 +121,17 @@ defmodule Tabletalk.Monsterhearts do
     move
     |> Move.changeset(attrs)
     |> Repo.update!()
+  end
+
+  def create_advancement!(attrs \\ %{}) do
+    %Advancement{}
+    |> Advancement.changeset(attrs)
+    |> Repo.insert!()
+  end
+
+  def delete_advancement!(%Advancement{} = advancement) do
+    advancement
+    |> Repo.delete!()
   end
 
   def update_character!(%Character{} = character, attrs) do

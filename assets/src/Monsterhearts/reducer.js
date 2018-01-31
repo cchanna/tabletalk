@@ -23,6 +23,8 @@ import {
   MONSTERHEARTS_CHARACTER_MOVE_EDIT_NOTES,
   MONSTERHEARTS_CHARACTER_CONDITION_CREATE,
   MONSTERHEARTS_CHARACTER_CONDITION_DELETE,
+  MONSTERHEARTS_CHARACTER_ADVANCEMENT_CREATE,
+  MONSTERHEARTS_CHARACTER_ADVANCEMENT_DELETE,
   MONSTERHEARTS_STRING_ADD,
   MONSTERHEARTS_STRING_SPEND,
   MONSTERHEARTS_STRING_CREATE,
@@ -238,6 +240,31 @@ export default combineReducers({
         return update(state, {
           [action.id]: {
             conditions: (conditions) => conditions.filter(condition => condition !== action.condition)
+          }
+        })
+      case MONSTERHEARTS_CHARACTER_ADVANCEMENT_CREATE:
+        return update(state, {
+          [action.id]: {
+            mainCharacter: {
+              advancements: {$push: [action.advancementId]},
+              experience: {$set: 0}
+            }
+          }
+        })
+      case MONSTERHEARTS_CHARACTER_ADVANCEMENT_DELETE:
+        return update(state, {
+          [action.id]: {
+            mainCharacter: {
+              advancements: advancements => {
+                const index = advancements.findIndex(id => id === action.advancementId);
+                if (index >= 0) {
+                  return advancements
+                    .slice(0, index)
+                    .concat(advancements.slice(index + 1))
+                }
+                return state;
+              }
+            }
           }
         })
       case MONSTERHEARTS_CHARACTER_MOVE_EDIT_NOTES:

@@ -10,6 +10,7 @@ import Notes from './Notes';
 import Harm from './Harm';
 import Experience from './Experience';
 import Conditions from 'Monsterhearts/common/Conditions';
+import Advancements from './Advancements';
 
 import Markdown from 'Monsterhearts/common/Markdown';
 
@@ -86,12 +87,11 @@ class CharacterSheet extends Component {
   }
   
   render() {
-    const { id, hot, cold, volatile, dark, eyes, look, origin, path, here, playbookDefinition, moves, playbook } = this.props;
-    const { darkestSelf, sexMove, advice } = playbookDefinition;
-    const movesComponents = moves
-      .map(move => (
-        <Move key={move} id={id} name={move} showNotes/>
-      ))
+    const { 
+      id, hot, cold, volatile, dark, eyes, look, origin, path, here, 
+      darkestSelf, sexMove, advice, moves, playbook 
+    } = this.props;
+      
     return (
       <Container>
         <Wrapper>
@@ -103,26 +103,29 @@ class CharacterSheet extends Component {
             <Stat name="Dark" value={dark}/>
           </Stats>
           <Harm id={id}/>
-          <Experience id={id}/>
           <Header>Conditions</Header>
           <Conditions id={id}/>
+          <Header>Strings</Header>
+          <Strings {...{id, path, here}}/>
+          <Experience id={id}/>
+          <Advancements id={id}/>
+          <Header>Moves</Header>
+          {moves.map(move => 
+            <Move key={move} id={id} name={move} showNotes/>
+          )}
+          <Notes id={id}/>
           <Header>Identity</Header>
           <Looks>
             <Look name="Look" value={look}/>
             <Look name="Eyes" value={eyes}/>
             <Look name="Origin" value={origin}/>
           </Looks>
-          <Header>Strings</Header>
-          <Strings {...{id, path, here}}/>
           <Header>Darkest Self</Header>
           <Markdown text={darkestSelf}/>
           <Header>Sex Move</Header>
           <Markdown text={sexMove}/>
-          <Header>Moves</Header>
-          {movesComponents}
           <Header>Playing the {playbook}</Header>
           <Markdown text={advice}/>
-          <Notes id={id}/>
         </Wrapper>
       </Container>
     );
