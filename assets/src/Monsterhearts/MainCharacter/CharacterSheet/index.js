@@ -7,13 +7,12 @@ const mapStateToProps = ({monsterhearts}, {here, path}) => {
   const { playbooksByName } = definitions;
   const { mainCharacter } = charactersById[id];
   const { 
-    hot, cold, volatile, dark, eyes, look, origin, moves, playbook 
+    eyes, look, origin, moves, playbook 
   } = mainCharacter;
   const playbookDefinition = playbooksByName[playbook];
   const { darkestSelf, sexMove, advice } = playbookDefinition;
   return {
     id, path, here,
-    hot, cold, volatile, dark,
     eyes, look, origin,
     moves, playbook,
     darkestSelf, sexMove, advice

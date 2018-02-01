@@ -7,7 +7,7 @@ const mapStateToProps = ({monsterhearts}, {id}) => {
   const { charactersById, playersById, definitions, me } = monsterhearts;
   const { mainCharacter } = charactersById[id];
   const { 
-    advancements: selectedAdvancements, experience, playerId, playbook 
+    advancements: selectedAdvancements, experience, playerId, playbook, addingStat
   } = mainCharacter;
   const { advancementsById, playbooksByName } = definitions;
   const { advancements: playbookAdvancements } = playbooksByName[playbook];
@@ -15,7 +15,7 @@ const mapStateToProps = ({monsterhearts}, {id}) => {
   const advancements = playbookAdvancements.map(id => ({
     id,
     text: advancementsById[id].text.replace("{playbook}", playbook),
-    selected: false
+    selected: !!addingStat && (id === "+stat")
   }));
   selectedAdvancements.forEach(id => {
     const advancement = advancements.find(a => a.id === id && !a.selected) 
@@ -26,7 +26,7 @@ const mapStateToProps = ({monsterhearts}, {id}) => {
   return {
     id, readOnly,
     advancements,
-    canLevel: experience >= 5,
+    canLevel: experience >= 5 && !addingStat,
   };
 };
 

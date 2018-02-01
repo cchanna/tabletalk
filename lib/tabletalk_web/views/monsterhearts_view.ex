@@ -44,7 +44,6 @@ defmodule TabletalkWeb.MonsterheartsView do
   end
 
   def to_json(character = %Character{}) do
-    Logger.debug inspect character.conditions
     %{
       id: character.id,
       name: character.name,

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 import rx from 'resplendence'
   
-import bonusString from 'common/bonusString';
+import Stats from './Stats';
 
 import Strings from 'Monsterhearts/common/Strings';
 import Move from 'Monsterhearts/common/Move';
@@ -33,18 +33,6 @@ const Container = rx('div')`
 const Wrapper = rx('div')`
   max-width: 600px;
 `
-const Stats = rx('div')`
-  display: flex;
-  flex-flow: row wrap;
-`
-const StatContainer = rx('div')`
-  font-family: $header;
-  &:not(:last-child) {
-    margin-right: 20px;
-  }
-`
-const Stat = ({value, name}) => 
-  <StatContainer>{name}{bonusString(value)}</StatContainer>
 
 const LookContainer = rx('div')`
   font-family: $body;
@@ -68,10 +56,6 @@ const Header = rx('h2')`
 class CharacterSheet extends Component {
   static propTypes = {
     id: number.isRequired,
-    hot: number,
-    cold: number,
-    volatile: number,
-    dark: number,
     eyes: string,
     look: string,
     origin: string,
@@ -96,12 +80,7 @@ class CharacterSheet extends Component {
       <Container>
         <Wrapper>
           <Header>Stats</Header>
-          <Stats>
-            <Stat name="Hot" value={hot}/>
-            <Stat name="Cold" value={cold}/>
-            <Stat name="Volatile" value={volatile}/>
-            <Stat name="Dark" value={dark}/>
-          </Stats>
+          <Stats id={id}/>
           <Harm id={id}/>
           <Header>Conditions</Header>
           <Conditions id={id}/>

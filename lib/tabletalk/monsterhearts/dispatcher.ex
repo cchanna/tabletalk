@@ -23,7 +23,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
   end
 
   defp roll(bonus, player_id) do
-    chat = Monsterhearts.create_chat!(%{
+    Monsterhearts.create_chat!(%{
       "player_id" => player_id,
       "roll" => %{
         "die1" => :rand.uniform(6),
@@ -66,7 +66,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     {:ok, "Created a new #{playbook}.", to_json(character) }
   end
 
-  def dispatch("character_name_set", %{"id" => id, "value" => name}, player_id, game_id) do
+  def dispatch("character_name_set", %{"id" => id, "value" => name}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     old_name = character.name
     Monsterhearts.update_character!(character, %{"name" => name})
@@ -77,24 +77,25 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     end
   end
 
-  def dispatch("character_look_set", %{"id" => id, "value" => value}, player_id, game_id) do
+  def dispatch("character_look_set", %{"id" => id, "value" => value}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     Monsterhearts.update_main_character!(character.main_character, %{"look" => value})
     {:ok, "Changed #{get_name(character)}'s look to \"#{value}\"."}
   end
 
-  def dispatch("character_eyes_set", %{"id" => id, "value" => value}, player_id, game_id) do
+  def dispatch("character_eyes_set", %{"id" => id, "value" => value}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     Monsterhearts.update_main_character!(character.main_character, %{"eyes" => value})
     {:ok, "Changed #{get_name(character)}'s eyes to \"#{value}\"."}
   end
 
-  def dispatch("character_origin_set", %{"id" => id, "value" => value}, player_id, game_id) do
+  def dispatch("character_origin_set", %{"id" => id, "value" => value}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     Monsterhearts.update_main_character!(character.main_character, %{"origin" => value})
     {:ok, "Changed #{get_name(character)}'s origin to \"#{value}\"."}
   end
-  def dispatch("character_stats_set", args = %{"id" => id}, player_id, game_id) do
+
+  def dispatch("character_stats_set", args = %{"id" => id}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     main = Monsterhearts.update_main_character!(character.main_character, Map.take(args, ["hot", "cold", "volatile", "dark"]))
     name = get_name(character)
@@ -110,27 +111,27 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     end
   end
 
-  def dispatch("character_move_create", %{"id" => id, "name" => name}, player_id, game_id) do
+  def dispatch("character_move_create", %{"id" => id, "name" => name}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     Monsterhearts.create_move!(%{"main_character_id" => character.main_character.id, "name" => name})
     {:ok, "Gave #{get_name(character)} the move \"#{name}\"."}
   end
 
-  def dispatch("character_move_delete", %{"id" => id, "name" => name}, player_id, game_id) do
+  def dispatch("character_move_delete", %{"id" => id, "name" => name}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     character.main_character.moves |> Enum.find(fn m -> m.name === name end)
     |> Monsterhearts.delete_move!()
     {:ok, "Removed #{get_name(character)}'s move \"#{name}\"."}
   end  
 
-  def dispatch("character_move_edit_notes", %{"id" => id, "name" => name, "notes" => notes}, player_id, game_id) do
+  def dispatch("character_move_edit_notes", %{"id" => id, "name" => name, "notes" => notes}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     character.main_character.moves |> Enum.find(fn m -> m.name === name end)
     |> Monsterhearts.update_move!(%{"notes" => notes})
     {:ok, "Updated the notes on #{get_name(character)}'s move \"#{name}\"."}
   end
   
-  def dispatch("string_create", args = %{"from" => from, "to" => to}, player_id, game_id) do
+  def dispatch("string_create", %{"from" => from, "to" => to}, _player_id, _game_id) do
     c_from = Monsterhearts.get_character!(from)
     c_to = Monsterhearts.get_character!(to)
     string = Monsterhearts.create_string!(%{
@@ -141,7 +142,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     {:ok, "#{get_name(c_from)} took a string on #{get_name(c_to)}.", to_json(string)}
   end
 
-  def dispatch("string_add", args = %{"id" => id}, player_id, game_id) do
+  def dispatch("string_add", %{"id" => id}, _player_id, _game_id) do
     string = Monsterhearts.get_string!(id)
     Monsterhearts.update_string!(string, %{
       count: string.count + 1
@@ -151,7 +152,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     {:ok, "#{get_name(c_from)} took a string on #{get_name(c_to)}."}
   end
 
-  def dispatch("string_spend", args = %{"id" => id}, player_id, game_id) do
+  def dispatch("string_spend", %{"id" => id}, _player_id, _game_id) do
     string = Monsterhearts.get_string!(id)
     if (string.count > 0) do
       Monsterhearts.update_string!(string, %{
@@ -165,7 +166,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     end
   end
 
-  def dispatch("character_side_create", args = %{}, player_id, game_id) do
+  def dispatch("character_side_create", args = %{}, _player_id, game_id) do
     character = args
     |> Map.take(["name", "notes"])
     |> Map.merge(%{"game_id" => game_id})
@@ -173,7 +174,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     {:ok, "Created a new side character, \"#{character.name}\".", to_json(character)}
   end
 
-  def dispatch("character_side_edit", args = %{"id" => id}, player_id, game_id) do
+  def dispatch("character_side_edit", args = %{"id" => id}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     Monsterhearts.update_character!(character, Map.take(args, ["name", "notes"]))
     if args["name"] !== nil and args["name"] !== character.name do
@@ -183,13 +184,13 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     end
   end
 
-  def dispatch("character_condition_create", args = %{"id" => id, "condition" => name}, player_id, game_id) do
+  def dispatch("character_condition_create", %{"id" => id, "condition" => name}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     Monsterhearts.create_condition!(%{"character_id" => id, "name" => name})
     {:ok, "#{get_name(character)} is \"#{name}\"."}
   end
 
-  def dispatch("character_condition_delete", args = %{"id" => id, "condition" => name}, player_id, game_id) do
+  def dispatch("character_condition_delete", %{"id" => id, "condition" => name}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     character.conditions 
     |> Enum.find(fn c -> c.name === name end)
@@ -197,7 +198,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     {:ok, "#{get_name(character)} is no longer \"#{name}\"."}
   end
 
-  def dispatch("character_harm_increment", args = %{"id" => id}, player_id, game_id) do
+  def dispatch("character_harm_increment", %{"id" => id}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     main_character = character.main_character
     if (main_character.harm < 4) do
@@ -209,7 +210,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     end
   end
 
-  def dispatch("character_harm_decrement", args = %{"id" => id}, player_id, game_id) do
+  def dispatch("character_harm_decrement", %{"id" => id}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     main_character = character.main_character
     if (main_character.harm > 0) do
@@ -221,7 +222,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     end
   end
 
-  def dispatch("character_xp_increment", args = %{"id" => id}, player_id, game_id) do
+  def dispatch("character_xp_increment", %{"id" => id}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     main_character = character.main_character
     if (main_character.experience < 5) do
@@ -233,7 +234,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     end
   end
 
-  def dispatch("character_xp_decrement", args = %{"id" => id}, player_id, game_id) do
+  def dispatch("character_xp_decrement", %{"id" => id}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     main_character = character.main_character
     if (main_character.experience > 0) do
@@ -245,13 +246,41 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     end
   end
 
-  def dispatch("character_notes_set", args = %{"id" => id, "notes" => notes}, player_id, game_id) do
+  def dispatch("character_notes_set", %{"id" => id, "notes" => notes}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     Monsterhearts.update_character!(character, %{"notes" => notes})
     {:ok, "Updated the notes for #{get_name(character)}."}
   end
 
-  def dispatch("character_advancement_create", args = %{"id" => id, "advancementId" => name}, _player_id, _game_id) do
+  def dispatch("character_advancement_create", %{"id" => id, "advancementId" => "+stat", "stat" => stat}, _player_id, _game_id) do
+    character = Monsterhearts.get_character!(id)
+    main_character = character.main_character
+    value = case stat do
+      "hot" -> main_character.hot
+      "cold" -> main_character.cold
+      "volatile" -> main_character.volatile
+      "dark" -> main_character.dark
+      _ -> nil
+    end
+    if value !== nil do
+      new_value = value + 1
+      if new_value < 3 do
+        Monsterhearts.create_advancement!(%{"main_character_id" => main_character.id, "name" => "+stat"})
+        main_character
+        |> Monsterhearts.update_main_character!(%{
+          "experience" => 0, 
+          stat => new_value
+        })
+        {:ok, "#{get_name(character)} advanced and increased their #{stat}."}
+      else
+        {:error, "That stat is already at the max"}
+      end
+    else
+      {:error, "That isn't a valid stat"}
+    end
+  end
+
+  def dispatch("character_advancement_create", %{"id" => id, "advancementId" => name}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     main_character = character.main_character
     Monsterhearts.create_advancement!(%{"main_character_id" => main_character.id, "name" => name})
@@ -261,7 +290,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     {:ok, "#{get_name(character)} advanced and chose \"#{text}\"."}
   end
 
-  def dispatch("character_advancement_delete", args = %{"id" => id, "advancementId" => name}, _player_id, _game_id) do
+  def dispatch("character_advancement_delete", %{"id" => id, "advancementId" => name}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     main_character = character.main_character 
     main_character.advancements 
@@ -271,7 +300,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     {:ok, "#{get_name(character)} unselected their advancement \"#{text}\"."}
   end
 
-  def dispatch("chat", args = %{"text" => text}, player_id, game_id) do
+  def dispatch("chat", %{"text" => text}, player_id, _game_id) do
     {:ok, nil, make_chat(text, player_id) |> to_json()}
   end
   

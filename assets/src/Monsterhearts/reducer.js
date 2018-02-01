@@ -25,6 +25,8 @@ import {
   MONSTERHEARTS_CHARACTER_CONDITION_DELETE,
   MONSTERHEARTS_CHARACTER_ADVANCEMENT_CREATE,
   MONSTERHEARTS_CHARACTER_ADVANCEMENT_DELETE,
+  MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT,
+  MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT_CANCEL,
   MONSTERHEARTS_STRING_ADD,
   MONSTERHEARTS_STRING_SPEND,
   MONSTERHEARTS_STRING_CREATE,
@@ -243,14 +245,28 @@ export default combineReducers({
           }
         })
       case MONSTERHEARTS_CHARACTER_ADVANCEMENT_CREATE:
-        return update(state, {
-          [action.id]: {
-            mainCharacter: {
-              advancements: {$push: [action.advancementId]},
-              experience: {$set: 0}
-            }
-          }
-        })
+        switch (action.advancementId) {
+          case "+stat":
+            return update(state, {
+              [action.id]: {
+                mainCharacter: {
+                  advancements: {$push: [action.advancementId]},
+                  experience: {$set: 0},
+                  addingStat: {$set: false},
+                  [action.stat]: value => value + 1
+                },
+              }
+            })
+          default:
+            return update(state, {
+              [action.id]: {
+                mainCharacter: {
+                  advancements: {$push: [action.advancementId]},
+                  experience: {$set: 0}
+                },
+              }
+            })
+        } 
       case MONSTERHEARTS_CHARACTER_ADVANCEMENT_DELETE:
         return update(state, {
           [action.id]: {
@@ -264,6 +280,22 @@ export default combineReducers({
                 }
                 return state;
               }
+            }
+          }
+        })
+      case MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT:
+        return update(state, {
+          [action.id]: {
+            mainCharacter: {
+              addingStat: {$set: true}
+            }
+          }
+        })
+      case MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT_CANCEL:
+        return update(state, {
+          [action.id]: {
+            mainCharacter: {
+              addingStat: {$set: false}
             }
           }
         })

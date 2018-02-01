@@ -22,7 +22,7 @@ defmodule Tabletalk.Monsterhearts do
     |> Repo.insert!()
   end
 
-  defp make_player_if_nil(players, player_id) do
+  defp make_player_if_nil(players) do
     players |> Enum.map(fn p ->
       if p.monsterhearts_player_settings === nil do
         %{p | monsterhearts_player_settings: create_player_settings!(%{"player_id" => p.id, "is_gm" => p.admin})}
@@ -71,7 +71,7 @@ defmodule Tabletalk.Monsterhearts do
 
 
   def load(game_id, player_id) do
-    players = list_players!(game_id) |> make_player_if_nil(player_id)
+    players = list_players!(game_id) |> make_player_if_nil()
     result = %{
       players: players,
       me: player_id,
@@ -79,7 +79,6 @@ defmodule Tabletalk.Monsterhearts do
       characters: list_characters!(game_id),
       strings: list_strings!(game_id)
     }
-    Logger.debug inspect result
     result
   end
 
