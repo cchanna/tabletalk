@@ -51,7 +51,7 @@ defmodule Tabletalk.Monsterhearts do
     query = from c in Character,
       where: c.game_id == ^game_id,
       preload: [:conditions],
-      preload: [main_character: :moves, main_character: :advancements]
+      preload: [:main_character, main_character: [:moves, :advancements]]
     Repo.all(query)
   end
 
@@ -85,9 +85,7 @@ defmodule Tabletalk.Monsterhearts do
   def get_character!(id) do
     Character
     |> Repo.get!(id)
-    |> Repo.preload(:conditions)
-    |> Repo.preload(main_character: :moves)
-    |> Repo.preload(main_character: :advancements)
+    |> Repo.preload([:conditions, :main_character, [main_character: [:moves, :advancements]]])
   end
 
   def update_main_character!(%MainCharacter{} = main_character, attrs) do
@@ -100,9 +98,7 @@ defmodule Tabletalk.Monsterhearts do
     %Character{}
     |> Character.changeset(attrs)
     |> Repo.insert!()
-    |> Repo.preload(:conditions)
-    |> Repo.preload(main_character: :moves)
-    |> Repo.preload(main_character: :advancements)
+    |> Repo.preload([:conditions, :main_character, [main_character: [:moves, :advancements]]])
   end
 
   def delete_move!(%Move{} = move) do
