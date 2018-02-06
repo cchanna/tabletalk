@@ -266,8 +266,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
       new_value = value + 1
       if new_value < 3 do
         Monsterhearts.create_advancement!(%{"main_character_id" => main_character.id, "name" => "+stat"})
-        main_character
-        |> Monsterhearts.update_main_character!(%{
+        Monsterhearts.update_main_character!(main_character, %{
           "experience" => 0, 
           stat => new_value
         })
@@ -280,12 +279,20 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     end
   end
 
+  def dispatch("character_advancement_create", %{"id" => id, "advancementId" => name, "move" => move}, _player_id, _game_id) do
+    character = Monsterhearts.get_character!(id)
+    main_character = character.main_character
+    Monsterhearts.create_move!(%{"main_character_id" => main_character.id, "name" => move})
+    Monsterhearts.create_advancement!(%{"main_character_id" => main_character.id, "name" => name})
+    Monsterhearts.update_main_character!(main_character, %{"experience" => 0})
+    {:ok, "#{get_name(character)} advanced and gained the move \"#{move}\""}
+  end
+
   def dispatch("character_advancement_create", %{"id" => id, "advancementId" => name}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     main_character = character.main_character
     Monsterhearts.create_advancement!(%{"main_character_id" => main_character.id, "name" => name})
-    main_character
-    |> Monsterhearts.update_main_character!(%{"experience" => 0})
+    Monsterhearts.update_main_character!(main_character, %{"experience" => 0})
     text = Definitions.advancements_by_id[name].text |> String.replace("{playbook}", main_character.playbook)
     {:ok, "#{get_name(character)} advanced and chose \"#{text}\"."}
   end

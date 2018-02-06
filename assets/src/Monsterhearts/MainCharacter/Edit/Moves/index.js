@@ -1,7 +1,8 @@
 import { connect } from 'react-redux'
 import Moves from './Moves';
 
-import { createMove, deleteMove } from './actionCreators';
+import { deleteMove } from './actionCreators';
+import { createMove } from '../../actionCreators';
 
 const mapStateToProps = ({monsterhearts}, {path, here, showBackButton}) => {
   const id = parseInt(here[2], 10);

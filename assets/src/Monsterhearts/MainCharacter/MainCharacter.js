@@ -6,6 +6,7 @@ import Edit from './Edit';
 import CharacterSheet from './CharacterSheet';
 import Link from 'Routing/Link';
 import NewString from 'Monsterhearts/common/NewString';
+import AddMove from './AddMove';
 
 import route from 'Routing/route';
 import { exactMatch } from 'utils/pathTools';
@@ -27,6 +28,7 @@ const Container = rx('div')`
   font-family: $body;
   overflow: hidden;
   box-sizing: border-box;
+  align-items: center;
   &.under-tablet {
     padding-top: 0px;
   }
@@ -103,6 +105,13 @@ class MainCharacter extends Component {
     {
       path: 'newstring',
       component: NewString
+    },
+    {
+      path: "anymove",
+      component: AddMove,
+      properties: {
+        advancement: true
+      }
     },
     {
       component: CharacterSheet

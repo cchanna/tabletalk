@@ -257,6 +257,17 @@ export default combineReducers({
                 },
               }
             })
+          case "any":
+          case "self":
+            return update(state, {
+              [action.id]: {
+                mainCharacter: {
+                  advancements: {$push: [action.advancementId]},
+                  experience: {$set: 0},
+                  moves: {$push: [action.move]}
+                }
+              }
+            })
           default:
             return update(state, {
               [action.id]: {

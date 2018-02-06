@@ -6,7 +6,7 @@ import ToggleMove from './ToggleMove';
 import DeleteableMove from './DeleteableMove';
 import movesInstructions from 'Monsterhearts/movesInstructions';
 import Link from 'Routing/Link';
-import Add from './Add';
+import AddMove from '../../AddMove';
 import route from 'Routing/route';
 
 rx`
@@ -100,7 +100,7 @@ class Moves extends Component {
       if (path.length > 0) {
         return (
           <Container>
-            {route(path, here, [{path: "add", component: Add}], {showBackButton})}
+            {route(path, here, [{path: "add", component: AddMove}], {showBackButton})}
           </Container>
         ) 
 

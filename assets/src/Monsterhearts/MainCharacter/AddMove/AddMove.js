@@ -13,6 +13,7 @@ rx`
 
 const Container = rx('div')`
   height: 100%;
+  padding-left: 30px;
 `
 const Playbook = rx('div')`
   max-width: 600px;
@@ -26,7 +27,7 @@ const Header = rx('h1')`
   margin: 0;
 `
 
-class Add extends Component {
+class AddMove extends Component {
   static propTypes = {
     id: number.isRequired,
     moves: arrayOf(string).isRequired,
@@ -34,12 +35,20 @@ class Add extends Component {
     playbooks: arrayOf(string).isRequired,
     here: arrayOf(string).isRequired,
     showBackButton: bool.isRequired,
+    advancement: bool.isRequired,
+    createAdvancement: func.isRequired,
+    createMove: func.isRequired,
     goBack: func.isRequired,
   }
 
   createMove = ({id, name}) => {
-    const {createMove, goBack} = this.props;
-    createMove({id, name});
+    const {createMove, advancement, createAdvancement, goBack} = this.props;
+    if (advancement) {
+      createAdvancement({id, advancementId: "any", move: name});
+    }
+    else {
+      createMove({id, name});
+    }
     goBack();
   }
   
@@ -68,4 +77,4 @@ class Add extends Component {
   }
 }
 
-export default Add;
+export default AddMove;

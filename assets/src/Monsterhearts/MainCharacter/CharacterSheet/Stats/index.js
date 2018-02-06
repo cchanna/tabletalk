@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Stats from './Stats';
 
-import { createAdvancement } from '../actionCreators';
+import { createAdvancement } from '../../actionCreators';
 
 const mapStateToProps = ({monsterhearts}, {id}) => {
   const { charactersById, playersById, me } = monsterhearts;

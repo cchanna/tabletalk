@@ -3,8 +3,9 @@ import Advancements from './Advancements';
 
 import { add, remove } from './actionCreators';
 
-const mapStateToProps = ({monsterhearts}, {id}) => {
+const mapStateToProps = ({path, monsterhearts}, {id, depth}) => {
   const { charactersById, playersById, definitions, me } = monsterhearts;
+  const here = path.slice(0, depth);
   const { mainCharacter } = charactersById[id];
   const { 
     advancements: selectedAdvancements, experience, playerId, playbook, addingStat
@@ -24,7 +25,7 @@ const mapStateToProps = ({monsterhearts}, {id}) => {
     }
   })
   return {
-    id, readOnly,
+    id, readOnly, here,
     advancements,
     canLevel: experience >= 5 && !addingStat,
   };

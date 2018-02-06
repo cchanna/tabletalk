@@ -3,22 +3,21 @@ import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 import rx from 'resplendence'
 
 import Checkbox from 'Monsterhearts/common/Checkbox';
+import Link from 'Routing/Link';
 
 rx`
 @import '~Monsterhearts/styles';
 @import '~Monsterhearts/colors';
 @import '~Monsterhearts/fonts';
-`
 
-const Container = rx('div')`
-
-`
-const Advancement = rx('button')`
+@mixin advancement {
   @include button;
+  font-family: $body;
   display: block;
   color: darken($foreground, 50%);
   transition-property: color, background;
   transition-duration: 150ms;
+  opacity: 1;
   svg {
     margin-right: 8px;
     font-size: 25px;
@@ -34,12 +33,16 @@ const Advancement = rx('button')`
       fill: $background;
     }
   }
-  &:not(.disabled) {
+  &.disabled, &:disabled {
+    cursor: default;
+  }
+  &:not(.off) {
     color: $accent;
     svg path {
       fill: $accent;
     }
-    &:not(:disabled) {
+    &:not(:disabled):not(.disabled) {
+      cursor: pointer;
       &:focus, &:hover {
         color: lighten($accent, 10%);
         svg {
@@ -67,14 +70,14 @@ const Advancement = rx('button')`
         fill: darken($foreground, 50%);
       }
     }
-    &:not(.disabled) {
+    &:not(.off) {
       color: $foreground;
       svg {
         circle, path {
           fill: $foreground;
         }
       }
-      &:not(:disabled) {
+      &:not(:disabled):not(.disabled) {
         &:focus, &:hover {
           color: lighten($accent, 20%);
           svg {
@@ -97,7 +100,18 @@ const Advancement = rx('button')`
       }
     }
   }
-  `
+}
+`
+
+const Container = rx('div')`
+`
+const AdvancementButton = rx('button')`
+  @include advancement;
+`
+const AdvancementLink = rx(Link)`
+  @include link;
+  @include advancement;
+` 
 
 class Advancements extends Component {
   static propTypes = {
@@ -110,7 +124,8 @@ class Advancements extends Component {
     })).isRequired,
     readOnly: bool.isRequired,
     add: func.isRequired,
-    remove: func.isRequired
+    remove: func.isRequired,
+    here: arrayOf(string)
   }
 
   handleAdd = (e) => {
@@ -126,19 +141,29 @@ class Advancements extends Component {
   }
   
   render() {
-    const { advancements, canLevel, readOnly } = this.props;
+    const { advancements, canLevel, readOnly, here } = this.props;
     return (
       <Container>
         {advancements.map(({text, id, selected}, i) => 
-          <Advancement 
-            key={i} 
-            name={id}
-            onClick={selected ? this.handleRemove : this.handleAdd}
-            disabled={readOnly || canLevel === selected}
-            rx={{selected, disabled: canLevel === selected}}
-          >
-            <Checkbox/>{text} 
-          </Advancement>
+          (!selected && (id === "any")) ? (
+            <AdvancementLink
+              key={i}
+              to={[...here, id + "move"]}
+              disabled={readOnly || canLevel === selected}
+              rx={{selected, off: canLevel === selected}}>
+              <Checkbox/>{text} 
+            </AdvancementLink>
+          ) : (
+            <AdvancementButton
+              key={i} 
+              name={id}
+              onClick={selected ? this.handleRemove : this.handleAdd}
+              disabled={readOnly || canLevel === selected}
+              rx={{selected, off: canLevel === selected}}
+            >
+              <Checkbox/>{text} 
+            </AdvancementButton>
+          )
         )}
       </Container>
     );

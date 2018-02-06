@@ -1,21 +1,21 @@
 import { connect } from 'react-redux'
-import Add from './Add';
+import AddMove from './AddMove';
 
-import { createMove } from '../actionCreators';
+import { createMove, createAdvancement } from '../actionCreators';
 import { goBack } from 'Routing/actionCreators'; 
 
-const mapStateToProps = ({monsterhearts}, {path, here, showBackButton}) => {
+const mapStateToProps = ({monsterhearts}, {path, here, showBackButton = true, advancement = false}) => {
   const id = parseInt(here[2], 10);
   const { charactersById, definitions } = monsterhearts;
   const { mainCharacter } = charactersById[id];
   const { moves } = mainCharacter;
   const { playbooksByName, playbooks } = definitions;
   return {
-    here, path, showBackButton,
+    here, path, showBackButton, advancement,
     id, moves, playbooksByName, playbooks,
   };
 };
 
-const mapDispatchToProps = {createMove, goBack}
+const mapDispatchToProps = {createMove, createAdvancement, goBack}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Add);
+export default connect(mapStateToProps, mapDispatchToProps)(AddMove);
