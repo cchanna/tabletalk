@@ -11,7 +11,7 @@ const mapStateToProps = ({monsterhearts}, {id}) => {
   } = mainCharacter;
   const { advancementsById, playbooksByName } = definitions;
   const { advancements: playbookAdvancements } = playbooksByName[playbook];
-  const readOnly = (playerId != me) && !playersById[me].isGM;
+  const readOnly = (playerId !== me) && !playersById[me].isGM;
   const advancements = playbookAdvancements.map(id => ({
     id,
     text: advancementsById[id].text.replace("{playbook}", playbook),

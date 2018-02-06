@@ -34,27 +34,29 @@ const Advancement = rx('button')`
       fill: $background;
     }
   }
-  &:not(:disabled) {
+  &:not(.disabled) {
     color: $accent;
     svg path {
       fill: $accent;
     }
-    &:focus, &:hover {
-      color: lighten($accent, 10%);
-      svg {
-        path {
-          fill: lighten($accent, 10%);
-        }
-        circle {
-          fill: darken($accent, 30%);
+    &:not(:disabled) {
+      &:focus, &:hover {
+        color: lighten($accent, 10%);
+        svg {
+          path {
+            fill: lighten($accent, 10%);
+          }
+          circle {
+            fill: darken($accent, 30%);
+          }
         }
       }
-    }
-    &:active {
-      color: darken($accent, 30%);
-      svg {
-        path, circle {
-          fill: darken($accent, 30%);
+      &:active {
+        color: darken($accent, 30%);
+        svg {
+          path, circle {
+            fill: darken($accent, 30%);
+          }
         }
       }
     }
@@ -65,29 +67,31 @@ const Advancement = rx('button')`
         fill: darken($foreground, 50%);
       }
     }
-    &:not(:disabled) {
+    &:not(.disabled) {
       color: $foreground;
       svg {
         circle, path {
           fill: $foreground;
         }
       }
-      &:focus, &:hover {
-        color: lighten($accent, 20%);
-        svg {
-          circle, path {
-            fill: lighten($accent, 20%);
+      &:not(:disabled) {
+        &:focus, &:hover {
+          color: lighten($accent, 20%);
+          svg {
+            circle, path {
+              fill: lighten($accent, 20%);
+            }
           }
         }
-      }
-      &:active {
-        color: darken($accent, 30%);
-        svg {
-          path {
-            fill: darken($accent, 30%);
-          }
-          circle {
-            fill: $background;
+        &:active {
+          color: darken($accent, 30%);
+          svg {
+            path {
+              fill: darken($accent, 30%);
+            }
+            circle {
+              fill: $background;
+            }
           }
         }
       }
@@ -122,7 +126,7 @@ class Advancements extends Component {
   }
   
   render() {
-    const { advancements, canLevel } = this.props;
+    const { advancements, canLevel, readOnly } = this.props;
     return (
       <Container>
         {advancements.map(({text, id, selected}, i) => 
@@ -130,8 +134,8 @@ class Advancements extends Component {
             key={i} 
             name={id}
             onClick={selected ? this.handleRemove : this.handleAdd}
-            disabled={canLevel === selected}
-            rx={{selected}}
+            disabled={readOnly || canLevel === selected}
+            rx={{selected, disabled: canLevel === selected}}
           >
             <Checkbox/>{text} 
           </Advancement>
