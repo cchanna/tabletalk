@@ -6,7 +6,8 @@ import Edit from './Edit';
 import CharacterSheet from './CharacterSheet';
 import Link from 'Routing/Link';
 import NewString from 'Monsterhearts/common/NewString';
-import AddMove from './AddMove';
+import AnyMove from './AnyMove';
+import SelfMove from './SelfMove';
 
 import route from 'Routing/route';
 import { exactMatch } from 'utils/pathTools';
@@ -108,10 +109,11 @@ class MainCharacter extends Component {
     },
     {
       path: "anymove",
-      component: AddMove,
-      properties: {
-        advancement: true
-      }
+      component: AnyMove
+    },
+    {
+      path: "selfmove",
+      component: SelfMove
     },
     {
       component: CharacterSheet
@@ -122,6 +124,9 @@ class MainCharacter extends Component {
     const { path, here, editDone, replace, readOnly } = this.props;
     if (path.length === 0 && !editDone && !readOnly) {
       replace([...here, "edit"]);
+    }
+    else if (path.length > 0 && readOnly) {
+      replace(here);
     }
   }
 
@@ -147,7 +152,7 @@ class MainCharacter extends Component {
         editLink = <EditLink to={here} rx={sizes}>Done</EditLink>
       }
     }
-    content = route(path, here, MainCharacter.pages, {sizes});
+    content = route(path, here, MainCharacter.pages, {sizes, id});
     let backButton = null;
     if (path.length && (path[0] !== 'edit' || (path.length > 1 && sizes.includes('under-max')) || path.length > 2)) {
       backButton = <BackButton rx={sizes} onClick={goBack}>Back</BackButton>

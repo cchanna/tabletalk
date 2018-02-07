@@ -145,7 +145,7 @@ class Advancements extends Component {
     return (
       <Container>
         {advancements.map(({text, id, selected}, i) => 
-          (!selected && (id === "any")) ? (
+          (!selected && (id === "any" || id === "self")) ? (
             <AdvancementLink
               key={i}
               to={[...here, id + "move"]}

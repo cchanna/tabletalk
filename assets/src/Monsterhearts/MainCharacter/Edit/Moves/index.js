@@ -3,6 +3,7 @@ import Moves from './Moves';
 
 import { deleteMove } from './actionCreators';
 import { createMove } from '../../actionCreators';
+import { goBack } from 'Routing/actionCreators';
 
 const mapStateToProps = ({monsterhearts}, {path, here, showBackButton}) => {
   const id = parseInt(here[2], 10);
@@ -17,6 +18,6 @@ const mapStateToProps = ({monsterhearts}, {path, here, showBackButton}) => {
   };
 };
 
-const mapDispatchToProps = {createMove, deleteMove}
+const mapDispatchToProps = {goBack, createMove, deleteMove}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Moves);

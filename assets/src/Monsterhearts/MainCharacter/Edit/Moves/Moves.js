@@ -59,6 +59,7 @@ class Moves extends Component {
     showBackButton: bool.isRequired,
     createMove: func.isRequired,
     deleteMove: func.isRequired,
+    goBack: func.isRequired
   }
 
   constructor(props) {
@@ -67,6 +68,12 @@ class Moves extends Component {
     this.state = {
       initial: (moves.length < startingMoves.length + startingMoveChoices)
     }
+  }
+
+  handleAdd = name => {
+    const { id, createMove, goBack } = this.props;
+    createMove({name, id});
+    goBack();
   }
   
   render() {
@@ -100,7 +107,7 @@ class Moves extends Component {
       if (path.length > 0) {
         return (
           <Container>
-            {route(path, here, [{path: "add", component: AddMove}], {showBackButton})}
+            <AddMove id={id} onAdd={this.handleAdd}/>
           </Container>
         ) 
 

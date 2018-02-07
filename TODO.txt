@@ -4,7 +4,9 @@
 @ chats reload in reverse order lmao
 @ non-GM players can't add conditions to their own characters
 @ advancements
-O advancements with follow-up
+@ advancements with follow-up
+O queen gang advancement
+O bold-parse advancements
 O seating chart
 O basic moves
 O season advances
