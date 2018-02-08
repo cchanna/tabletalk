@@ -107,27 +107,29 @@ const Button = rx('button')`
 
 class NewCharacter extends Component {
   static propTypes = {
-    path: arrayOf(string).isRequired, 
+    slug: string, 
     here: arrayOf(string).isRequired,
     playbooks: arrayOf(string).isRequired, 
-    playbooksByName: object.isRequired, 
-    movesByName: object.isRequired, 
-    advancementsById: object.isRequired,
     sizes: arrayOf(string).isRequired,
     myCharacters: arrayOf(number).isRequired,
     createCharacter: func.isRequired,
     goTo: func.isRequired
   }
+
+  state = {
+    creating: false
+  }
   
   handleClickCreate = () => {
-    const skin = this.skin();
-    if (skin !== null) {
-      this.props.createCharacter({playbook: skin});
+    const { playbook, createCharacter } = this.props;
+    if (playbook) {
+      this.setState({creating: true});
+      createCharacter({playbook});
     }
   }
 
   componentDidUpdate(prevProps) {
-    const {path, here, goTo, myCharacters} = this.props;
+    const {here, goTo, myCharacters} = this.props;
     if (myCharacters.length > prevProps.myCharacters.length) {
       myCharacters.forEach(id => {
         if (!prevProps.myCharacters.includes(id)) {
@@ -138,24 +140,17 @@ class NewCharacter extends Component {
     }
   }
 
-  skin = () => {
-    const { path, playbooks } = this.props;
-    if (path.length === 0) return null;
-    const slug = path[0];
-    return playbooks.find(name => name.toLowerCase() === slug);
-  }
-
   render() {
     const { 
-      path, here, playbooks, playbooksByName, 
+      here, playbook, playbooks, playbooksByName, 
       movesByName, advancementsById,
       sizes, createCharacter
     } = this.props;
+    const { creating } = this.state;
     const skins = playbooks
       .map(name => {
-        const playbook = playbooksByName[name];
         return (
-          <SkinLink to={[...here, name.toLowerCase()]} key={name} rx={{dull: path.length > 0}}>
+          <SkinLink to={[...here, name.toLowerCase()]} key={name} rx={{dull: !!playbook}}>
             The <BigName>{name}</BigName>
           </SkinLink>
         ) 
@@ -163,25 +158,26 @@ class NewCharacter extends Component {
       
     let skin = null;
     let createButton = null;
-    if (path.length > 0) {
-      const [slug, ...newPath] = path;
-      const name = this.skin();
-      const playbook = playbooksByName[name];
+    if (playbook) {
       skin = (
-        <Skin {...{name, movesByName, advancementsById, sizes}} {...playbook}/>
+        <Skin {...{playbook, sizes}}/>
       )
-      createButton = <Button onClick={this.handleClickCreate}>Create the {name}</Button>
+      createButton = (
+        <Button onClick={this.handleClickCreate} disabled={creating}>
+          Create the {playbook}
+        </Button>
+      )
     }
     return (
       <Container>
-        <Buffer rx={{collapsed: (path.length > 0)}}/>
+        <Buffer rx={{collapsed: (!!playbook)}}/>
         <Content rx={sizes}>
           <Header>Select a Skin</Header>
           <SkinList>{skins}</SkinList>
           {createButton}
           {skin}
         </Content>
-        <Buffer rx={{collapsed: (path.length > 0)}}/>
+        <Buffer rx={{collapsed: (!!playbook)}}/>
       </Container>
     );
   }

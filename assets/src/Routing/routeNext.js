@@ -1,19 +1,17 @@
 import React from 'react';
 
-export default (path, here, pages, extraProperties = {}) => {
-  const [where, ...newPath] = path;
+const route = (next, here, pages, extraProperties = {}) => {
   let fallBack = null;
   for (let i=0; i < pages.length; i++) {
     const page = pages[i];
     if (page.path === "*") fallBack = page;
-    else if (where === page.path) {
+    else if (next === page.path) {
       const properties = {
         ...extraProperties,
         ...(page.properties || {})  
       }
       const Component = page.component;
-      const newHere = (where === undefined) ? here : [...here, where];
-      return <Component here={newHere} path={newPath} depth={newHere.length} {...properties}/>
+      return <Component depth={here.length + 1} {...properties}/>
     }
   }
   if (fallBack) {
@@ -22,8 +20,9 @@ export default (path, here, pages, extraProperties = {}) => {
       ...extraProperties,
       ...(fallBack.properties || {})  
     }
-    const newHere = (where === undefined) ? here : [...here, where];
-    return <Component here={newHere} path={newPath} depth={newHere.length} {...properties}/>
+    return <Component depth={here.length + 1} {...properties}/>
   }
   return null;
 }
+
+export default routeNext;

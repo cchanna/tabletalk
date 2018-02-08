@@ -4,6 +4,7 @@ import rx from 'resplendence'
 
 import Checkbox from 'Monsterhearts/common/Checkbox';
 import Link from 'Routing/Link';
+import parseAdvancement from 'Monsterhearts/common/parseAdvancement';
 
 rx`
 @import '~Monsterhearts/styles';
@@ -117,6 +118,7 @@ class Advancements extends Component {
   static propTypes = {
     id: number.isRequired,
     canLevel: bool.isRequired,
+    playbook: string.isRequired,
     advancements: arrayOf(shape({
       id: string.isRequired,
       text: string.isRequired,
@@ -141,7 +143,7 @@ class Advancements extends Component {
   }
   
   render() {
-    const { advancements, canLevel, readOnly, here } = this.props;
+    const { advancements, playbook, canLevel, readOnly, here } = this.props;
     return (
       <Container>
         {advancements.map(({text, id, selected}, i) => 
@@ -151,7 +153,8 @@ class Advancements extends Component {
               to={[...here, id + "move"]}
               disabled={readOnly || canLevel === selected}
               rx={{selected, off: canLevel === selected}}>
-              <Checkbox/>{text} 
+              <Checkbox/>
+              {parseAdvancement(text, playbook)} 
             </AdvancementLink>
           ) : (
             <AdvancementButton
@@ -161,7 +164,8 @@ class Advancements extends Component {
               disabled={readOnly || canLevel === selected}
               rx={{selected, off: canLevel === selected}}
             >
-              <Checkbox/>{text} 
+              <Checkbox/>
+              {parseAdvancement(text, playbook)} 
             </AdvancementButton>
           )
         )}

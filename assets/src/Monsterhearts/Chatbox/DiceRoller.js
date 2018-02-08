@@ -84,13 +84,10 @@ class DiceRoller extends Component {
 
   handleClose = () => {
     this.setState({open: false});
-    console.log("close!");
-    console.log(this.listener);
     document.removeEventListener("click", this.handleClose);
   }
 
   handleOpen = () => {
-    console.log("open!", this.state.open);
     this.setState(({open}) => ({open: !open}));
     document.addEventListener("click", this.handleClose);
   }

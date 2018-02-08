@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
-import { playbookProperties } from '../propTypes';
+import { playbookProperties } from '../../propTypes';
 import rx from 'resplendence'
 
 import Markdown from 'Monsterhearts/common/Markdown';
@@ -17,8 +17,9 @@ import serpentineImg from './serpentine.svg';
 import vampireImg from './vampire.svg';
 import werewolfImg from './werewolf.svg';
 import witchImg from './witch.svg';
-import movesInstructions from '../movesInstructions';
+import movesInstructions from '../../movesInstructions';
 import BaseCheckbox from 'Monsterhearts/common/Checkbox';
+import parseAdvancement from 'Monsterhearts/common/parseAdvancement';
 
 rx`
 @import '~common/styles';
@@ -303,15 +304,18 @@ const image = playbook => {
 class Skin extends Component {
   static propTypes = {
     name: string.isRequired,
-    movesByName: object.isRequired,
-    advancementsById: object.isRequired,
     ...playbookProperties,
+    moves: arrayOf(shape({
+      name: string.isRequired,
+      text: string.isRequired
+    })).isRequired,
+    advancements: arrayOf(string).isRequired,
     sizes: arrayOf(string)
   }
   
   render() {
     const { 
-      name, movesByName, advancementsById, sexMove,
+      name, sexMove,
       names, looks, eyesList, origins, backstory, darkestSelf, advice, 
       flavour, advancements, stats, moves, startingMoves, startingMoveChoices,
       sizes
@@ -345,8 +349,8 @@ class Skin extends Component {
             <Section>
               <Header>Advancements</Header>
               <Advancements>
-                {advancements.map((id, i) =>
-                  <Advancement key={i}>{advancementsById[id].text.replace("{playbook}", name)}</Advancement> 
+                {advancements.map((text, i) =>
+                  <Advancement key={i}>{parseAdvancement(text, name)}</Advancement> 
                 )}
               </Advancements>
             </Section>
@@ -365,8 +369,8 @@ class Skin extends Component {
           <Columns rx={sizes}>
             <Header>{name} Moves</Header>
             <Instructions>{movesInstructions(startingMoves, startingMoveChoices)}</Instructions>
-            {moves.map((name, i) => 
-              <Move key={i} name={name} {...movesByName[name]}/>
+            {moves.map(({name, text}, i) => 
+              <Move key={name} {...{name, text}}/>
             )}
           </Columns>
           <Divider/>
