@@ -5,11 +5,11 @@
 @ non-GM players can't add conditions to their own characters
 @ advancements
 @ advancements with follow-up
-O queen gang advancement
-O bold-parse advancements
-O seating chart
-O basic moves
+@ bold-parse advancements
 O season advances
+O seating chart
+O queen gang advancement
+O basic moves
 O play sound on chat
 O bargains and hexes
 O load historic chats
