@@ -2,21 +2,21 @@ import { connect } from 'react-redux'
 import Advancements from './Advancements';
 
 import { add, remove } from './actionCreators';
+import { getPath } from 'Routing/selectors';
+import { getCharacter, getReadOnly, getPlaybookAdvancements } from 'Monsterhearts/selectors';
 
-const mapStateToProps = ({monsterhearts}, {id}) => {
-  const { charactersById, playersById, definitions, me } = monsterhearts;
-  const { mainCharacter } = charactersById[id];
-  const { 
-    advancements: selectedAdvancements, experience, playerId, playbook, addingStat
-  } = mainCharacter;
-  const { advancementsById, playbooksByName } = definitions;
-  const { advancements: playbookAdvancements } = playbooksByName[playbook];
-  const readOnly = (playerId != me) && !playersById[me].isGM;
-  const advancements = playbookAdvancements.map(id => ({
-    id,
-    text: advancementsById[id].text.replace("{playbook}", playbook),
-    selected: !!addingStat && (id === "+stat")
-  }));
+const mapStateToProps = (state, {id, depth}) => {
+  const { mainCharacter } = getCharacter(state, id);
+  const readOnly = getReadOnly(state, id);
+  const { here } = getPath(state, depth);
+
+  const { playbook, addingStat, experience, advancements: selectedAdvancements } = mainCharacter;
+  const advancements = getPlaybookAdvancements(state, playbook)
+    .map(advancement => ({
+      ...advancement,
+      selected: advancement.id === "+stat" && !!addingStat 
+    }))
+
   selectedAdvancements.forEach(id => {
     const advancement = advancements.find(a => a.id === id && !a.selected) 
     if (advancement) {
@@ -24,7 +24,7 @@ const mapStateToProps = ({monsterhearts}, {id}) => {
     }
   })
   return {
-    id, readOnly,
+    id, playbook, readOnly, here,
     advancements,
     canLevel: experience >= 5 && !addingStat,
   };

@@ -38,6 +38,8 @@ import socket from './SocketManager/reducer';
 
 import update from 'immutability-helper';
 
+
+
 export default combineReducers({
   socket,
   loaded: (state = false, action) => {
@@ -255,6 +257,17 @@ export default combineReducers({
                   addingStat: {$set: false},
                   [action.stat]: value => value + 1
                 },
+              }
+            })
+          case "any":
+          case "self":
+            return update(state, {
+              [action.id]: {
+                mainCharacter: {
+                  advancements: {$push: [action.advancementId]},
+                  experience: {$set: 0},
+                  moves: {$push: [action.move]}
+                }
               }
             })
           default:

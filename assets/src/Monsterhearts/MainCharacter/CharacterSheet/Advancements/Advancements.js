@@ -1,24 +1,24 @@
 import React, { Component } from 'react'
-import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
+import { string, number, bool, func, shape, arrayOf } from 'prop-types'
 import rx from 'resplendence'
 
 import Checkbox from 'Monsterhearts/common/Checkbox';
+import Link from 'Routing/Link';
+import parseAdvancement from 'Monsterhearts/common/parseAdvancement';
 
 rx`
 @import '~Monsterhearts/styles';
 @import '~Monsterhearts/colors';
 @import '~Monsterhearts/fonts';
-`
 
-const Container = rx('div')`
-
-`
-const Advancement = rx('button')`
+@mixin advancement {
   @include button;
+  font-family: $body;
   display: block;
   color: darken($foreground, 50%);
   transition-property: color, background;
   transition-duration: 150ms;
+  opacity: 1;
   svg {
     margin-right: 8px;
     font-size: 25px;
@@ -34,27 +34,33 @@ const Advancement = rx('button')`
       fill: $background;
     }
   }
-  &:not(:disabled) {
+  &.disabled, &:disabled {
+    cursor: default;
+  }
+  &:not(.off) {
     color: $accent;
     svg path {
       fill: $accent;
     }
-    &:focus, &:hover {
-      color: lighten($accent, 10%);
-      svg {
-        path {
-          fill: lighten($accent, 10%);
-        }
-        circle {
-          fill: darken($accent, 30%);
+    &:not(:disabled):not(.disabled) {
+      cursor: pointer;
+      &:focus, &:hover {
+        color: lighten($accent, 10%);
+        svg {
+          path {
+            fill: lighten($accent, 10%);
+          }
+          circle {
+            fill: darken($accent, 30%);
+          }
         }
       }
-    }
-    &:active {
-      color: darken($accent, 30%);
-      svg {
-        path, circle {
-          fill: darken($accent, 30%);
+      &:active {
+        color: darken($accent, 30%);
+        svg {
+          path, circle {
+            fill: darken($accent, 30%);
+          }
         }
       }
     }
@@ -65,40 +71,54 @@ const Advancement = rx('button')`
         fill: darken($foreground, 50%);
       }
     }
-    &:not(:disabled) {
+    &:not(.off) {
       color: $foreground;
       svg {
         circle, path {
           fill: $foreground;
         }
       }
-      &:focus, &:hover {
-        color: lighten($accent, 20%);
-        svg {
-          circle, path {
-            fill: lighten($accent, 20%);
+      &:not(:disabled):not(.disabled) {
+        &:focus, &:hover {
+          color: lighten($accent, 20%);
+          svg {
+            circle, path {
+              fill: lighten($accent, 20%);
+            }
           }
         }
-      }
-      &:active {
-        color: darken($accent, 30%);
-        svg {
-          path {
-            fill: darken($accent, 30%);
-          }
-          circle {
-            fill: $background;
+        &:active {
+          color: darken($accent, 30%);
+          svg {
+            path {
+              fill: darken($accent, 30%);
+            }
+            circle {
+              fill: $background;
+            }
           }
         }
       }
     }
   }
-  `
+}
+`
+
+const Container = rx('div')`
+`
+const AdvancementButton = rx('button')`
+  @include advancement;
+`
+const AdvancementLink = rx(Link)`
+  @include link;
+  @include advancement;
+` 
 
 class Advancements extends Component {
   static propTypes = {
     id: number.isRequired,
     canLevel: bool.isRequired,
+    playbook: string.isRequired,
     advancements: arrayOf(shape({
       id: string.isRequired,
       text: string.isRequired,
@@ -106,7 +126,8 @@ class Advancements extends Component {
     })).isRequired,
     readOnly: bool.isRequired,
     add: func.isRequired,
-    remove: func.isRequired
+    remove: func.isRequired,
+    here: arrayOf(string)
   }
 
   handleAdd = (e) => {
@@ -122,19 +143,31 @@ class Advancements extends Component {
   }
   
   render() {
-    const { advancements, canLevel } = this.props;
+    const { advancements, playbook, canLevel, readOnly, here } = this.props;
     return (
       <Container>
         {advancements.map(({text, id, selected}, i) => 
-          <Advancement 
-            key={i} 
-            name={id}
-            onClick={selected ? this.handleRemove : this.handleAdd}
-            disabled={canLevel === selected}
-            rx={{selected}}
-          >
-            <Checkbox/>{text} 
-          </Advancement>
+          (!selected && (id === "any" || id === "self")) ? (
+            <AdvancementLink
+              key={i}
+              to={[...here, id + "move"]}
+              disabled={readOnly || canLevel === selected}
+              rx={{selected, off: canLevel === selected}}>
+              <Checkbox/>
+              {parseAdvancement(text, playbook)} 
+            </AdvancementLink>
+          ) : (
+            <AdvancementButton
+              key={i} 
+              name={id}
+              onClick={selected ? this.handleRemove : this.handleAdd}
+              disabled={readOnly || canLevel === selected}
+              rx={{selected, off: canLevel === selected}}
+            >
+              <Checkbox/>
+              {parseAdvancement(text, playbook)} 
+            </AdvancementButton>
+          )
         )}
       </Container>
     );

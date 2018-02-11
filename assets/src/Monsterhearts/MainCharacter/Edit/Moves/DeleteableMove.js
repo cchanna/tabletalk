@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
+import { string, number, func } from 'prop-types'
 import rx from 'resplendence'
   
 import Move from 'Monsterhearts/common/Move';
-import Button from './Button';
+import Button from '../../MoveButton';
 
 rx`
 @import '~Monsterhearts/styles';

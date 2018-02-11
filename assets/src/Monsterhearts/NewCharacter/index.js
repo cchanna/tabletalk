@@ -7,15 +7,16 @@ import withSize from 'common/withSize';
 import { createCharacter } from './actionCreators';
 import { goTo } from 'Routing/actionCreators';
 
-const mapStateToProps = ({monsterhearts}, {path, here}) => {
-  const { definitions, characters, charactersById, me } = monsterhearts;
-  const { playbooks, playbooksByName, movesByName, advancementsById } = definitions;
-  const myCharacters = characters
-    .filter(id => charactersById[id].mainCharacter && charactersById[id].mainCharacter.playerId === me)
+import { getPath } from 'Routing/selectors';
+import { getPlaybooks, getMyCharacters } from 'Monsterhearts/selectors';
+
+const mapStateToProps = (state, {depth}) => {
+  const { here, next } = getPath(state, depth);
+  const playbooks = getPlaybooks(state);
+  const myCharacters = getMyCharacters(state);
   return { 
-    path, here,
-    playbooks, playbooksByName, movesByName, advancementsById,
-    myCharacters 
+    here, playbooks, myCharacters,
+    playbook: !next ? null : (next[0].toUpperCase() + next.slice(1))
   };
 };
 

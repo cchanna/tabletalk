@@ -3,7 +3,7 @@ import { string, number, bool, func } from 'prop-types'
 import rx from 'resplendence'
   
 import BaseMove from 'Monsterhearts/common/Move';
-import Button from './Button';
+import Button from '../../MoveButton';
 
 rx`
 @import '~Monsterhearts/styles';
