@@ -19,7 +19,7 @@ export const getMyCharacters = state => {
 export const getReadOnly = (state, id) => {
   const me = getMe(state);
   const player = getPlayer(state, me);
-  if (player.isGM) return true;
+  if (player.isGM) return false;
   const { mainCharacter } = getCharacter(state, id);
   return (!mainCharacter || mainCharacter.playerId !== me);
 }
