@@ -86,8 +86,8 @@ class CharacterSheet extends Component {
           <Conditions id={id}/>
           <Header>Strings</Header>
           <Strings {...{id, path, here}}/>
-          <Experience id={id} depth={here.length}/>
-          <Advancements id={id}/>
+          <Experience id={id}/>
+          <Advancements id={id} depth={here.length}/>
           <Header>Moves</Header>
           {moves.map(move => 
             <Move key={move} id={id} name={move} showNotes/>
