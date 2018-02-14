@@ -777,6 +777,54 @@ you see them.
         """,
         notes: false
       },
+      "Make Others Feel Beautiful" => %{
+        text: """
+          When you make others feel beautiful, roll with Hot. On a 10 up, choose two from below.
+          
+          - they take 1 Forward,
+          - they remove a Condition,
+          - they mark experience, or
+          - you take 1 forward
+
+          On a 7-9, you can tempt them to do what you want, as if you'd just spent a string.
+        """,
+        notes: false
+      },
+      "Call People On Their Shit" => %{
+        text: """
+          When you call people on their shit, roll with Cold. On a 10 up, choose one from below. 
+          On a 7-9, choose one from below, but you come across poorly, and they give you a Condition 
+          in return.
+
+          - they lose a String against someone else, or
+          - they choke up, break down, or bail
+        """,
+        notes: false
+      },
+      "Intervene in an Act of Violence" => %{
+        text: """
+          When you intervene in an act of violence against someone else, roll with Volatile. On
+          a 10 up, you get in the way and they need to deal with you first. Whoever you're 
+          protecting gets to react, and takes 1 Forward to whatever they decide to do. On a 7-9,
+          you're in the middle of it, and the assailant chooses from below. 
+
+          - I back off,
+          - I take whatever harm you want to give me as I push past, or
+          - I redirect the violence to you.
+        """,
+        notes: false
+      },
+      "Share Your Pain" => %{
+        text: """
+          When you share your pain, rol with Dark. On a 10 up, choose two. On a 7-9, choose one:
+
+          - remove a Condition from yourself,
+          - remove a Condition from someone who listened,
+          - take 1 Forward toward helping yourself, or
+          - those who listened take 1 Forward to helping you
+        """,
+        notes: false
+      },
     }
   end
 
@@ -829,12 +877,32 @@ you see them.
       },
       "nest" => %{
         text: "You belong to a *Nest of Humans*."
+      },
+      "grow" => %{
+        text: "Gain two of the Growing Up moves."
+      },
+      "chnge" => %{
+        text: "Change your character's Skin."
+      },
+      "rrds" => %{
+        text: "Rewrite your Darkest Self."
+      },
+      "rtire" => %{
+        text: "Retire your character and start a new one."
       }
     }
   end
 
   def playbooks do
     ["Fae", "Ghost", "Ghoul", "Hollow", "Infernal", "Mortal", "Queen", "Serpentine", "Vampire", "Werewolf", "Witch"]
+  end
+
+  def season_advances do
+    ["chnge", "rrds", "rtire", "grow"]
+  end
+
+  def growing_up_moves do
+    ["Make Others Feel Beautiful", "Call People On Their Shit", "Intervene in an Act of Violence", "Share Your Pain"]
   end
 
   def playbooks_by_name do

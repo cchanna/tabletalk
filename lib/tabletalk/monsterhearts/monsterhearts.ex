@@ -5,16 +5,13 @@ defmodule Tabletalk.Monsterhearts do
   alias Tabletalk.Monsterhearts.MainCharacter
   alias Tabletalk.Monsterhearts.PlayerSettings
   alias Tabletalk.Monsterhearts.Chat
-  # alias Tabletalk.Monsterhearts.Talk
-  # alias Tabletalk.Monsterhearts.Roll
+  alias Tabletalk.Monsterhearts.Game
   alias Tabletalk.Monsterhearts.Character
   alias Tabletalk.Monsterhearts.Move
   alias Tabletalk.Monsterhearts.Condition
   alias Tabletalk.Monsterhearts.String
   alias Tabletalk.Monsterhearts.Advancement
   alias Tabletalk.Games
-
-  require Logger
 
   defp create_player_settings!(attrs) do
     %PlayerSettings{}
@@ -77,7 +74,8 @@ defmodule Tabletalk.Monsterhearts do
       me: player_id,
       chats: list_chats!(game_id),
       characters: list_characters!(game_id),
-      strings: list_strings!(game_id)
+      strings: list_strings!(game_id),
+      game: get_game!(game_id)
     }
     result
   end
@@ -86,6 +84,17 @@ defmodule Tabletalk.Monsterhearts do
     Character
     |> Repo.get!(id)
     |> Repo.preload([:conditions, :main_character, [main_character: [:moves, :advancements]]])
+  end
+
+  defp create_game!(attrs) do
+    %Game{}
+    |> Game.changeset(attrs)
+    |> Repo.insert!()
+  end
+
+  defp get_game!(game_id) do
+    Repo.get_by(Game, game_id: game_id) || 
+    create_game!(%{"game_id" => game_id})
   end
 
   def update_main_character!(%MainCharacter{} = main_character, attrs) do
@@ -144,6 +153,11 @@ defmodule Tabletalk.Monsterhearts do
   def get_string!(id) do
     String
     |> Repo.get!(id)
+  end
+
+  def get_condition!(character_id, name) do
+    Condition
+    |> Repo.get_by(character_id: character_id, name: name)
   end
 
   def create_condition!(attrs \\ %{}) do

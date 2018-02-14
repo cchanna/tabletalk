@@ -33,11 +33,21 @@ const getAdvancementsById = (state, id) => getDefinitions(state).advancementsByI
 export const getPlaybookAdvancements = (state, playbook) => {
   const advancementsById = getAdvancementsById(state);
   return getPlaybookDefinition(state, playbook).advancements
-    .map(id => ({
-      id,
-      ...advancementsById[id]
-    }));
+  .map(id => ({
+    id,
+    ...advancementsById[id]
+  }));
 }
+
+const getSeasonAdvancements = state => getDefinitions(state).seasonAdvances;
+export const listSeasonAdvancements = state => {
+  const advancementsById = getAdvancementsById(state);
+  return getSeasonAdvancements(state).map(id => ({
+    id,
+    ...advancementsById[id]
+  }));
+}
+
 export const getPlaybookMoves = (state, playbook) => {
   const movesByName = getMovesByName(state);
   return getPlaybookDefinition(state, playbook).moves
@@ -45,4 +55,15 @@ export const getPlaybookMoves = (state, playbook) => {
       name,
       text: movesByName[name].text
     }))
+}
+
+// export const getSeasonFinale = state => here(state).seasonFinale;
+export const getIsSeasonFinale = state => {
+  const seasonAdvancements = getSeasonAdvancements(state);
+  return getCharacters(state)
+    .map(id => getCharacter(state, id))
+    .filter(character => character.mainCharacter)
+    .some(character => character.mainCharacter.advancements
+      .some(advancement => seasonAdvancements.includes(advancement))
+    );
 }

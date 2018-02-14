@@ -13,6 +13,7 @@ rx`
 
 @mixin advancement {
   @include button;
+  height: 31px;
   font-family: $body;
   display: block;
   color: darken($foreground, 50%);
@@ -113,6 +114,19 @@ const AdvancementLink = rx(Link)`
   @include link;
   @include advancement;
 ` 
+const SeasonAdvancements = rx('div')`
+  margin-top: 10px;
+`;
+const SeasonAdvancementsDescription = rx('div')`
+  font-style: italic;
+`
+
+const seasonLinks = {
+  "grow": "grow",
+  "rrds": "darkestself",
+  "chnge": "changeskin",
+  "rtire": "retire"
+}
 
 class Advancements extends Component {
   static propTypes = {
@@ -127,23 +141,29 @@ class Advancements extends Component {
     readOnly: bool.isRequired,
     add: func.isRequired,
     remove: func.isRequired,
+    seasonAdvancements: arrayOf(shape({
+      id: string.isRequired,
+      text: string.isRequired,
+      selected: bool.isRequired
+    })),
     here: arrayOf(string)
   }
 
-  handleAdd = (e) => {
+  handleAdd = e => {
     const { id, add } = this.props;
-    const advancementId = e.target.name;
+    const advancementId = e.target.value;
+    console.log(advancementId);
     add({id, advancementId});
   }
 
   handleRemove = e => {
     const { id, remove } = this.props;
-    const advancementId = e.target.name;
+    const advancementId = e.target.value;
     remove({id, advancementId});
   }
   
   render() {
-    const { advancements, playbook, canLevel, readOnly, here } = this.props;
+    const { advancements, playbook, canLevel, readOnly, here, seasonAdvancements } = this.props;
     return (
       <Container>
         {advancements.map(({text, id, selected}, i) => 
@@ -159,7 +179,7 @@ class Advancements extends Component {
           ) : (
             <AdvancementButton
               key={i} 
-              name={id}
+              value={id}
               onClick={selected ? this.handleRemove : this.handleAdd}
               disabled={readOnly || canLevel === selected}
               rx={{selected, off: canLevel === selected}}
@@ -168,6 +188,29 @@ class Advancements extends Component {
               {parseAdvancement(text, playbook)} 
             </AdvancementButton>
           )
+        )}
+        {!seasonAdvancements ? null : (
+          <SeasonAdvancements>
+            {
+              
+              seasonAdvancements.map(({id, text, selected}) => {
+                const gotSeasonAdvance = seasonAdvancements.some(advancement => advancement.selected);
+                const off = ((canLevel && (gotSeasonAdvance || selected)) || (!canLevel && !selected));
+                return (
+                  <AdvancementButton
+                    key={id}
+                    value={id}
+                    // to={[...here, seasonLinks[id]]}
+                    onClick={selected ? this.handleRemove : this.handleAdd}
+                    disabled={readOnly || off}
+                    rx={{selected, off}}>
+                    <Checkbox/>
+                    {parseAdvancement(text, playbook)}
+                  </AdvancementButton>
+                )
+              })
+            }
+          </SeasonAdvancements>
         )}
       </Container>
     );

@@ -3,7 +3,13 @@ import Advancements from './Advancements';
 
 import { add, remove } from './actionCreators';
 import { getPath } from 'Routing/selectors';
-import { getCharacter, getReadOnly, getPlaybookAdvancements } from 'Monsterhearts/selectors';
+import { 
+  getCharacter, 
+  getReadOnly, 
+  getPlaybookAdvancements, 
+  listSeasonAdvancements,
+  getIsSeasonFinale
+} from 'Monsterhearts/selectors';
 
 const mapStateToProps = (state, {id, depth}) => {
   const { mainCharacter } = getCharacter(state, id);
@@ -15,7 +21,17 @@ const mapStateToProps = (state, {id, depth}) => {
     .map(advancement => ({
       ...advancement,
       selected: advancement.id === "+stat" && !!addingStat 
-    }))
+    }));
+
+  let seasonAdvancements = null;
+
+  if (selectedAdvancements.length >= 5 || getIsSeasonFinale(state)) {
+    seasonAdvancements = listSeasonAdvancements(state)
+      .map(advancement => ({
+        ...advancement,
+        selected: selectedAdvancements.includes(advancement.id)
+      }))
+  }
 
   selectedAdvancements.forEach(id => {
     const advancement = advancements.find(a => a.id === id && !a.selected) 
@@ -25,7 +41,7 @@ const mapStateToProps = (state, {id, depth}) => {
   })
   return {
     id, playbook, readOnly, here,
-    advancements,
+    advancements, seasonAdvancements,
     canLevel: experience >= 5 && !addingStat,
   };
 };

@@ -94,7 +94,7 @@ defmodule TabletalkWeb.MonsterheartsView do
     data |> Enum.map(fn x -> x.id end)
   end
 
-  def render("load.json", %{characters: characters, players: players, chats: chats, strings: strings, me: me}) do
+  def render("load.json", %{characters: characters, players: players, chats: chats, strings: strings, me: me, game: game}) do
     %{
       charactersById: characters |> by_id,
       characters: characters |> ids,
@@ -109,7 +109,9 @@ defmodule TabletalkWeb.MonsterheartsView do
         movesByName: Definitions.moves_by_name,
         advancementsById: Definitions.advancements_by_id,
         playbooks: Definitions.playbooks,
-        playbooksByName: Definitions.playbooks_by_name
+        playbooksByName: Definitions.playbooks_by_name,
+        seasonAdvances: Definitions.season_advances,
+        growingUpMoves: Definitions.growing_up_moves
       }
     }
   end
