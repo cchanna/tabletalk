@@ -69,7 +69,7 @@ class Monsterhearts extends Component {
       if (connected) {
         content = (
           <Content rx={{overlay}}>
-            <TabPicker path={path} here={here}/>
+            <TabPicker depth={here.length}/>
             <Chatbox overlay={overlay}/>
           </Content>
         )

@@ -14,7 +14,6 @@ import {
 const mapStateToProps = (state, {id, depth}) => {
   const { mainCharacter } = getCharacter(state, id);
   const readOnly = getReadOnly(state, id);
-  const { here } = getPath(state, depth);
 
   const { playbook, addingStat, experience, advancements: selectedAdvancements } = mainCharacter;
   const advancements = getPlaybookAdvancements(state, playbook)
@@ -40,7 +39,7 @@ const mapStateToProps = (state, {id, depth}) => {
     }
   })
   return {
-    id, playbook, readOnly, here,
+    id, playbook, readOnly, depth,
     advancements, seasonAdvancements,
     canLevel: experience >= 5 && !addingStat,
   };

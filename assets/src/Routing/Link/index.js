@@ -4,10 +4,14 @@ import Link from './Link';
 import { goTo } from '../actionCreators';
 import { exactMatch, subPath } from 'utils/pathTools';
 
-const mapStateToProps = ({path}, ownProps) => {
+const mapStateToProps = ({path}, {to = [], depth = 0, ...ownProps}) => {
+  const inputTo = Array.isArray(to) ? to : [to.toString()];
+  const fullTo = path.slice(0, depth).concat(inputTo);
+
   return {
-    exact: exactMatch(path, ownProps.to),
-    active: subPath(ownProps.to, path),
+    to: fullTo,
+    exact: exactMatch(path, fullTo),
+    active: subPath(fullTo, path),
     ...ownProps
   };
 };

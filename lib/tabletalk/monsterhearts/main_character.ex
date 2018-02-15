@@ -26,6 +26,8 @@ defmodule Tabletalk.Monsterhearts.MainCharacter do
     field :harm, :integer, default: 0
     field :experience, :integer, default: 0
 
+    field :is_retired, :boolean, default: false
+
     has_many :moves, Move, on_delete: :delete_all
     has_many :advancements, Advancement, on_delete: :delete_all
 
@@ -37,7 +39,7 @@ defmodule Tabletalk.Monsterhearts.MainCharacter do
     character
     |> cast(attrs, [
       :player_id, :playbook, :look, :eyes, :origin, :hot, :cold,
-      :volatile, :dark, :harm, :experience
+      :volatile, :dark, :harm, :experience, :is_retired
     ])      
     |> cast_assoc(:moves)
     |> validate_required([:player_id, :playbook])

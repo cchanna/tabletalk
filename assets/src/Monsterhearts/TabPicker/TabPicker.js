@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { number, object, arrayOf } from 'prop-types'
+import { number, string, bool } from 'prop-types'
+import { tabsShape } from './propTypes';
 import rx from 'resplendence'
   
 import BigTabList from './BigTabList';
@@ -7,8 +8,9 @@ import TabList from './TabList';
 import MainCharacter from 'Monsterhearts/MainCharacter';
 import NewCharacter from 'Monsterhearts/NewCharacter';
 import SideCharacters from 'Monsterhearts/SideCharacters';
+import RetiredCharacters from './RetiredCharacters';
 
-import route from 'Routing/route';
+import route from 'Routing/routeNext';
 
 rx`
 @import '~common/styles';
@@ -36,45 +38,35 @@ const pages = [
   {
     path: "new",
     component: NewCharacter
+  },
+  {
+    path: "retired",
+    component: RetiredCharacters,
+    properties: {retired: true}
+  },
+  {
+    path: "*",
+    component: MainCharacter
+  },
+  {
+    component: BigTabList
   }
 ];
 
 class TabPicker extends Component {
   static propTypes = {
-    me: number.isRequired,
-    charactersById: object.isRequired,
-    characters: arrayOf(number).isRequired
+    tabs: tabsShape.isRequired,
+    depth: number.isRequired,
+    next: string
   }
 
   render() {
-    const { me, charactersById, characters, path, here } = this.props;
-    const tabs = characters
-      .filter(id => charactersById[id].mainCharacter)
-      .map(id => {
-        const {name, mainCharacter, playerId} = charactersById[id];
-        return {
-          id, 
-          name: name ? name : ("The "+ mainCharacter.playbook), 
-          mine: (playerId === me)
-        };
-      })
+    const { tabs, depth, next, showRetired } = this.props;
 
-    let window = route(path, here, pages);
-    if (window === null) {
-      if (path.length > 0) {
-        const [id, ...newPath] = path;
-        if (charactersById[id]) {
-          const newHere = [...here, id];
-          window = <MainCharacter path={newPath} here={newHere}/>
-        }
-      } 
-    }
-    if (window === null) {
-      return <BigTabList tabs={tabs} here={here}/>
-    }
+    let window = route(depth, next, pages, {tabs, showRetired});
     return (
       <Container>
-        <TabList tabs={tabs} here={here}/>
+        <TabList {...{tabs, depth, showRetired}}/>
         <Content>
           {window}
         </Content>

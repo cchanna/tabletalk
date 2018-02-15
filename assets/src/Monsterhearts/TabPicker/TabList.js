@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { string, number, bool, shape, arrayOf } from 'prop-types'
+import { tabsShape } from './propTypes';
 import rx from 'resplendence'
   
 import Link from 'Routing/Link';
@@ -24,13 +25,16 @@ rx`
     color: $background;
   }
   &:not(.active) {
+    &.mine {
+      color: lighten($accent, 20%);
+    }
     &:hover, :focus {
       color: $accent;
       padding-left: 15px;
       padding-right: 15px;
     }
     &:active {
-      color: lighten($accent, 10%);
+      color: darken($accent, 30%);
     }
   }
 }
@@ -59,24 +63,19 @@ const NewCharacter = rx(Link)`
 
 class TabList extends Component {
   static propTypes = {
-    tabs: arrayOf(shape({
-      id: number.isRequired,
-      name: string.isRequired,
-      mine: bool.isRequired
-    })),
-    here: arrayOf(string).isRequired
+    tabs: tabsShape.isRequired,
+    depth: number.isRequired
   }
   
   render() {
-    const { tabs, here } = this.props;
+    const { tabs, depth } = this.props;
     const tabComponents = tabs.map(({id, name, mine}) => 
-      <Tab to={[...here, id.toString()]} key={id} rx={{mine}}>{name}</Tab>
+      <Tab depth={depth} to={id} key={id} rx={{mine}}>{name}</Tab>
     )
     return (
       <Container>
         {tabComponents}
-        <Tab to={[...here, "side"]}>side&nbsp;characters</Tab>
-        <NewCharacter to={[...here, "new"]}>+</NewCharacter> 
+        <NewCharacter depth={depth} to={"new"}>+</NewCharacter> 
       </Container>
     );
   }

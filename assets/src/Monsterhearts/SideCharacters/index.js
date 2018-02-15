@@ -1,7 +1,11 @@
 import { connect } from 'react-redux'
 import SideCharacters from './SideCharacters';
 
-const mapStateToProps = ({monsterhearts}, {path, here}) => {
+import { getPath } from 'Routing/selectors';
+
+const mapStateToProps = (state, {depth}) => {
+  const { path, here } = getPath(state, depth);
+  const { monsterhearts } = state;
   const { charactersById, characters, playersById, me } = monsterhearts;
   const sideCharacters = characters
     .filter(id => !charactersById[id].mainCharacter);

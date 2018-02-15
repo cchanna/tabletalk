@@ -9,16 +9,25 @@ import { serverActionCreator } from 'Monsterhearts/serverActionCreator';
 import actionCreator from 'utils/actionCreator';
 
 import { createAdvancement } from '../../actionCreators';
-
+import { goTo } from 'Routing/actionCreators';
+import { getPath } from 'Routing/selectors';
+ 
 const addStat = actionCreator(MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT, "id");
 const cancelAddStat = actionCreator(MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT_CANCEL, "id");
 const deleteAdv = serverActionCreator(MONSTERHEARTS_CHARACTER_ADVANCEMENT_DELETE, "id", "advancementId");
 
-export const add = ({id, advancementId}) => {
+export const add = ({id, advancementId}) => (dispatch, getState) => {
   if (advancementId === "+stat") {
-    return addStat({id});
+    dispatch(addStat({id}));
   }
-  return createAdvancement({id, advancementId});
+  else {
+    if (advancementId === "rtire") {
+      const state = getState();
+      const { here } = getPath(state, 2);
+      dispatch(goTo([...here, "new"]));
+    }
+    return dispatch(createAdvancement({id, advancementId}));
+  }
 }
 
 export const remove = ({id, advancementId}) => (dispatch, getState) => {

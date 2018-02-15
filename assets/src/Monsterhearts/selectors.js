@@ -1,10 +1,10 @@
 const here = state => state.monsterhearts;
 
-const getMe = state => here(state).me;
+export const getMe = state => here(state).me;
 const getPlayer = (state, id) => here(state).playersById[id];
 
 const getCharactersById = state => here(state).charactersById;
-const getCharacters = state => here(state).characters;
+export const getCharacters = state => here(state).characters;
 export const getCharacter = (state, id) => getCharactersById(state)[id];
 
 export const getMyCharacters = state => {
@@ -66,4 +66,43 @@ export const getIsSeasonFinale = state => {
     .some(character => character.mainCharacter.advancements
       .some(advancement => seasonAdvancements.includes(advancement))
     );
+}
+
+export const getCharacterTabs = (state, {retired = false} = {}) => {
+  const characters = getCharacters(state);
+  const me = getMe(state);
+
+  const mainCharacters = characters
+    .map(id => ({id, ...getCharacter(state, id)}))
+    .filter(({mainCharacter}) => mainCharacter);
+
+  
+  const tabs = mainCharacters
+    .filter(({mainCharacter}) => mainCharacter.isRetired === retired)
+    .map(({id, name, mainCharacter}) => {
+      const { playerId } = mainCharacter;
+      return {
+        id: id.toString(), 
+        name: name ? name : ("The\u00A0"+ mainCharacter.playbook), 
+        mine: (playerId === me)
+      };
+    });
+  
+  if (retired) return tabs;
+  
+  tabs.push({
+    id: "side",
+    name : "side\u00A0characters",
+    mine: false
+  })
+  
+  if (tabs.length - 1 < mainCharacters.length) {
+    tabs.push({
+      id: "retired",
+      name: "retired\u00A0characters",
+      mine: false
+    })
+  }
+
+  return tabs;
 }

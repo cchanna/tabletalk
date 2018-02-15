@@ -6,8 +6,11 @@ import MainCharacter from './MainCharacter';
 import isEditDone from './editDone';
 
 import { replace, goBack } from 'Routing/actionCreators';
+import { getPath } from 'Routing/selectors';
 
-const mapStateToProps = ({monsterhearts}, {path, here}) => {
+const mapStateToProps = (state, {depth}) => {
+  const { path, here } = getPath(state, depth);
+  const { monsterhearts } = state;
   const { charactersById, playersById, me } = monsterhearts;
   const id = parseInt(here[2], 10);
   const character = charactersById[id];

@@ -293,8 +293,13 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     main_character = character.main_character
     Monsterhearts.create_advancement!(%{"main_character_id" => main_character.id, "name" => name})
     Monsterhearts.update_main_character!(main_character, %{"experience" => 0})
-    text = Definitions.advancements_by_id[name].text |> String.replace("{playbook}", main_character.playbook)
-    {:ok, "#{get_name(character)} advanced and chose \"#{text}\"."}
+    if name === "rtire" do
+      Monsterhearts.update_main_character!(main_character, %{"is_retired" => true})
+      {:ok, "#{get_name(character)} retired."}
+    else
+      text = Definitions.advancements_by_id[name].text |> String.replace("{playbook}", main_character.playbook)
+      {:ok, "#{get_name(character)} advanced and chose \"#{text}\"."}
+    end
   end
 
   def dispatch("character_advancement_delete", %{"id" => id, "advancementId" => name}, _player_id, _game_id) do
@@ -303,8 +308,13 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     main_character.advancements 
     |> Enum.find(fn c -> c.name === name end)
     |> Monsterhearts.delete_advancement!()
-    text = Definitions.advancements_by_id[name].text |> String.replace("{playbook}", main_character.playbook)
-    {:ok, "#{get_name(character)} unselected their advancement \"#{text}\"."}
+    if name === "rtire" do
+      Monsterhearts.update_main_character!(main_character, %{"is_retired" => false})
+      {:ok, "#{get_name(character)} un-retired."}
+    else
+      text = Definitions.advancements_by_id[name].text |> String.replace("{playbook}", main_character.playbook)
+      {:ok, "#{get_name(character)} unselected their advancement \"#{text}\"."}
+    end
   end
 
   def dispatch("chat", %{"text" => text}, player_id, _game_id) do

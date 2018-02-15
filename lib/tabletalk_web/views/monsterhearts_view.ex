@@ -39,7 +39,8 @@ defmodule TabletalkWeb.MonsterheartsView do
       look: main_character.look,
       eyes: main_character.eyes,
       origin: main_character.origin,
-      advancements: main_character.advancements |> Enum.map(fn x -> x.name end)
+      advancements: main_character.advancements |> Enum.map(fn x -> x.name end),
+      isRetired: main_character.is_retired
     }
   end
 
