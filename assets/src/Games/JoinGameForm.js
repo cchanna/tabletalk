@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import rx from 'resplendence'
-import { func, arrayOf, string } from 'prop-types';
+import { func, arrayOf, string, shape, bool } from 'prop-types';
 
 import { Formik, Form } from 'formik';
 import { Input, Label, Error, SubmitButton } from './FormComponents';
@@ -37,6 +37,15 @@ const FormBody = ({values, isSubmitting, errors}) => {
     </Container>
   )
 }
+FormBody.propTypes = {
+  values: shape({
+    name: string.isRequired
+  }),
+  isSubmitting: bool.isRequired,
+  errors: shape({
+    name: string
+  })
+}
 
 class JoinGameForm extends Component {
   static propTypes = {
@@ -56,7 +65,7 @@ class JoinGameForm extends Component {
     return errors;
   }
 
-  handleSubmit = ({name}, { setSubmitting, setErrors }) => {
+  handleSubmit = ({name}, { setSubmitting }) => {
     const { joinGame } = this.props;
     joinGame(name.trim())
       .catch(() => {

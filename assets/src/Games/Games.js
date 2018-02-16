@@ -142,12 +142,20 @@ class Games extends React.Component {
 
     error: bool.isRequired,
     lastLoaded: instanceOf(Date),
-
+    loading: bool.isRequired,
+    failed: bool.isRequired,
+    sizes: arrayOf(string).isRequired,
+    
     getGame: func.isRequired,
+    getGames: func.isReuqired,
     goTo: func.isRequired,
     openGame: func.isRequired,
     openNewGame: func.isRequired,
     joinGame: func.isRequired,
+    startJoinGame: func.isRequired,
+    cancelJoinGame: func.isRequired,
+    setInput: func.isRequired,
+    join: func.isRequired
   }
 
   route = () => {

@@ -47,7 +47,7 @@ export const getGames = () => (dispatch, getState) => {
       dispatch(setGamesList({list}));
     })
     .catch(catchStatus(dispatch))
-    .catch(err => dispatch(failLoadingGames()));
+    .catch(() => dispatch(failLoadingGames()));
 }
 
 export const getGame = ({slug}) => (dispatch, getState) => {

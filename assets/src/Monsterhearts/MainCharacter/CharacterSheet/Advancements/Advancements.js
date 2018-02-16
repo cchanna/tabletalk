@@ -10,10 +10,6 @@ const SeasonAdvancements = rx('div')`
   margin-top: 10px;
 `;
 
-const SeasonAdvancementsDescription = rx('div')`
-  font-style: italic;
-`
-
 class Advancements extends Component {
   static propTypes = {
     id: number.isRequired,
@@ -32,6 +28,7 @@ class Advancements extends Component {
       text: string.isRequired,
       selected: bool.isRequired
     })),
+    depth: number.isRequired,
     here: arrayOf(string)
   }
 

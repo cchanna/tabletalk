@@ -1,4 +1,4 @@
-import { slowServerActionCreator, serverActionCreator } from 'Monsterhearts/serverActionCreator';
+import { serverActionCreator } from 'Monsterhearts/serverActionCreator';
 
 import {
   MONSTERHEARTS_CHARACTER_SIDE_EDIT

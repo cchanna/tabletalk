@@ -27,8 +27,8 @@ export const getReadOnly = (state, id) => {
 export const getDefinitions = state => here(state).definitions;
 export const getPlaybooks = state => getDefinitions(state).playbooks;
 export const getPlaybookDefinition = (state, playbook) => getDefinitions(state).playbooksByName[playbook]; 
-const getMovesByName = (state, name) => getDefinitions(state).movesByName;
-const getAdvancementsById = (state, id) => getDefinitions(state).advancementsById;
+const getMovesByName = state => getDefinitions(state).movesByName;
+const getAdvancementsById = state => getDefinitions(state).advancementsById;
 
 export const getPlaybookAdvancements = (state, playbook) => {
   const advancementsById = getAdvancementsById(state);

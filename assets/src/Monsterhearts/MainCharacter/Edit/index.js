@@ -5,7 +5,7 @@ import { compose } from 'redux';
 import { goBack, replace } from 'Routing/actionCreators';
 import editDone from '../editDone';
 
-const mapStateToProps = (state, {here, sizes}) => {
+const mapStateToProps = (state, {here}) => {
   const id = parseInt(here[2], 10);
   const { monsterhearts } = state;
   const { charactersById, playersById, me } = monsterhearts;

@@ -45,6 +45,7 @@ class Monsterhearts extends Component {
     sizes: arrayOf(string).isRequired,
     loaded: bool.isRequired,
     connected: bool.isRequired,
+    here: arrayOf(string).isRequired,
     load: func.isRequired
   }
 
@@ -60,8 +61,7 @@ class Monsterhearts extends Component {
   }
   
   render() {
-    const { sizes, loaded, connected, path, here } = this.props;
-    let content = null;
+    const { sizes, loaded, connected, here } = this.props;
     const overlay = sizes.includes("mobile");
     // const overlay = true;
     if (loaded) {

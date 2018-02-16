@@ -78,7 +78,6 @@ class Stats extends Component {
   render() {
     const { hot, cold, volatile, dark, stats, id, setStats, sizes } = this.props;
     const { array } = this.state;
-    let content;
     const selected = [
       arraySelected(hot, cold, volatile, dark, stats[0]),
       arraySelected(hot, cold, volatile, dark, stats[1]),

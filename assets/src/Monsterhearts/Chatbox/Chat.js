@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { string, number, bool, func, shape, object, arrayOf, instanceOf } from 'prop-types'
+import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 import rx from 'resplendence'
   
 rx`
@@ -79,14 +79,15 @@ const RollResult = rx('div')`
 const convertLog = (text, playersById) => {
   const regex = /{(.+?):(\d+)}/g;
   const players = [];
-  let m;
-  while ((m = regex.exec(text)) !== null) {
+  let m = regex.exec(text);
+  while (m !== null) {
     if (m.index === regex.lastIndex) {
       regex.lastIndex++;
     }
     if (m[1] === "player" && !players.includes(m[2])) {
       players.push(m[2]);
     }
+    m = regex.exec(text);
   }
   players.forEach(id => {
     text = text.replace(`{player:${id}}`, playersById[id].name);
@@ -111,12 +112,12 @@ class Chat extends Component {
       bonus: number.isRequired
     }),
     playersById: object.isRequired,
-    mine: bool.isRequired
+    mine: bool.isRequired,
+    newest: bool.isRequired
   }
   
   render() {
     const { talk, roll, mine, newest, playersById } = this.props;
-    let content = null;
 
     if (talk) {
       if (talk.isLog) {

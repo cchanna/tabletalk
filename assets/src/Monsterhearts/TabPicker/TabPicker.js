@@ -57,6 +57,7 @@ class TabPicker extends Component {
   static propTypes = {
     tabs: tabsShape.isRequired,
     depth: number.isRequired,
+    showRetired: bool.isRequired,
     next: string
   }
 

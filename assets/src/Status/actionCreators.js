@@ -14,7 +14,7 @@ const defaultReason = "Tabletalk is down right now. Sorry!";
 
 export const getStatus = () => dispatch => {
   api.get()
-    .then(_response => dispatch(setStatusUp()))
+    .then(() => dispatch(setStatusUp()))
     .catch(error => {
       if (error.response && error.response.status === 503) {
         error.response.json()

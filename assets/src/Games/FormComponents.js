@@ -1,4 +1,5 @@
 import React from 'react';
+import { string, bool, node } from 'prop-types';
 import rx from 'resplendence';
 
 import { Field } from 'formik';
@@ -60,7 +61,13 @@ export const InputStyle = rx("input")`
   @include input;
   padding-left: 9px; 
 `
-const withEmpty = Node => ({field, ...props}) => <Node rx={{empty: field.value === ''}} {...field} {...props} />
+const withEmpty = Node => {
+  const result = ({field, ...props}) => <Node rx={{empty: field.value === ''}} {...field} {...props} />
+  result.displayName = `withEmpty(${Node.displayName || Node.name || Node.toString()})`
+  result.propTypes = {
+    field: string.isRequired
+  }
+}
 const InputWithEmpty = withEmpty(InputStyle);
 export const Input = props => <Field component={InputWithEmpty} {...props}/>
 
@@ -134,3 +141,8 @@ export const SubmitButton = ({isSubmitting, isValid, children}) => (
     {isSubmitting ? <Spinner style={{fontSize: "5px"}}/> : children}
   </Button> 
 )
+SubmitButton.propTypes = {
+  isSubmitting: bool.isRequired,
+  isValid: bool.isRequired,
+  children: node.isRequired
+}

@@ -2,7 +2,6 @@ import { connect } from 'react-redux'
 import Advancements from './Advancements';
 
 import { add, remove } from './actionCreators';
-import { getPath } from 'Routing/selectors';
 import { 
   getCharacter, 
   getReadOnly, 

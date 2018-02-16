@@ -88,7 +88,8 @@ class OptionsForm extends Component {
     name: string.isRequired,
     value: string,
     options: arrayOf(string).isRequired,
-    onSubmit: func.isRequired
+    onSubmit: func.isRequired,
+    id: number.isRequired
   }
 
   constructor(props) {
@@ -123,7 +124,7 @@ class OptionsForm extends Component {
   }
   
   render() {
-    const { name, options, onSubmit } = this.props;
+    const { name, options } = this.props;
     const { value } = this.state;
     const radios = options.map((option, i) => {
       const id = `monsterhearts-character-edit-${name}-${i}`;

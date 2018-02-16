@@ -35,8 +35,7 @@ const Button = rx('button')`
     }
   }
 `
-const Stat = ({value, name, addStat}) => 
-  <Button>{name}{bonusString(value)}</Button>
+
 
 class Stats extends Component {
   static propTypes = {
@@ -45,6 +44,8 @@ class Stats extends Component {
     cold: number,
     volatile: number,
     dark: number,
+    readOnly: bool.isRequired,
+    addingStat: bool.isRequired,
     createAdvancement: func.isRequired
   }
 

@@ -45,6 +45,11 @@ const Look = ({name, value}) =>
     <LookName>{name}: </LookName>
     {value}
   </LookContainer>
+Look.propTypes = {
+  name: string.isRequired,
+  value: string
+}
+
 const Looks = rx('div')`
 
 `
@@ -59,20 +64,19 @@ class CharacterSheet extends Component {
     eyes: string,
     look: string,
     origin: string,
+    
     path: arrayOf(string).isRequired,
     here: arrayOf(string).isRequired,
-    playbookDefinition: shape({
-      darkestSelf: string.isRequired,
-      sexMove: string.isRequired,
-      advice: string.isRequired
-    }),
+    darkestSelf: string.isRequired,
+    sexMove: string.isRequired,
+    advice: string.isRequired,
     moves: arrayOf(string).isRequired,
     playbook: string.isRequired
   }
   
   render() {
     const { 
-      id, hot, cold, volatile, dark, eyes, look, origin, path, here, 
+      id, eyes, look, origin, path, here, 
       darkestSelf, sexMove, advice, moves, playbook 
     } = this.props;
       

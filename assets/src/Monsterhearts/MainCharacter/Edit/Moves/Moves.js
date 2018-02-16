@@ -7,7 +7,6 @@ import DeleteableMove from './DeleteableMove';
 import movesInstructions from 'Monsterhearts/movesInstructions';
 import Link from 'Routing/Link';
 import AddMove from '../../AddMove';
-import route from 'Routing/route';
 
 rx`
 @import '~common/styles';
@@ -56,10 +55,11 @@ class Moves extends Component {
     playbookMoves: arrayOf(string).isRequired, 
     startingMoves: arrayOf(string).isRequired,
     startingMoveChoices: number.isRequired,
-    showBackButton: bool.isRequired,
     createMove: func.isRequired,
     deleteMove: func.isRequired,
-    goBack: func.isRequired
+    goBack: func.isRequired,
+    path: arrayOf(string).isRequired,
+    here: arrayOf(string).isRequired
   }
 
   constructor(props) {
@@ -77,7 +77,7 @@ class Moves extends Component {
   }
   
   render() {
-    const { id, moves, playbookMoves, startingMoves, startingMoveChoices, createMove, deleteMove, path, here, showBackButton } = this.props;
+    const { id, moves, playbookMoves, startingMoves, startingMoveChoices, createMove, deleteMove, path, here } = this.props;
     const { initial } = this.state;
     if (initial) {
       const content = playbookMoves

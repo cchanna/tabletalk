@@ -83,10 +83,13 @@ class String extends Component {
     theirId: number.isRequired,
     myStrings: number.isRequired,
     theirStrings: number.isRequired,
-    readOnly: bool.isRequired
-    // addString: func.isRequired,
-    // spendString: func.isRequired,
-    // deleteString: func.isRequired
+    readOnly: bool.isRequired,
+    fromStringId: number.isRequired,
+    toStringId: number.isRequired,
+    slowActionsById: object.isRequired,
+    createString: func.isRequired,
+    addString: func.isRequired,
+    spendString: func.isRequired,
   }
 
   state = {
@@ -139,7 +142,7 @@ class String extends Component {
   }
   
   render() {
-    const { name, myId, theirId, myStrings, theirStrings, deleteString, readOnly } = this.props;
+    const { name, myStrings, theirStrings, readOnly } = this.props;
     const { giveActionId, takeActionId } = this.state;
     let stringButton = null;
     if (myStrings) {

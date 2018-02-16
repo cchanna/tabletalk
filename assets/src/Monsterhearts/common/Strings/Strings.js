@@ -36,7 +36,10 @@ class Strings extends Component {
     stringsFrom: arrayOf(number).isRequired, 
     stringsById: object.isRequired, 
     charactersById: object.isRequired,
-    readOnly: bool.isRequired
+    readOnly: bool.isRequired,
+    addString: func.isRequired,
+    createString: func.isRequired,
+    spendString: func.isRequired
   }
   
   render() {
@@ -50,7 +53,7 @@ class Strings extends Component {
 
     stringsTo
       .forEach(id => {
-        const {to, from, value} = stringsById[id]
+        const {to, value} = stringsById[id]
         allStrings[to] = {
           to: value,
           from: 0,
@@ -60,7 +63,7 @@ class Strings extends Component {
       });
     stringsFrom
       .forEach(id => {
-        const {to, from, value} = stringsById[id]
+        const {from, value} = stringsById[id]
         if (allStrings[from]) {
           allStrings[from].from = value;
           allStrings[from].fromStringId = id;

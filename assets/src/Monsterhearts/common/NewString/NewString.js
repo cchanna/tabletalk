@@ -31,7 +31,7 @@ class NewString extends Component {
   }
 
   createString = ({from, to}) => {
-    const {createString, goBack} = this.props;
+    const {createString} = this.props;
     const actionId = createString({from, to});
     this.setState({actionId}); 
   }
@@ -47,7 +47,7 @@ class NewString extends Component {
   }
   
   render() {
-    const { id, characters, charactersById, createString } = this.props;
+    const { id, characters, charactersById } = this.props;
     const { actionId } = this.state;
     let content;
     if (!actionId) {

@@ -1,6 +1,7 @@
 import React from 'react';
 
-export default (path, here, pages, extraProperties = {}) => {
+// eslint-disable-next-line react/prop-types
+const route = (path, here, pages, extraProperties = {}) => {
   const [where, ...newPath] = path;
   let fallBack = null;
   for (let i=0; i < pages.length; i++) {
@@ -27,3 +28,5 @@ export default (path, here, pages, extraProperties = {}) => {
   }
   return null;
 }
+
+export default route;

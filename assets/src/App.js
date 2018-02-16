@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { bool, arrayOf, string, func } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import rx from 'resplendence';
@@ -74,6 +75,21 @@ const FloatAbove = rx('div')`
 `
 
 class App extends Component {
+  static propTypes = {
+    up: bool.isRequired,
+    googleLoggedIn: bool.isRequired,
+    loginReady: bool.isRequired,
+    path: arrayOf(string).isRequired,
+    loggedIn: bool.isRequired,
+    downMessage: string,
+    loggingIn: bool.isRequired,
+    ready: bool.isRequired,
+    getStatus: func.isRequired,
+    login: func.isRequired,
+    replace: func.isRequired,
+    signout: func.isRequired,
+  }
+
   componentDidMount() {
     const { getStatus } = this.props;
     getStatus();

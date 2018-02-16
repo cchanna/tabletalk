@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 import rx from 'resplendence'
   
-import AutoSizeTextArea from 'react-autosize-textarea';
-
 import Markdown from 'Monsterhearts/common/Markdown';
 
 import CommonNotes from '../Notes';
@@ -31,43 +29,6 @@ const Name = rx('h2')`
   font-weight: bold;
   margin: 0;
   padding: 0;
-`
-const Notes = rx('div')`
-  margin-top: 10px;
-`
-const NotesTextArea = rx(AutoSizeTextArea)`
-  @include input-style;
-  width: 100%;
-  box-sizing: border-box;
-  &.hidden {
-    opacity: 0;
-    position: absolute;
-    pointer-events: none;
-  }
-`
-const NotesDisplay = rx('button')`
-  @include button;  
-  @include input-style;
-  width: 100%;
-  margin-bottom: 5px;
-  &:disabled {
-    border-color: transparent;
-  }
-  &:not(:disabled):active {
-    opacity: 0;
-  }
-  &.hidden {
-    display: none;
-    position: absolute;
-    pointer-events: none;
-  }
-  &.placeholder {
-    color: darken($foreground, 50%);
-  }
-  p:not(:last-child) {
-    margin-bottom: 15px;
-  }
-  text-align: left;
 `
 
 class Move extends Component {

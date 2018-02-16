@@ -1,17 +1,7 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
-import rx from 'resplendence'
   
 import { Socket } from 'phoenix';
-
-rx`
-@import '~common/styles';
-@import '~common/colors';
-`
-
-const Container = rx('div')`
-
-`
 
 class SocketManager extends Component {
   static propTypes = {
@@ -77,7 +67,7 @@ class SocketManager extends Component {
     this.channel.join()
     .receive("ok", connect)
     .receive("error", ({reason}) => console.error("Failed join", reason))
-    .receive("timeout", () => console.log("Networking issue. Still waiting..."))
+    .receive("timeout", () => console.error("Networking issue. Still waiting..."))
   }
   
   componentWillUnmount() {

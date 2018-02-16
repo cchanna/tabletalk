@@ -104,7 +104,6 @@ class Notes extends Component {
   render() {
     const { disabled, readOnly } = this.props;
     const { value, editing } = this.state;
-    let valueComponent = null;
     if (readOnly && !this.props.value) return null;
     return (
       <Container>
