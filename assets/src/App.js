@@ -77,7 +77,7 @@ const FloatAbove = rx('div')`
 class App extends Component {
   static propTypes = {
     up: bool.isRequired,
-    googleLoggedIn: bool.isRequired,
+    googleJwt: string,
     loginReady: bool.isRequired,
     path: arrayOf(string).isRequired,
     loggedIn: bool.isRequired,
@@ -96,11 +96,11 @@ class App extends Component {
   }
   componentDidUpdate(prevProps) {
     {
-      const { up, googleLoggedIn, login } = this.props;
+      const { up, googleJwt, login } = this.props;
 
-      const canLogIn = (up && googleLoggedIn);
-      const couldLogIn = (prevProps.up && prevProps.googleLoggedIn);
-      if (!couldLogIn && canLogIn) {
+      const canLogIn = (up && googleJwt);
+      const couldLogIn = (prevProps.up && prevProps.googleJwt);
+      if (canLogIn && (!couldLogIn || googleJwt !== prevProps.googleJwt)) {
         login();
       }
     }
@@ -160,7 +160,7 @@ const mapStateToProps = ({auth, path, status}) => {
     up: status.up,
     downMessage: status.message,
     ready: auth.ready,
-    googleLoggedIn: !!auth.googleJwt,
+    googleJwt: auth.googleJwt,
     loggedIn: !!auth.jwt,
     loggingIn: auth.pending,
     path
