@@ -32,7 +32,7 @@
   resize: none;
   background: transparent;
   border-left: 2px solid transparent;
-  transition-property: color, background-color, border;
+  transition-property: padding, color, background-color, border;
   transition-duration: 150ms;
   cursor: default;
   &::placeholder {

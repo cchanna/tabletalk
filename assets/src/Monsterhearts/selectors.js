@@ -106,3 +106,19 @@ export const getCharacterTabs = (state, {retired = false} = {}) => {
 
   return tabs;
 }
+
+export const getDarkestSelf = (state, id) => {
+  const { mainCharacter } = getCharacter(state, id);
+  if (!mainCharacter) return null;
+  const { darkestSelf, playbook } = mainCharacter;
+  if (darkestSelf !== null) return darkestSelf;
+  const playbookDef = getPlaybookDefinition(state, playbook);
+  if (!playbookDef) return null;
+  return playbookDef.darkestSelf;
+}
+export const getCanCustomizeDarkestSelf = (state, id) => {
+  if (getReadOnly(state, id)) return false;
+  const { mainCharacter } = getCharacter(state, id);
+  if (!mainCharacter) return false;
+  return mainCharacter.advancements.includes("rrds"); 
+}

@@ -139,7 +139,7 @@ class Chatbox extends Component {
   static propTypes = {
     overlay: bool.isRequired,
     collapsed: bool.isRequired,
-    chats: arrayOf(string).isRequired,
+    chats: arrayOf(number).isRequired,
     chatsById: object.isRequired,
     playersById: object.isRequired,
     me: number.isRequired,

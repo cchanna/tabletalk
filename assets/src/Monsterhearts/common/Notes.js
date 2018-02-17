@@ -47,6 +47,10 @@ const Display = rx('button')`
     color: darken($foreground, 50%);
   }
   text-align: left;
+  &.readOnly {
+    border-left-width: 0;
+    padding: 0;
+  }
 `
 
 class Notes extends Component {
@@ -123,7 +127,8 @@ class Notes extends Component {
           disabled={disabled || readOnly}
           rx={{
             hidden: editing,
-            placeholder: !this.props.value
+            placeholder: !this.props.value,
+            readOnly
           }}
         >
           <Markdown text={this.props.value || "notes"}/>

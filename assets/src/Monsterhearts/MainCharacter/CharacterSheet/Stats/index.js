@@ -11,7 +11,7 @@ const mapStateToProps = ({monsterhearts}, {id}) => {
   } = mainCharacter;
   const readOnly = (playerId != me) && !playersById[me].isGM;
   return {
-    id, hot, cold, volatile, dark, readOnly, addingStat
+    id, hot, cold, volatile, dark, readOnly, addingStat: !!addingStat
   };
 };
 

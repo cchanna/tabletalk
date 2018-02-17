@@ -293,12 +293,16 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     main_character = character.main_character
     Monsterhearts.create_advancement!(%{"main_character_id" => main_character.id, "name" => name})
     Monsterhearts.update_main_character!(main_character, %{"experience" => 0})
-    if name === "rtire" do
-      Monsterhearts.update_main_character!(main_character, %{"is_retired" => true})
-      {:ok, "#{get_name(character)} retired."}
-    else
-      text = Definitions.advancements_by_id[name].text |> String.replace("{playbook}", main_character.playbook)
-      {:ok, "#{get_name(character)} advanced and chose \"#{text}\"."}
+    case name do
+      "rtire" -> 
+        Monsterhearts.update_main_character!(main_character, %{"is_retired" => true})
+        {:ok, "#{get_name(character)} retired."}
+      "rrds" -> 
+        Monsterhearts.update_main_character!(main_character, %{"darkest_self" => Definitions.playbooks_by_name()[main_character.playbook].darkestSelf})
+        {:ok, "#{get_name(character)} is changing their darkest self."}
+      _ ->
+        text = Definitions.advancements_by_id[name].text |> String.replace("{playbook}", main_character.playbook)
+        {:ok, "#{get_name(character)} advanced and chose \"#{text}\"."}
     end
   end
 
@@ -317,13 +321,27 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     end
   end
 
+  def dispatch("character_darkest_self_set", %{"id" => id, "value" => value}, _player_id, _game_id) do
+    character = Monsterhearts.get_character!(id)
+    main_character = character.main_character
+    if Enum.any?(main_character.advancements, fn(a) -> a.name === "rrds" end) do
+      main_character
+      |> Monsterhearts.update_main_character!(%{
+        "darkest_self" => value
+      })
+      {:ok, "#{get_name(character)} edited their darkest self"}
+    else
+      {:error, "You need the 'rewrite your darkest self' season advancement to do that."}
+    end
+  end
+
   def dispatch("chat", %{"text" => text}, player_id, _game_id) do
     {:ok, nil, make_chat(text, player_id) |> to_json()}
   end
   
   
-  def dispatch(_else, action, _player_id, _game_id) do
-    Logger.error("Failed to dispatch action")
+  def dispatch(bad_id, action, _player_id, _game_id) do
+    Logger.error("Failed to dispatch action #{bad_id}")
     Logger.error inspect action
     {:error, "no relevant action"}
   end

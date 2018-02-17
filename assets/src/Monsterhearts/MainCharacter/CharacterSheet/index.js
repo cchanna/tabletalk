@@ -10,12 +10,12 @@ const mapStateToProps = ({monsterhearts}, {here, path}) => {
     eyes, look, origin, moves, playbook 
   } = mainCharacter;
   const playbookDefinition = playbooksByName[playbook];
-  const { darkestSelf, sexMove, advice } = playbookDefinition;
+  const { sexMove, advice } = playbookDefinition;
   return {
     id, path, here,
     eyes, look, origin,
     moves, playbook,
-    darkestSelf, sexMove, advice
+    sexMove, advice
   };
 };
 

@@ -11,6 +11,7 @@ import Harm from './Harm';
 import Experience from './Experience';
 import Conditions from 'Monsterhearts/common/Conditions';
 import Advancements from './Advancements';
+import DarkestSelf from './DarkestSelf';
 
 import Markdown from 'Monsterhearts/common/Markdown';
 
@@ -67,7 +68,6 @@ class CharacterSheet extends Component {
     
     path: arrayOf(string).isRequired,
     here: arrayOf(string).isRequired,
-    darkestSelf: string.isRequired,
     sexMove: string.isRequired,
     advice: string.isRequired,
     moves: arrayOf(string).isRequired,
@@ -77,7 +77,7 @@ class CharacterSheet extends Component {
   render() {
     const { 
       id, eyes, look, origin, path, here, 
-      darkestSelf, sexMove, advice, moves, playbook 
+      sexMove, advice, moves, playbook 
     } = this.props;
       
     return (
@@ -104,7 +104,7 @@ class CharacterSheet extends Component {
             <Look name="Origin" value={origin}/>
           </Looks>
           <Header>Darkest Self</Header>
-          <Markdown text={darkestSelf}/>
+          <DarkestSelf id={id}/>
           <Header>Sex Move</Header>
           <Markdown text={sexMove}/>
           <Header>Playing the {playbook}</Header>

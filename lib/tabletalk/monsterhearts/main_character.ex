@@ -3,7 +3,6 @@ defmodule Tabletalk.Monsterhearts.MainCharacter do
   import Ecto.Changeset
   
   alias Tabletalk.Monsterhearts.MainCharacter
-  alias Tabletalk.Games.Game
   alias Tabletalk.Games.Player
   alias Tabletalk.Monsterhearts.Character
   alias Tabletalk.Monsterhearts.Move
@@ -27,6 +26,7 @@ defmodule Tabletalk.Monsterhearts.MainCharacter do
     field :experience, :integer, default: 0
 
     field :is_retired, :boolean, default: false
+    field :darkest_self, :string
 
     has_many :moves, Move, on_delete: :delete_all
     has_many :advancements, Advancement, on_delete: :delete_all
@@ -39,7 +39,7 @@ defmodule Tabletalk.Monsterhearts.MainCharacter do
     character
     |> cast(attrs, [
       :player_id, :playbook, :look, :eyes, :origin, :hot, :cold,
-      :volatile, :dark, :harm, :experience, :is_retired
+      :volatile, :dark, :harm, :experience, :is_retired, :darkest_self
     ])      
     |> cast_assoc(:moves)
     |> validate_required([:player_id, :playbook])

@@ -75,13 +75,13 @@ const FloatAbove = rx('div')`
 `
 
 class App extends Component {
-  static propTypes = {
+static propTypes = {
     up: bool.isRequired,
     googleJwt: string,
     loginReady: bool.isRequired,
     path: arrayOf(string).isRequired,
     loggedIn: bool.isRequired,
-    downMessage: string,
+    downMessage: bool.isRequired,
     loggingIn: bool.isRequired,
     ready: bool.isRequired,
     getStatus: func.isRequired,

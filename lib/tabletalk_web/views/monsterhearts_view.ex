@@ -1,6 +1,5 @@
 defmodule TabletalkWeb.MonsterheartsView do
   use TabletalkWeb, :view
-  alias TabletalkWeb.MonsterheartsView
   alias Tabletalk.Games.Player
   alias Tabletalk.Monsterhearts.Character
   alias Tabletalk.Monsterhearts.MainCharacter
@@ -40,7 +39,8 @@ defmodule TabletalkWeb.MonsterheartsView do
       eyes: main_character.eyes,
       origin: main_character.origin,
       advancements: main_character.advancements |> Enum.map(fn x -> x.name end),
-      isRetired: main_character.is_retired
+      isRetired: main_character.is_retired,
+      darkestSelf: main_character.darkest_self
     }
   end
 
@@ -95,7 +95,7 @@ defmodule TabletalkWeb.MonsterheartsView do
     data |> Enum.map(fn x -> x.id end)
   end
 
-  def render("load.json", %{characters: characters, players: players, chats: chats, strings: strings, me: me, game: game}) do
+  def render("load.json", %{characters: characters, players: players, chats: chats, strings: strings, me: me}) do
     %{
       charactersById: characters |> by_id,
       characters: characters |> ids,

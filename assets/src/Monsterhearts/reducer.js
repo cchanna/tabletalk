@@ -27,6 +27,7 @@ import {
   MONSTERHEARTS_CHARACTER_ADVANCEMENT_DELETE,
   MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT,
   MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT_CANCEL,
+  MONSTERHEARTS_CHARACTER_DARKEST_SELF_SET,
   MONSTERHEARTS_STRING_ADD,
   MONSTERHEARTS_STRING_SPEND,
   MONSTERHEARTS_STRING_CREATE,
@@ -339,6 +340,12 @@ export default combineReducers({
         return update(state, {
           [action.id]: {
             mainCharacter: {moveNotesByName: {[action.name]: {$set: action.notes}}}
+          }
+        })
+      case MONSTERHEARTS_CHARACTER_DARKEST_SELF_SET:
+        return update(state, {
+          [action.id]: {
+            mainCharacter: {darkestSelf: {$set: action.value}}
           }
         })
       default: return state;
