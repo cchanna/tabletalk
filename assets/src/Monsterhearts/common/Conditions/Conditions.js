@@ -13,6 +13,8 @@ rx`
 `
 
 const Container = rx('div')`
+  min-width: 200px;
+  max-width: 300px;
 `
 const NewConditionInput = rx(AutoSizeInput)`
   margin-top: 10px;

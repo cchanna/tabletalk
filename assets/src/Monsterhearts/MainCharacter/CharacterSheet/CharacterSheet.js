@@ -29,10 +29,8 @@ const Container = rx('div')`
   font-size: 20px;
   display: flex;
   flex-flow: column nowrap;
-  align-items: center;
 `
 const Wrapper = rx('div')`
-  max-width: 600px;
 `
 
 const LookContainer = rx('div')`
@@ -58,6 +56,24 @@ const Header = rx('h2')`
   font-family: $header;
   margin: 30px 0 0 0;
 `
+const Mechanics = rx('div')`
+  display: flex;
+  flex-flow: row wrap;
+`
+const Section = rx('div')`
+  padding: 0 40px 0 0;
+`
+const MovesSection = rx('div')`
+  @include column-width(600px);
+`
+const Text = rx('div')`
+  margin-top: 20px;
+  @include column-width(600px);
+`
+const TextSection = rx('div')`
+  @include break-inside(avoid);
+  max-width: 600px;
+`
 
 class CharacterSheet extends Component {
   static propTypes = {
@@ -71,44 +87,67 @@ class CharacterSheet extends Component {
     sexMove: string.isRequired,
     advice: string.isRequired,
     moves: arrayOf(string).isRequired,
-    playbook: string.isRequired
+    playbook: string.isRequired,
+    sizes: arrayOf(string).isRequired
   }
   
   render() {
     const { 
       id, eyes, look, origin, path, here, 
-      sexMove, advice, moves, playbook 
+      sexMove, advice, moves, playbook, sizes
     } = this.props;
       
     return (
       <Container>
         <Wrapper>
-          <Header>Stats</Header>
-          <Stats id={id}/>
-          <Harm id={id}/>
-          <Header>Conditions</Header>
-          <Conditions id={id}/>
-          <Header>Strings</Header>
-          <Strings {...{id, path, here}}/>
-          <Experience id={id}/>
-          <Advancements id={id} depth={here.length}/>
-          <Header>Moves</Header>
-          {moves.map(move => 
-            <Move key={move} id={id} name={move} showNotes/>
-          )}
-          <Notes id={id}/>
-          <Header>Identity</Header>
-          <Looks>
-            <Look name="Look" value={look}/>
-            <Look name="Eyes" value={eyes}/>
-            <Look name="Origin" value={origin}/>
-          </Looks>
-          <Header>Darkest Self</Header>
-          <DarkestSelf id={id}/>
-          <Header>Sex Move</Header>
-          <Markdown text={sexMove}/>
-          <Header>Playing the {playbook}</Header>
-          <Markdown text={advice}/>
+          <Mechanics>
+            <Section>
+              <Header>Stats</Header>
+              <Stats id={id}/>
+              <Harm id={id}/>
+              <Header>Conditions</Header>
+              <Conditions id={id}/>
+            </Section>
+            <Section>
+              <Header>Strings</Header>
+              <Strings {...{id, path, here}}/>
+            </Section>
+            <Section>
+              <Experience id={id}/>
+              <Advancements id={id} depth={here.length}/>
+            </Section>
+          </Mechanics>
+          <div>
+            <Header>Moves</Header>
+            <MovesSection rx={sizes}>
+              {moves.map(move => 
+                <Move key={move} id={id} name={move} showNotes/>
+              )}
+            </MovesSection>
+          </div>
+          <Text rx={sizes}>
+            <Notes id={id}/>
+            <TextSection>
+              <Header>Identity</Header>
+              <Looks>
+                <Look name="Look" value={look}/>
+                <Look name="Eyes" value={eyes}/>
+                <Look name="Origin" value={origin}/>
+              </Looks>
+            </TextSection>
+            <TextSection>
+              <Header>Darkest Self</Header>
+              <DarkestSelf id={id}/>
+            </TextSection>
+            <TextSection>
+              <Header>Sex Move</Header>
+              <Markdown text={sexMove}/>
+            </TextSection>
+            <TextSection>
+              <Header>Playing the {playbook}</Header>
+              <Markdown text={advice}/>
+            </TextSection>
+          </Text>
         </Wrapper>
       </Container>
     );

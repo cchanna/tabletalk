@@ -23,6 +23,7 @@ const Container = rx('div')`
 `
 const Text = rx('div')`
   position: relative;
+  @include break-inside(avoid);
 `
 const Name = rx('h2')`
   font-size: 1.1em;

@@ -1,5 +1,7 @@
 import { connect } from 'react-redux'
 import SideCharacters from './SideCharacters';
+import { compose } from 'redux';
+import withSizes from 'common/withSize';
 
 import { getPath } from 'Routing/selectors';
 
@@ -19,4 +21,7 @@ const mapStateToProps = (state, {depth}) => {
 
 const mapDispatchToProps = {}
 
-export default connect(mapStateToProps, mapDispatchToProps)(SideCharacters);
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withSizes({1000: "small"})
+)(SideCharacters);

@@ -12,6 +12,7 @@ rx`
 
 const Container = rx('div')`
   width: 100%;
+  max-width: 600px;
 `
 const Header = rx('h2')`
   font-family: $header;

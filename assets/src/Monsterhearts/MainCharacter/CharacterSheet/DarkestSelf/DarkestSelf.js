@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
-import rx from 'resplendence'
 
 import Notes from 'Monsterhearts/common/Notes';
 

@@ -15,7 +15,6 @@ rx`
 `
 
 const Container = rx('div')`
-  width: 100%;
   font-size: 20px;
   font-family: $body;
   font-color: $foreground;
@@ -31,6 +30,8 @@ const Name = rx('h1')`
   }
 `
 const Info = rx('div')`
+  flex: 1 0 40%;
+  max-width: 600px;
 `
 const EditButton = rx('button')`
   @include button-style;
@@ -38,16 +39,42 @@ const EditButton = rx('button')`
 `
 
 const Divider = rx('div')`
-  width: 80%;
+  width: 100%;
+  box-sizing: border-box;
   align-self: center;
   height: 1px;
   background: $foreground;
+  opacity: .2;
   margin: 50px 0;
 `
-const Space = rx('div')`
-  width: 100%;
-  height: 0;
+const Body = rx('div')`
+  display: flex;
+  flex-flow: column nowrap;
+  &.over-small {
+    flex-flow: row nowrap;
+  }
+`
+const Stats = rx('div')`
+  flex: 1 0 50%;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0;
+  &.over-small {
+    margin: 0 0 0 20px;
+  }
+`
+const StringsSection = rx('div')`
+  flex: 2 0 200px;
+  max-width: 600px;
   margin: 20px 0;
+  &.over-small {
+    margin-top: 0;
+  }
+`
+const ConditionsSection = rx('div')`
+  flex: 1 0 200px;
+  min-width: 200px;
+  max-width: 400px;
 `
 
 
@@ -58,7 +85,8 @@ class SideCharacter extends Component {
     here: arrayOf(string).isRequired,
     name: string.isRequired, 
     notes: string.isRequired,
-    editSideCharacter: func.isRequired
+    editSideCharacter: func.isRequired,
+    sizes: arrayOf(string).isRequired
   }
 
   state = {
@@ -79,7 +107,7 @@ class SideCharacter extends Component {
   }
   
   render() {
-    const { id, path, here, name, notes } = this.props;
+    const { id, path, here, name, notes, sizes } = this.props;
     const { editing } = this.state;
     let info;
     if (editing) {
@@ -105,11 +133,17 @@ class SideCharacter extends Component {
     }
     return (
       <Container>
-        {info}
-        <Space/>
-        <Strings {...{id, path, here}}/>
-        <Space/>
-        <Conditions {...{id}}/>
+        <Body rx={sizes}>
+          {info}
+          <Stats rx={sizes}>
+            <StringsSection rx={sizes}>
+              <Strings {...{id, path, here}}/>
+            </StringsSection>
+            <ConditionsSection rx={sizes}>
+              <Conditions {...{id}}/>
+            </ConditionsSection>
+          </Stats>
+        </Body>
         <Divider/>
       </Container>
     );

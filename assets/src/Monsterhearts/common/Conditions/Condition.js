@@ -10,6 +10,9 @@ rx`
 
 const Container = rx('div')`
   margin-right: 15px;
+  &.readOnly {
+    margin-right: 30px;
+  }
 `
 const DeleteButton = rx('button')`
   @include button-style;
@@ -42,7 +45,7 @@ class Condition extends Component {
       deleteButton = <DeleteButton onClick={this.handleClick}>X</DeleteButton>
     }
     return (
-      <Container>
+      <Container rx={{readOnly}}>
         {deleteButton}
         {name}
       </Container>

@@ -25,9 +25,10 @@ const Container = rx('div')`
   overflow-y: scroll;
 `
 const Wrapper = rx('div')`
-  max-width: 600px;
-  width: 100%;
   height: 100%;
+  &.small {
+    max-width: 600px;
+  }
 `
 
 class SideCharacters extends Component {
@@ -35,18 +36,19 @@ class SideCharacters extends Component {
     sideCharacters: arrayOf(number).isRequired,
     path: arrayOf(string).isRequired,
     here: arrayOf(string).isRequired,
-    readOnly: bool.isRequired
+    readOnly: bool.isRequired,
+    sizes: arrayOf(string).isRequired
   }
   
   render() {
-    const { sideCharacters, path, here, readOnly } = this.props;
+    const { sideCharacters, path, here, readOnly, sizes } = this.props;
     if (path.length < 2) {
       const content = sideCharacters.map(id => (
-        <SideCharacter key={id} {...{id, path, here, readOnly}}/>
+        <SideCharacter key={id} {...{id, path, here, readOnly, sizes}}/>
       ))
       return (
         <Container>
-          <Wrapper>
+          <Wrapper rx={sizes}>
             {content}
             <NewSideCharacter/>
           </Wrapper>
@@ -58,7 +60,7 @@ class SideCharacters extends Component {
       const newHere = [...here, id, newString];
       return (
         <Container>
-          <Wrapper>
+          <Wrapper rx={sizes}>
             <NewString path={newPath} here={newHere}/>
           </Wrapper>
         </Container>

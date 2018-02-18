@@ -15,6 +15,7 @@ const Container = rx('div')`
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
+  min-width: 350px;
 `
 const AddLink = rx(Link)`
   @include link;

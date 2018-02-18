@@ -12,10 +12,13 @@ rx`
 
 const Container = rx('div')`
   width: 100%;
+  max-width: 600px;
+  @include break-inside(avoid);
   * {
     font-family: $body;
     margin-bottom: 0;
     line-height: 1.3;
+    @include break-inside(avoid);
     &:first-child {
       margin-top: 0;
     }

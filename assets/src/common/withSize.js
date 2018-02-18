@@ -28,7 +28,7 @@ const convertWidthToBreakpoint = (width, breakPoints) => {
 }
 
 
-export default breakpoints => Node => {
+export default (breakpoints, {fullWidth = true, fullHeight = true} = {}) => Node => {
 
   class Breakpoint extends React.Component {
 
@@ -67,8 +67,11 @@ export default breakpoints => Node => {
     render() {
       const props = this.props;
       const { sizes } = this.state;
+      const style = {};
+      if (fullWidth) style.width = "100%";
+      if (fullHeight) style.height = "100%";
       return (
-        <div style={{width: "100%", height: "100%"}} ref={this.handleRef}>
+        <div style={style} ref={this.handleRef}>
           <Node {...props} sizes={sizes}/>
         </div>
       )

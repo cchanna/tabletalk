@@ -1,5 +1,7 @@
 import { connect } from 'react-redux'
 import CharacterSheet from './CharacterSheet';
+import { compose } from 'redux';
+import withSizes from 'common/withSize';
 
 const mapStateToProps = ({monsterhearts}, {here, path}) => {
   const id = parseInt(here[2], 10);
@@ -21,4 +23,7 @@ const mapStateToProps = ({monsterhearts}, {here, path}) => {
 
 const mapDispatchToProps = {}
 
-export default connect(mapStateToProps, mapDispatchToProps)(CharacterSheet);
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withSizes({1000: "small"})
+)(CharacterSheet);
