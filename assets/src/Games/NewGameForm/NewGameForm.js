@@ -1,7 +1,7 @@
 import React from 'react';
 import rx from 'resplendence';
 
-import { func, arrayOf, string } from 'prop-types';
+import { func, arrayOf, string, shape, number, bool } from 'prop-types';
 
 import { kindsById, kindsOrder } from 'common/gameKinds';
 
@@ -92,6 +92,27 @@ const FormBody = ({values, isValid, errors, touched, isSubmitting, handleChange,
     </Container>
   )
 }
+FormBody.propTypes = {
+  values: shape({
+    kind: string.isRequired,
+    name: string.isRequired,
+    slug: string.isRequired,
+    player: string.isRequired,
+    maxPlayers: number.isRequired
+  }),
+  isValid: bool.isRequired,
+  errors: shape({
+    kind: string,
+    name: string,
+    slug: string,
+    player: string,
+    maxPlayers: string
+  }),
+  touched: bool.isRequired,
+  isSubmitting: bool.isRequired,
+  handleChange: func.isRequired,
+  setFieldValue: func.isRequired
+}
 
 class NewGameForm extends React.Component {
   static propTypes = {
@@ -122,7 +143,7 @@ class NewGameForm extends React.Component {
   handleSubmit = ({kind, name, slug, player, maxPlayers}, { setSubmitting, setErrors }) => {
     const { create } = this.props;
     create({kind, name, slug, player, maxPlayers: parseInt(maxPlayers, 10) })
-      .catch(err => {
+      .catch(() => {
         setErrors({slug: "duplicate"});
         setSubmitting(false);
       })

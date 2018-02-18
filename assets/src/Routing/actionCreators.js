@@ -6,9 +6,8 @@ import actionCreator from 'utils/actionCreator';
 
 const setPath = actionCreator(ROUTE, "path");
 
-export const route = path => (dispatch, getState) => {
+export const route = path => (dispatch) => {
   dispatch(setPath({path}));
-  // onRoute(path, dispatch, getState());
 }
 
 export const goTo = path => (_dispatch, _getState, {history}) => {

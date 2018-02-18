@@ -103,6 +103,20 @@
     ]
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app", 
+      "eslint:recommended", 
+      "plugin:react/recommended"
+    ],
+    "rules": {
+      "no-unused-vars": ["warn", {
+        "varsIgnorePattern": "(^_|string|number|bool|func|shape|object|arrayOf|oneOf|node)",
+        "argsIgnorePatter": "^_",
+        "ignoreRestSiblings": true
+      }],
+      "no-extra-semi": 0,
+      "no-console": ["warn", {"allow": ["error"]}],
+      "react/no-unescaped-entities": 0
+    }
   }
 }

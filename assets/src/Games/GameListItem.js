@@ -1,4 +1,5 @@
 import React from 'react';
+import { string, number, arrayOf, func } from 'prop-types';
 import rx from 'resplendence';
 import {
   kindsById, toClassName
@@ -42,6 +43,13 @@ const Icon = rx('span')`
 
 
 class Game extends React.Component {
+  static propTypes = {
+    name: string.isRequired,
+    kind: number.isRequired,
+    slug: string.isRequired,
+    sizes: arrayOf(string).isRequired,
+    openGame: func.isRequired,
+  }
   handleClick = () => {
     const { slug, openGame } = this.props;
     openGame(slug);

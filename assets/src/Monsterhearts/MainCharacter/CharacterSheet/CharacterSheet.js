@@ -11,6 +11,7 @@ import Harm from './Harm';
 import Experience from './Experience';
 import Conditions from 'Monsterhearts/common/Conditions';
 import Advancements from './Advancements';
+import DarkestSelf from './DarkestSelf';
 
 import Markdown from 'Monsterhearts/common/Markdown';
 
@@ -45,6 +46,11 @@ const Look = ({name, value}) =>
     <LookName>{name}: </LookName>
     {value}
   </LookContainer>
+Look.propTypes = {
+  name: string.isRequired,
+  value: string
+}
+
 const Looks = rx('div')`
 
 `
@@ -59,21 +65,19 @@ class CharacterSheet extends Component {
     eyes: string,
     look: string,
     origin: string,
+    
     path: arrayOf(string).isRequired,
     here: arrayOf(string).isRequired,
-    playbookDefinition: shape({
-      darkestSelf: string.isRequired,
-      sexMove: string.isRequired,
-      advice: string.isRequired
-    }),
+    sexMove: string.isRequired,
+    advice: string.isRequired,
     moves: arrayOf(string).isRequired,
     playbook: string.isRequired
   }
   
   render() {
     const { 
-      id, hot, cold, volatile, dark, eyes, look, origin, path, here, 
-      darkestSelf, sexMove, advice, moves, playbook 
+      id, eyes, look, origin, path, here, 
+      sexMove, advice, moves, playbook 
     } = this.props;
       
     return (
@@ -86,8 +90,8 @@ class CharacterSheet extends Component {
           <Conditions id={id}/>
           <Header>Strings</Header>
           <Strings {...{id, path, here}}/>
-          <Experience id={id} depth={here.length}/>
-          <Advancements id={id}/>
+          <Experience id={id}/>
+          <Advancements id={id} depth={here.length}/>
           <Header>Moves</Header>
           {moves.map(move => 
             <Move key={move} id={id} name={move} showNotes/>
@@ -100,7 +104,7 @@ class CharacterSheet extends Component {
             <Look name="Origin" value={origin}/>
           </Looks>
           <Header>Darkest Self</Header>
-          <Markdown text={darkestSelf}/>
+          <DarkestSelf id={id}/>
           <Header>Sex Move</Header>
           <Markdown text={sexMove}/>
           <Header>Playing the {playbook}</Header>

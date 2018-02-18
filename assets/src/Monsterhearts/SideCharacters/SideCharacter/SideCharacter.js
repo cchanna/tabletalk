@@ -55,8 +55,7 @@ class SideCharacter extends Component {
   static propTypes = {
     id: number.isRequired, 
     path: arrayOf(string).isRequired, 
-    here: arrayOf(string).isRequired, 
-    readOnly: bool.isRequired,
+    here: arrayOf(string).isRequired,
     name: string.isRequired, 
     notes: string.isRequired,
     editSideCharacter: func.isRequired
@@ -80,7 +79,7 @@ class SideCharacter extends Component {
   }
   
   render() {
-    const { id, path, here, readOnly, name, notes, editSideCharacter } = this.props;
+    const { id, path, here, name, notes } = this.props;
     const { editing } = this.state;
     let info;
     if (editing) {

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { string, number, bool, shape, arrayOf } from 'prop-types'
+import { tabsShape } from './propTypes';
 import rx from 'resplendence'
   
 import Link from 'Routing/Link';
@@ -66,24 +67,25 @@ const NewCharacter = rx(Link)`
 
 class BigTabList extends Component {
   static propTypes = {
-    tabs: arrayOf(shape({
-      id: number.isRequired,
-      name: string.isRequired,
-      mine: bool.isRequired
-    })),
-    here: arrayOf(string).isRequired
+    tabs: tabsShape.isRequired,
+    depth: number.isRequired,
+    retired: bool.isRequired
+  }
+  static defaultProps = {
+    retired: false
   }
   
   render() {
-    const { tabs, here } = this.props;
-    const tabComponents = tabs.map(({id, name, mine}) => 
-      <BigTab to={[...here, id.toString()]} key={id}>{name}</BigTab>
-    )
+    const { tabs, depth, retired } = this.props;
+    const linkDepth = retired ? depth - 1 : depth;
     return (
       <Container>
-        {tabComponents}
-        <BigTab to={[...here, "side"]}>side characters</BigTab>
-        <NewCharacter to={[...here, "new"]}>+</NewCharacter> 
+        {tabs.map(({id, name, mine}) => (
+          <BigTab depth={linkDepth} to={id} key={id} rx={{mine}}>{name}</BigTab>
+        ))}
+        {retired ? null : (
+          <NewCharacter depth={depth} to="new">+</NewCharacter> 
+        )}
       </Container>
     );
   }

@@ -24,7 +24,7 @@ export const login = () => (dispatch, getState) => {
     api.login("google", googleJwt)
     .then(({jwt}) => dispatch(setJWT({jwt})))
     .catch(catchStatus(dispatch))
-    .catch(error => dispatch(failLogin()));
+    .catch(() => dispatch(failLogin()));
   }
 }
 

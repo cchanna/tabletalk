@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { string, func } from 'prop-types'
+import { string, func, number } from 'prop-types'
 import rx from 'resplendence'
 import bonusString from 'common/bonusString';  
 
@@ -39,6 +39,7 @@ const Button = rx('button')`
 
 class StatEditor extends Component {
   static propTypes = {
+    id: number.isRequired,
     name: string.isRequired,
     value: string.isRequired,
     setStats: func.isRequired

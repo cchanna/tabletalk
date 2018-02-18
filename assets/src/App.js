@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { bool, arrayOf, string, func } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import rx from 'resplendence';
@@ -74,17 +75,32 @@ const FloatAbove = rx('div')`
 `
 
 class App extends Component {
+static propTypes = {
+    up: bool.isRequired,
+    googleJwt: string,
+    loginReady: bool.isRequired,
+    path: arrayOf(string).isRequired,
+    loggedIn: bool.isRequired,
+    downMessage: bool.isRequired,
+    loggingIn: bool.isRequired,
+    ready: bool.isRequired,
+    getStatus: func.isRequired,
+    login: func.isRequired,
+    replace: func.isRequired,
+    signout: func.isRequired,
+  }
+
   componentDidMount() {
     const { getStatus } = this.props;
     getStatus();
   }
   componentDidUpdate(prevProps) {
     {
-      const { up, googleLoggedIn, login } = this.props;
+      const { up, googleJwt, login } = this.props;
 
-      const canLogIn = (up && googleLoggedIn);
-      const couldLogIn = (prevProps.up && prevProps.googleLoggedIn);
-      if (!couldLogIn && canLogIn) {
+      const canLogIn = (up && googleJwt);
+      const couldLogIn = (prevProps.up && prevProps.googleJwt);
+      if (canLogIn && (!couldLogIn || googleJwt !== prevProps.googleJwt)) {
         login();
       }
     }
@@ -144,7 +160,7 @@ const mapStateToProps = ({auth, path, status}) => {
     up: status.up,
     downMessage: status.message,
     ready: auth.ready,
-    googleLoggedIn: !!auth.googleJwt,
+    googleJwt: auth.googleJwt,
     loggedIn: !!auth.jwt,
     loggingIn: auth.pending,
     path

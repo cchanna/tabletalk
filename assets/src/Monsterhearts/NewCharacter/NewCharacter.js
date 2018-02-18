@@ -4,7 +4,6 @@ import rx from 'resplendence'
   
 import Link from 'Routing/Link';
 import Skin from './Skin';
-import Spinner from 'common/components/Spinner';
 
 rx`
 @import '~common/styles';
@@ -112,6 +111,7 @@ class NewCharacter extends Component {
     playbooks: arrayOf(string).isRequired, 
     sizes: arrayOf(string).isRequired,
     myCharacters: arrayOf(number).isRequired,
+    playbook: string.isRequired,
     createCharacter: func.isRequired,
     goTo: func.isRequired
   }
@@ -142,9 +142,8 @@ class NewCharacter extends Component {
 
   render() {
     const { 
-      here, playbook, playbooks, playbooksByName, 
-      movesByName, advancementsById,
-      sizes, createCharacter
+      here, playbook, playbooks,
+      sizes
     } = this.props;
     const { creating } = this.state;
     const skins = playbooks

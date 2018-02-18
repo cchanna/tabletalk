@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
+import { string, number, bool, func, shape, object, arrayOf, node } from 'prop-types'
 import { playbookProperties } from '../../propTypes';
 import rx from 'resplendence'
 
@@ -147,15 +147,6 @@ const Section = rx('div')`
             page-break-inside: avoid;
                  break-inside: avoid;
 `
-const Circle = rx('div')`
-  fill: transparent;
-  &.checked {
-    fill: darken($foreground, 10%);
-  }
-`
-const Path = rx('div')`
-  fill: darken($foreground, 10%);
-`
 
 const Advancements = rx('ul')`
   list-style: none;
@@ -163,30 +154,6 @@ const Advancements = rx('ul')`
   padding: 0;
 `
 const AdvancementLi = 'li';
-const CheckboxContainer = rx('span')`
-  &.checked circle {
-    fill: darken($foreground, 10%);
-  }
-  path {
-    fill: darken($foreground, 10%);
-  }
-  position: relative;
-  width: 1em;
-  height: 1em;
-  display: inline-block;
-  margin-right: .5em;
-  top: .1em;
-`
-const DividableColumns = rx('div')`
-  -webkit-columns: 2;
-     -moz-columns: 2;
-          columns: 2;
-  &.under-laptop {
-    -webkit-columns: 1;
-       -moz-columns: 1;
-            columns: 1;
-  }
-`
 
 const Checkbox = rx(BaseCheckbox)`
   &.checked circle {
@@ -208,6 +175,9 @@ const Advancement = ({children}) =>
     <Checkbox/>
     {children}
   </AdvancementLi>
+Advancement.propTypes = {
+  children: node.isRequired
+}
 
 
 const Identity = ({name, list}) => 
@@ -215,6 +185,10 @@ const Identity = ({name, list}) =>
     <IdentityName>{name}:</IdentityName>
     {list.map(item => item.trim().replace(" ", '\u00A0')).join(", ")}
   </IdentityContainer>
+Identity.propTypes = {
+  name: string.isRequired,
+  list: arrayOf(string).isRequired
+}
 
 const StatsArrayContainer = rx('div')`
   font-family: "Yataghan";
@@ -269,6 +243,10 @@ const StatArray = ({stats, sizes}) =>
       <Stat>Dark {bonusString(stats[1][3])}</Stat>
     </StatList>
   </StatsArrayContainer>
+StatArray.propTypes = {
+  stats: arrayOf(arrayOf(number)).isRequired,
+  sizes: arrayOf(string).isRequired
+}
 
 
 const image = playbook => {
@@ -369,7 +347,7 @@ class Skin extends Component {
           <Columns rx={sizes}>
             <Header>{name} Moves</Header>
             <Instructions>{movesInstructions(startingMoves, startingMoveChoices)}</Instructions>
-            {moves.map(({name, text}, i) => 
+            {moves.map(({name, text}) => 
               <Move key={name} {...{name, text}}/>
             )}
           </Columns>

@@ -47,11 +47,11 @@ class Character extends Component {
   }
 
   handleClickTake = () => {
-    const {id, myId, createString, goBack} = this.props;
+    const {id, myId, createString} = this.props;
     createString({from: myId, to: id});
   }
   handleClickGive = () => {
-    const {id, myId, createString, goBack} = this.props;
+    const {id, myId, createString} = this.props;
     createString({from: id, to: myId});
   }
   createSideCharacter

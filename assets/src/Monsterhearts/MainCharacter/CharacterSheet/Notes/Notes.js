@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { string, bool, func } from 'prop-types'
+import { string, bool, func, number } from 'prop-types'
 import rx from 'resplendence'
   
 import CommonNotes from 'Monsterhearts/common/Notes';
@@ -22,7 +22,8 @@ class Notes extends Component {
   static propTypes = {
     notes: string.isRequired,
     readOnly: bool.isRequired,
-    setNotes: func.isRequired
+    id: number.isRequired,
+    setNotes: func.isRequired,
   }
 
   constructor(props) {

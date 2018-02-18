@@ -1,6 +1,5 @@
 defmodule TabletalkWeb.MonsterheartsView do
   use TabletalkWeb, :view
-  alias TabletalkWeb.MonsterheartsView
   alias Tabletalk.Games.Player
   alias Tabletalk.Monsterhearts.Character
   alias Tabletalk.Monsterhearts.MainCharacter
@@ -39,7 +38,9 @@ defmodule TabletalkWeb.MonsterheartsView do
       look: main_character.look,
       eyes: main_character.eyes,
       origin: main_character.origin,
-      advancements: main_character.advancements |> Enum.map(fn x -> x.name end)
+      advancements: main_character.advancements |> Enum.map(fn x -> x.name end),
+      isRetired: main_character.is_retired,
+      darkestSelf: main_character.darkest_self
     }
   end
 
@@ -109,7 +110,9 @@ defmodule TabletalkWeb.MonsterheartsView do
         movesByName: Definitions.moves_by_name,
         advancementsById: Definitions.advancements_by_id,
         playbooks: Definitions.playbooks,
-        playbooksByName: Definitions.playbooks_by_name
+        playbooksByName: Definitions.playbooks_by_name,
+        seasonAdvances: Definitions.season_advances,
+        growingUpMoves: Definitions.growing_up_moves
       }
     }
   end

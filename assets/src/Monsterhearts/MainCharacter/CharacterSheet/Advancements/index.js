@@ -2,20 +2,34 @@ import { connect } from 'react-redux'
 import Advancements from './Advancements';
 
 import { add, remove } from './actionCreators';
-import { getPath } from 'Routing/selectors';
-import { getCharacter, getReadOnly, getPlaybookAdvancements } from 'Monsterhearts/selectors';
+import { 
+  getCharacter, 
+  getReadOnly, 
+  getPlaybookAdvancements, 
+  listSeasonAdvancements,
+  getIsSeasonFinale
+} from 'Monsterhearts/selectors';
 
 const mapStateToProps = (state, {id, depth}) => {
   const { mainCharacter } = getCharacter(state, id);
   const readOnly = getReadOnly(state, id);
-  const { here } = getPath(state, depth);
 
   const { playbook, addingStat, experience, advancements: selectedAdvancements } = mainCharacter;
   const advancements = getPlaybookAdvancements(state, playbook)
     .map(advancement => ({
       ...advancement,
       selected: advancement.id === "+stat" && !!addingStat 
-    }))
+    }));
+
+  let seasonAdvancements = null;
+
+  if (selectedAdvancements.length >= 5 || getIsSeasonFinale(state)) {
+    seasonAdvancements = listSeasonAdvancements(state)
+      .map(advancement => ({
+        ...advancement,
+        selected: selectedAdvancements.includes(advancement.id)
+      }))
+  }
 
   selectedAdvancements.forEach(id => {
     const advancement = advancements.find(a => a.id === id && !a.selected) 
@@ -24,8 +38,8 @@ const mapStateToProps = (state, {id, depth}) => {
     }
   })
   return {
-    id, playbook, readOnly, here,
-    advancements,
+    id, playbook, readOnly, depth,
+    advancements, seasonAdvancements,
     canLevel: experience >= 5 && !addingStat,
   };
 };

@@ -1,4 +1,3 @@
-import React, { Component } from 'react'
 import rx from 'resplendence'
   
 rx`

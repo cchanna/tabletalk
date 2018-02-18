@@ -1,4 +1,5 @@
 import React from 'react';
+import { bool, string, arrayOf } from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import rx from 'resplendence';
@@ -54,8 +55,17 @@ const Status = rx('div')`
 `
 
 const GoogleLoginButton = ({className}) => <div className={`g-signin2 ${className}`} data-onsuccess="onSignIn" data-uxmode="redirect"/>;
+GoogleLoginButton.propTypes = {
+  className: string.isRequired
+}
 
 class Auth extends React.Component {
+  static propTypes = {
+    loggingIn: bool.isRequired,
+    loginError: bool.isRequired,
+    sizes: arrayOf(string).isRequired
+  }
+
   render() {
     const {loggingIn, loginError, sizes } = this.props;
     let status = null;

@@ -11,7 +11,6 @@ import SelfMove from './SelfMove';
 
 import route from 'Routing/route';
 import { exactMatch } from 'utils/pathTools';
-import { characterShape } from './propTypes';
 
 rx`
 @import '~Monsterhearts/styles';
@@ -95,7 +94,10 @@ class MainCharacter extends Component {
     name: string,
     playbook: string,
     sizes: arrayOf(string).isRequired,
-    readOnly: bool.isRequired
+    readOnly: bool.isRequired,
+    editDone: bool.isRequired,
+    replace: func.isRequired,
+    goBack: func.isRequired
   }
   
   static pages = [

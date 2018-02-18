@@ -1,12 +1,19 @@
 import { connect } from 'react-redux'
 import TabPicker from './TabPicker';
 
-const mapStateToProps = ({monsterhearts}) => {
-  const { characters, charactersById, me } = monsterhearts;
+import { 
+  getCharacterTabs
+} from 'Monsterhearts/selectors';
+
+import { getPath } from 'Routing/selectors';
+
+const mapStateToProps = (state, {depth}) => {
+  const { next } = getPath(state, depth);
+  const tabs = getCharacterTabs(state);
+
+  
   return {
-    characters, 
-    charactersById,
-    me
+    depth, next, tabs
   };
 };
 

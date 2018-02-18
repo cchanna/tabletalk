@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { bool, func } from 'prop-types'
+import { bool, func, arrayOf, string, object, number } from 'prop-types'
 import rx from 'resplendence'
 
 import Input from './Input';
@@ -139,6 +139,10 @@ class Chatbox extends Component {
   static propTypes = {
     overlay: bool.isRequired,
     collapsed: bool.isRequired,
+    chats: arrayOf(number).isRequired,
+    chatsById: object.isRequired,
+    playersById: object.isRequired,
+    me: number.isRequired,
     setChatboxCollapsed: func.isRequired,
     chat: func.isRequired
   }

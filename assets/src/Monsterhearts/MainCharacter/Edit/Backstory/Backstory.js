@@ -34,7 +34,6 @@ class Backstory extends Component {
       </p>
     ))
     
-    let content;
     if (path.length === 0) {
       return (
         <Container>

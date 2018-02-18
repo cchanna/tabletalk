@@ -43,6 +43,7 @@ export const MONSTERHEARTS_CHARACTER_ADVANCEMENT_CREATE = "monsterhearts_charact
 export const MONSTERHEARTS_CHARACTER_ADVANCEMENT_DELETE = "monsterhearts_character_advancement_delete";
 export const MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT = "monsterhearts_character_advancement_stat";
 export const MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT_CANCEL = "monsterhearts_character_advancement_stat_cancel";
+export const MONSTERHEARTS_CHARACTER_DARKEST_SELF_SET = "monsterhearts_character_darkest_self_set";
 
 export const MONSTERHEARTS_CHAT = "monsterhearts_chat";
 

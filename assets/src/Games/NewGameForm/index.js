@@ -6,7 +6,7 @@ import { create } from 'Games/actionCreators';
 import { compose } from 'redux';
 import withSize from '../../common/withSize';
 
-const mapStateToProps = ({games}) => ({})
+const mapStateToProps = () => ({})
 
 const mapDispatchToProps = { create }
 

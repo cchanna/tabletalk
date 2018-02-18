@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 import rx from 'resplendence'
   
-import { characterProperties, mainCharacterProperties } from '../propTypes';
-import { playbookShape } from '../../propTypes';
 import Link from 'Routing/Link';
 import route from 'Routing/route';
 import Identity from './Identity';
@@ -115,7 +113,11 @@ class Edit extends Component {
     identityDone: bool.isRequired,
     statsDone: bool.isRequired,
     movesDone: bool.isRequired,
+    backstoryDone: bool.isRequired,
     sizes: arrayOf(string).isRequired,
+    path: arrayOf(string).isRequired,
+    here: arrayOf(string).isRequired,
+    readOnly: bool.isRequired,
     goBack: func.isRequired,
     replace: func.isRequired
   }
@@ -125,7 +127,7 @@ class Edit extends Component {
   }
 
   route = () => {
-    const { path, here, readOnly, replace } = this.props;
+    const { here, readOnly, replace } = this.props;
     if (readOnly) {
       replace(here.slice(0, -1));
     }

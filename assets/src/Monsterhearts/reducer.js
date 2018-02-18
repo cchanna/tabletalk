@@ -27,6 +27,7 @@ import {
   MONSTERHEARTS_CHARACTER_ADVANCEMENT_DELETE,
   MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT,
   MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT_CANCEL,
+  MONSTERHEARTS_CHARACTER_DARKEST_SELF_SET,
   MONSTERHEARTS_STRING_ADD,
   MONSTERHEARTS_STRING_SPEND,
   MONSTERHEARTS_STRING_CREATE,
@@ -246,14 +247,17 @@ export default combineReducers({
             conditions: (conditions) => conditions.filter(condition => condition !== action.condition)
           }
         })
-      case MONSTERHEARTS_CHARACTER_ADVANCEMENT_CREATE:
+      case MONSTERHEARTS_CHARACTER_ADVANCEMENT_CREATE: {
+        const common = {
+          advancements: {$push: [action.advancementId]},
+          experience: {$set: 0}
+        }
         switch (action.advancementId) {
           case "+stat":
             return update(state, {
               [action.id]: {
                 mainCharacter: {
-                  advancements: {$push: [action.advancementId]},
-                  experience: {$set: 0},
+                  ...common,
                   addingStat: {$set: false},
                   [action.stat]: value => value + 1
                 },
@@ -264,38 +268,58 @@ export default combineReducers({
             return update(state, {
               [action.id]: {
                 mainCharacter: {
-                  advancements: {$push: [action.advancementId]},
-                  experience: {$set: 0},
+                  ...common,
                   moves: {$push: [action.move]}
+                }
+              }
+            })
+          case "rtire":
+            return update(state, {
+              [action.id]: {
+                mainCharacter: {
+                  ...common,
+                  isRetired: {$set: true}
+                },
+              }
+            })
+          default:
+            return update(state, {
+              [action.id]: {
+                mainCharacter: common
+              }
+            })
+        }
+      } 
+      case MONSTERHEARTS_CHARACTER_ADVANCEMENT_DELETE: {
+        const common = {
+          advancements: advancements => {
+            const index = advancements.findIndex(id => id === action.advancementId);
+            if (index >= 0) {
+              return advancements
+                .slice(0, index)
+                .concat(advancements.slice(index + 1))
+            }
+            return state;
+          }
+        }
+        switch(action.advancementId) {
+          case "rtire":
+            return update(state, {
+              [action.id]: {
+                mainCharacter: {
+                  ...common,
+                  isRetired: {$set: false}
                 }
               }
             })
           default:
             return update(state, {
               [action.id]: {
-                mainCharacter: {
-                  advancements: {$push: [action.advancementId]},
-                  experience: {$set: 0}
-                },
+                mainCharacter: common
               }
             })
-        } 
-      case MONSTERHEARTS_CHARACTER_ADVANCEMENT_DELETE:
-        return update(state, {
-          [action.id]: {
-            mainCharacter: {
-              advancements: advancements => {
-                const index = advancements.findIndex(id => id === action.advancementId);
-                if (index >= 0) {
-                  return advancements
-                    .slice(0, index)
-                    .concat(advancements.slice(index + 1))
-                }
-                return state;
-              }
-            }
-          }
-        })
+        }
+      }
       case MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT:
         return update(state, {
           [action.id]: {
@@ -316,6 +340,12 @@ export default combineReducers({
         return update(state, {
           [action.id]: {
             mainCharacter: {moveNotesByName: {[action.name]: {$set: action.notes}}}
+          }
+        })
+      case MONSTERHEARTS_CHARACTER_DARKEST_SELF_SET:
+        return update(state, {
+          [action.id]: {
+            mainCharacter: {darkestSelf: {$set: action.value}}
           }
         })
       default: return state;

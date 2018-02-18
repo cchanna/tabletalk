@@ -3,7 +3,7 @@ import SocketManager from './SocketManager';
 
 import { connect, disconnect, answer, answerSlow, send, chat } from './actionCreators';
 
-const mapStateToProps = ({path, auth, monsterhearts}, ownProps) => {
+const mapStateToProps = ({path, auth, monsterhearts}) => {
   const slug = path[1];
   const { jwt } = auth;
   const { socket } = monsterhearts;
@@ -16,6 +16,6 @@ const mapStateToProps = ({path, auth, monsterhearts}, ownProps) => {
 
 const dispatch = x => x;
 
-const mapDispatchToProps = {chat, dispatch, connect, disconnect, answer, answerSlow, send, chat};
+const mapDispatchToProps = {chat, dispatch, connect, disconnect, answer, answerSlow, send};
 
 export default reduxConnect(mapStateToProps, mapDispatchToProps)(SocketManager);
