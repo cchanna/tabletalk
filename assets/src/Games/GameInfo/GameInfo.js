@@ -1,13 +1,13 @@
 import React from 'react';
 import rx from 'resplendence';
-import { string, number, object, arrayOf, func } from 'prop-types';
+import { string, number, object, arrayOf, func, shape, bool } from 'prop-types';
 
 import {
   kindsById, toClassName
 } from "common/gameKinds";
 
 import JoinGameForm from './JoinGameForm';
-import { Button } from './FormComponents';
+import { Button } from '../FormComponents';
 
 
 rx`
@@ -99,21 +99,35 @@ const PlayersHeader = rx('h1')`
 
 class GameInfo extends React.Component {
   static propTypes = {
+    slug: string.isRequired,
     name: string.isRequired,
     kind: number.isRequired,
-    players: arrayOf(number).isRequired,
+    players: arrayOf(shape({
+      name: string.isRequired,
+      admin: bool.isrequired
+    })).isRequired,
     maxPlayers: number.isRequired,
-    playersById: object.isRequired,
     me: number,
-    startGame: func.isRequired,
+    goTo: func.isRequired,
     joinGame: func.isRequired,
     sizes: arrayOf(string).isRequired
   }
 
+  startGame = () => {
+    const { goTo, me, slug } = this.props;
+    if (me !== null) {
+      goTo(["play", slug]);
+    }
+  }
+
+  joinGame = (player) => {
+    const { joinGame, slug } = this.props;
+    return joinGame({slug, player});
+  }
+
   render() {
-    const { name, kind, players, maxPlayers, playersById, me, startGame, joinGame, sizes } = this.props;
-    const playerComponents = players.map(id => {
-      const { name, admin } = playersById[id];
+    const { name, kind, players, maxPlayers, me, sizes } = this.props;
+    const playerComponents = players.map(({name, admin, id}) => {
       return (
         <Player key={id}>
           <PlayerIcon rx={{me: (me === id), admin}}>{admin ? "*" : "u"}</PlayerIcon>
@@ -129,13 +143,13 @@ class GameInfo extends React.Component {
       else {
         enterButton = (
           <EnterRow>
-            <JoinGameForm joinGame={joinGame} names={players.map(p => playersById[p].name)} />
+            <JoinGameForm joinGame={this.joinGame} names={players.map(p => p.name)} />
           </EnterRow>
         );
       }
     }
     else {
-      enterButton = <EnterRow><Button onClick={startGame}>Enter</Button></EnterRow>;
+      enterButton = <EnterRow><Button onClick={this.startGame}>Enter</Button></EnterRow>;
     }
 
     return (

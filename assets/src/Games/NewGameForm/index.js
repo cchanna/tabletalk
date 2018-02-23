@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 
 import NewGameForm from './NewGameForm';
 
-import { create } from 'Games/actionCreators';
+import { create } from '../actionCreators';
 import { compose } from 'redux';
 import withSize from '../../common/withSize';
 

@@ -2,25 +2,26 @@ import { connect } from 'react-redux';
 
 import Games from './Games';
 
-import { goTo } from 'Routing/actionCreators';
+import { goTo, getPath } from 'Routing';
 import { getGames, getGame, openGame, joinGame, openNewGame } from './actionCreators';
 import { compose } from 'redux';
 import withSize from 'common/withSize';
 
-const mapStateToProps = ({games}, {path, here}) => {
-  const { list, gamesBySlug, playersById, error, lastLoaded, loading, failed, join } = games;
-  
+import { fromGames } from './state';
+
+const mapStateToProps = (state, {depth}) => {
+  const { next } = getPath(state, depth);
+  const slug = next;
+  const isCurrentGameLoaded = slug === "new"
+    ? true
+    : slug ? fromGames.getIsGameLoaded(state, slug) : false;
   return {
-    list,
-    gamesBySlug,
-    playersById,
-    error,
-    lastLoaded,
-    loading,
-    failed,
-    path,
-    here,
-    join
+    depth,
+    slug,
+    isCurrentGameLoaded,
+    games: fromGames.getGames(state),
+    isFailed: fromGames.getIsFailed(state),
+    lastLoaded: fromGames.getLastLoaded(state)
   }
 }
 

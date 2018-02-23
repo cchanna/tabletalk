@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { Provider } from 'react-redux';
-import { setGoogleJWT } from 'Auth/actionCreators';
+import { setGoogleJWT } from 'Auth';
 import './fonts/fonts.scss';
 import configureStore from './configureStore';
 

@@ -1,13 +1,12 @@
 import React from 'react';
 import rx from 'resplendence';
-import { string, bool, object, instanceOf, arrayOf, func } from 'prop-types';
+import { string, bool, object, instanceOf, arrayOf, func, number, shape } from 'prop-types';
 
 import GameInfo from './GameInfo';
 import GameListItem from './GameListItem';
 import NewGameForm from './NewGameForm';
 import Spinner from 'common/components/Spinner';
 
-import { exactMatch } from 'utils/pathTools';
 import expired from 'utils/expired';
 
 rx`
@@ -133,113 +132,69 @@ const NewGame = rx('button')`
 
 class Games extends React.Component {
   static propTypes = {
-    path: arrayOf(string).isRequired,
-    here: arrayOf(string).isRequired,
+    depth: number.isRequired,
+    slug: string,
+    games: arrayOf(shape({
+      name: string.isRequired,
+      slug: string.isRequired
+    })),
 
-    list: arrayOf(string),
-    gamesBySlug: object,
-    playersById: object,
-
-    error: bool.isRequired,
+    isCurrentGameLoaded: bool.isRequired,
+    isFailed: bool.isRequired,
     lastLoaded: instanceOf(Date),
-    loading: bool.isRequired,
-    failed: bool.isRequired,
     sizes: arrayOf(string).isRequired,
     
     getGame: func.isRequired,
-    getGames: func.isReuqired,
+    getGames: func.isRequired,
     goTo: func.isRequired,
     openGame: func.isRequired,
     openNewGame: func.isRequired,
-    joinGame: func.isRequired,
-    startJoinGame: func.isRequired,
-    cancelJoinGame: func.isRequired,
-    setInput: func.isRequired,
-    join: func.isRequired
   }
 
   route = () => {
-    const currentGame = this.currentGame();
+    const { slug, isCurrentGameLoaded, getGame } = this.props;
     
-    if (currentGame !== null) {
-      if (currentGame !== 'new') { // TODO need to disallow "new" as slug
-        const { gamesBySlug, getGame } = this.props;
-        if (gamesBySlug === null || gamesBySlug[currentGame] === undefined) {
-          getGame({slug: currentGame});
-        }
+    if (slug !== null) {
+      if (slug !== 'new' && !isCurrentGameLoaded) { // TODO need to disallow "new" as slug
+        getGame({slug});
       }
     }
     else
     {
-      const { list, error, lastLoaded, getGames } = this.props;
-      if ((list === null && !error) || expired(lastLoaded, 10)) {
+      const { isFailed, lastLoaded, getGames } = this.props;
+      if (!isFailed && expired(lastLoaded, 10)) {
         getGames();
       }
     }
   }
   componentDidMount = this.route;
   componentDidUpdate(prevProps) {
-    if (!exactMatch(this.props.path, prevProps.path)) {
+    if (this.props.slug !== prevProps.slug) {
       this.route();
     }
   }
   return = () => {
-    const { goTo, here } = this.props;
-    goTo(here);
-  }
-  currentGame = () => this.props.path.length > 0 ? this.props.path[0] : null;
-
-  startGame = () => {
-    const { goTo, gamesBySlug } = this.props;
-    const slug = this.currentGame();
-    const game = gamesBySlug[slug];
-    if (game.me !== undefined) {
-      goTo(["play", this.currentGame()]);
-    }
-  }
-
-  joinGame = (player) => {
-    const { joinGame } = this.props;
-    const slug = this.currentGame();
-    return joinGame({slug, player});
+    const { goTo, depth } = this.props;
+    goTo([], depth);
   }
 
   render() {
-    const { list, gamesBySlug, loading, failed, sizes } = this.props;
+    const { slug, isCurrentGameLoaded, games, lastLoaded, isFailed, sizes } = this.props;
     let content;
     let returnButton;
-    const currentGame = this.currentGame();
-    if (
-      currentGame !== 'new' && 
-      (
-        loading ||
-        gamesBySlug === null || 
-        (
-          currentGame === null && 
-          list === null
-        ) || 
-        (
-          currentGame !== null && 
-          gamesBySlug[currentGame] === undefined
-        )
-      )
-    ) {
+    if (isFailed) {
+      content = "Failed!";
+    }
+    else if (!lastLoaded && !isCurrentGameLoaded) {
       content = <Spinner/>
     }
-    else if (failed) {
-      content = "Failed!"
-    }
-    else if (currentGame === null) {
+    else if (!isCurrentGameLoaded) {
       const { openGame, openNewGame } = this.props;
-
-      const gameComponents = list.map(slug => {
-        const { kind, name } = gamesBySlug[slug];
-        return <GameListItem key={slug} {...{kind, slug, name, openGame, sizes}}/>
-      });
-
       content = (
         <GamesList>
-          {gameComponents}
+          {games.map(({slug, name}) => 
+            <GameListItem key={slug} {...{slug, name, openGame, sizes}}/>
+          )}
           <NewGame onClick={openNewGame}>New Game</NewGame>
         </GamesList>
       )
@@ -247,24 +202,11 @@ class Games extends React.Component {
     else {
       returnButton = <ReturnButton onClick={this.return} rx={sizes}>{"<"}</ReturnButton>
       
-      if (currentGame === 'new') {
+      if (slug === 'new') {
         content = <NewGameForm/>
       }
       else {
-        const { playersById, startJoinGame, cancelJoinGame, setInput, join } = this.props;
-
-        const game = gamesBySlug[currentGame];
-
-        const props = {
-          ...game, ...join, sizes,
-          playersById, startJoinGame, cancelJoinGame, setInput, 
-          joinGame: this.joinGame,
-          startGame: this.startGame
-        }
-        if (game !== undefined) {
-          content = <GameInfo {...props}/>
-        }
-  
+        content = <GameInfo {...{sizes, slug}}/>
       }
     }
 

@@ -1,21 +1,19 @@
-import {
-  ROUTE
-} from "common/actions"
+import { fromRouting } from './state';
 
-import actionCreator from 'utils/actionCreator';
-
-const setPath = actionCreator(ROUTE, "path");
-
-export const route = path => (dispatch) => {
-  dispatch(setPath({path}));
+const getFullPath = (path, depth, state) => {
+  if (depth === 0) return path;
+  const { here } = fromRouting.getPath(state, depth);
+  return [...here, ...path];
 }
 
-export const goTo = path => (_dispatch, _getState, {history}) => {
-  history.push("/" + path.join("/"));
+export const goTo = (path, depth = 0) => (_dispatch, getState, {history}) => {
+  const fullPath = getFullPath(path, depth, getState()) 
+  history.push("/" + fullPath.join("/"));
 }
 export const goBack = () => (_dispatch, _getState, {history}) => {
   history.goBack();
 }
-export const replace = path => (_dispatch, _getState, {history}) => {
-  history.replace("/" + path.join("/"));
+export const replace = (path, depth = 0) => (_dispatch, getState, {history}) => {
+  const fullPath = getFullPath(path, depth, getState()) 
+  history.replace("/" + fullPath.join("/"));
 } 

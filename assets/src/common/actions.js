@@ -1,17 +1,4 @@
-export const LOGIN_START = "login_start";
-export const LOGIN_SUCCESS = "login_success";
-export const LOGIN_FAIL = "login_fail";
-export const LOGIN_GOOGLE = "login_google";
-export const LOGIN_READY = "login_ready";
-export const LOGOUT = "logout";
 
-export const ROUTE = "route";
-
-export const GAMES_START_LOADING = "games_start_loading";
-export const GAMES_SET_LIST = "games_set_list";
-export const GAMES_ADD = "games_add";
-export const GAMES_FLAG_RELOAD = "games_flag_reload";
-export const GAMES_FAIL_LOADING = "games_fail_loading";
 
 export const STATUS_SET_UP = "status_set_up";
 export const STATUS_SET_DOWN = "status_set_down";

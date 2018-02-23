@@ -9,7 +9,7 @@ import Play from 'Play';
 import Auth from 'Auth';
 
 import { getStatus } from 'Status/actionCreators';
-import { login, loginReady, signout } from 'Auth/actionCreators';
+import { login, loginReady, signout } from 'Auth';
 import { replace } from 'Routing/actionCreators';
 import route from 'Routing/route';
 

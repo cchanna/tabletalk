@@ -4,7 +4,8 @@ import {
   MONSTERHEARTS_LOAD
 } from "common/actions";
 
-import * as api from './api';
+import { get } from 'common/api';
+import { getPath } from 'Routing';
 
 const resolveLoad = actionCreator(
   MONSTERHEARTS_LOAD, 
@@ -13,16 +14,15 @@ const resolveLoad = actionCreator(
 );
 
 
-
 export const load = () => (dispatch, getState) => {
-  const { path, auth } = getState();
-  api.load(path[1], auth.jwt)
+  const { path } = getPath(getState());
+  dispatch(get(`games/${path[1]}/load`))
     .then(data => {
       dispatch(resolveLoad(data));
     })
-  .catch(err => {
-    console.error(err);
-  })
+    .catch(err => {
+      console.error(err);
+    })
 
   /*
 

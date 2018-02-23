@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import reducer from './reducer';
 import { createBrowserHistory } from 'history';
 
-import { route } from 'Routing/actionCreators';
+import { setPath } from 'Routing';
 
 const pathToArray = pathname => {
   let path = pathname.split('/');
@@ -29,7 +29,7 @@ export default  () => {
   }
 
   const handleHistoryChange = (location) => {
-    store.dispatch(route(pathToArray(location.pathname)));
+    store.dispatch(setPath({path: pathToArray(location.pathname)}));
   }
   
   const store = createStore(

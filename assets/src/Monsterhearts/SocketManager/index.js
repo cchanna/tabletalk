@@ -1,11 +1,13 @@
 import { connect as reduxConnect  } from 'react-redux'
 import SocketManager from './SocketManager';
+import { fromAuth } from 'Auth';
 
 import { connect, disconnect, answer, answerSlow, send, chat } from './actionCreators';
 
-const mapStateToProps = ({path, auth, monsterhearts}) => {
+const mapStateToProps = (state) => {
+  const {path, monsterhearts} = state;
   const slug = path[1];
-  const { jwt } = auth;
+  const jwt = fromAuth.getJwt(state);
   const { socket } = monsterhearts;
   const { actionQueue, slowActionQueue, actionsById, slowActionsById } = socket;
   return {

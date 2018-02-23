@@ -1,9 +1,6 @@
 import React from 'react';
 import { string, number, arrayOf, func } from 'prop-types';
 import rx from 'resplendence';
-import {
-  kindsById, toClassName
-} from "common/gameKinds";
 
 rx`
 @import "~common/styles";
@@ -45,7 +42,6 @@ const Icon = rx('span')`
 class Game extends React.Component {
   static propTypes = {
     name: string.isRequired,
-    kind: number.isRequired,
     slug: string.isRequired,
     sizes: arrayOf(string).isRequired,
     openGame: func.isRequired,
@@ -55,9 +51,9 @@ class Game extends React.Component {
     openGame(slug);
   }
   render() {
-    const { name, kind, sizes } = this.props;
+    const { name, sizes } = this.props;
     return (
-      <Container onClick={this.handleClick} rx={[toClassName(kindsById[kind]), ...sizes]}>
+      <Container onClick={this.handleClick} rx={sizes}>
         <Icon>*</Icon>
         {name}
       </Container>

@@ -1,41 +1,32 @@
-import {
-  LOGIN_START,
-  LOGIN_SUCCESS,
-  LOGIN_FAIL,
-  LOGIN_GOOGLE,
-  LOGIN_READY,
-  LOGOUT
-} from "common/actions"
+import { forAuth, fromAuth } from './state';
+import { get } from 'common/api';
 
-import actionCreator from 'utils/actionCreator';
-import api from 'Auth/api';
-import catchStatus from 'common/catchStatus';
+const {
+  startLogin,
+  setJWT,
+  failLogin,
+  logout,
+  loginReady,
+  setGoogleJWT
+} = forAuth;
 
-const startLogin = actionCreator(LOGIN_START);
-const setJWT = actionCreator(LOGIN_SUCCESS, "jwt");
-const failLogin = actionCreator(LOGIN_FAIL);
-const doLogout = actionCreator(LOGOUT);
+export { setGoogleJWT, loginReady };
 
 export const login = () => (dispatch, getState) => {
-  const { auth } = getState();
-  const { googleJwt } = auth;
+  const state = getState();
+  const googleJwt = fromAuth.getGoogleJwt(state);
   if (googleJwt) {
     dispatch(startLogin());
-    api.login("google", googleJwt)
-    .then(({jwt}) => dispatch(setJWT({jwt})))
-    .catch(catchStatus(dispatch))
-    .catch(() => dispatch(failLogin()));
+    dispatch(get("login", {queries: {provider: "google", jwt: googleJwt}, baseUrl: "auth"}))
+      .then(({jwt}) => dispatch(setJWT({jwt})))
+      .catch(() => dispatch(failLogin()));
   }
 }
 
-export const loginReady = actionCreator(LOGIN_READY);
-
-export const setGoogleJWT = actionCreator(LOGIN_GOOGLE, "jwt");
-
 export const signout = () => (dispatch, getState) => {
-  const {auth} = getState();
-  dispatch(doLogout());
-  if (auth.googleJwt && window.gapi) {
+  const loggedInWithGoogle = fromAuth.getLoggedInWithGoogle(getState());
+  dispatch(logout());
+  if (loggedInWithGoogle && window.gapi) {
     window.gapi.auth2.getAuthInstance().signOut();
   }
 }

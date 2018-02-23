@@ -1,23 +1,14 @@
-import {
-  GAMES_START_LOADING,
-  GAMES_SET_LIST,
-  GAMES_ADD,
-  GAMES_FLAG_RELOAD,
-  GAMES_FAIL_LOADING,
-} from "common/actions"
-import actionCreator from 'utils/actionCreator';
-import api from './api';
-import catchStatus from 'common/catchStatus';
-
+import { forGames } from './state';
 import { goTo } from 'Routing/actionCreators';
+import { get, post } from 'common/api';
 
-const startLoadingGames = actionCreator(GAMES_START_LOADING);
-const setGamesList = actionCreator(GAMES_SET_LIST, "list");
-const failLoadingGames = actionCreator(GAMES_FAIL_LOADING);
-const flagReload = actionCreator(GAMES_FLAG_RELOAD);
-const addGames = actionCreator(GAMES_ADD, "gamesBySlug", "playersById");
-
-
+const {
+  startLoading,
+  failLoading,
+  add,
+  setList,
+  flagReload
+} = forGames;
 
 const mapGames = games => {
   const list = [];
@@ -37,56 +28,45 @@ const mapGames = games => {
   return {list, gamesBySlug, playersById};
 }
 
-export const getGames = () => (dispatch, getState) => {
-  const { auth } = getState();
-  dispatch(startLoadingGames());
-  api.index(auth.jwt)
+export const getGames = () => dispatch => {
+  dispatch(startLoading());
+  dispatch(get("games"))
     .then(games => {
       const {list, gamesBySlug, playersById} = mapGames(games);
-      dispatch(addGames({gamesBySlug, playersById}));
-      dispatch(setGamesList({list}));
+      dispatch(add({gamesBySlug, playersById}));
+      dispatch(setList({list}));
     })
-    .catch(catchStatus(dispatch))
-    .catch(() => dispatch(failLoadingGames()));
+    .catch(() => dispatch(failLoading()));
 }
 
-export const getGame = ({slug}) => (dispatch, getState) => {
-  const { auth } = getState();
-  dispatch(startLoadingGames());
-  api.get(slug, auth.jwt)
+export const getGame = ({slug}) => dispatch => {
+  dispatch(startLoading());
+  dispatch(get("games/$slug", {urlParams: {slug}}))
     .then(game => {
       const {gamesBySlug, playersById} = mapGames([game]);
-      dispatch(addGames({gamesBySlug, playersById}));
+      dispatch(add({gamesBySlug, playersById}));
     })
-    .catch(catchStatus(dispatch))
-    .catch(err => {
-      console.error(err);
-      dispatch(failLoadingGames());
-    });
+    .catch(() => dispatch(failLoading()));
 }
 
 export const openGame = slug => goTo(["games", slug])
 
-export const joinGame = ({slug, player}) => (dispatch, getState) => {
-  const { auth } = getState();
-  return api.join({slug, player}, auth.jwt)
+export const joinGame = ({slug, player}) => dispatch => {
+  return dispatch(post("games/$slug/join", {player}, {urlParams: {slug}}))
     .then(game => {
       const {gamesBySlug, playersById} = mapGames([game]);
-      dispatch(addGames({gamesBySlug, playersById}));
-    })
-    .catch(catchStatus(dispatch))
+      dispatch(add({gamesBySlug, playersById}));
+    });
 }
 
-export const create = ({kind, name, slug, player, maxPlayers}) => (dispatch, getState) => {
-  const { jwt } = getState().auth;
-  return api.create({kind, name, slug, player, maxPlayers}, jwt)
+export const create = ({kind, name, slug, player, maxPlayers}) => dispatch => {
+  return dispatch(post("games", {kind, name, slug, player, maxPlayers}))
     .then(data => {
       const { gamesBySlug, playersById } = mapGames([data]);
-      dispatch(addGames({gamesBySlug, playersById}));
+      dispatch(add({gamesBySlug, playersById}));
       dispatch(flagReload());
       dispatch(openGame(slug));
     })
-    .catch(catchStatus(dispatch))
 }
 
 export const openNewGame = () => openGame("new")

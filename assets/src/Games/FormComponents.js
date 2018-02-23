@@ -1,5 +1,5 @@
 import React from 'react';
-import { string, bool, node } from 'prop-types';
+import { string, bool, node, shape, any } from 'prop-types';
 import rx from 'resplendence';
 
 import { Field } from 'formik';
@@ -65,8 +65,11 @@ const withEmpty = Node => {
   const result = ({field, ...props}) => <Node rx={{empty: field.value === ''}} {...field} {...props} />
   result.displayName = `withEmpty(${Node.displayName || Node.name || Node.toString()})`
   result.propTypes = {
-    field: string.isRequired
+    field: shape({
+      value: any
+    }).isRequired
   }
+  return result;
 }
 const InputWithEmpty = withEmpty(InputStyle);
 export const Input = props => <Field component={InputWithEmpty} {...props}/>
