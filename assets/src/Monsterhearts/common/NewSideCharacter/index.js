@@ -1,12 +1,13 @@
 import { connect } from 'react-redux'
 import NewSideCharacter from './NewSideCharacter';
 
-import { createSideCharacter } from './actionCreators';
+import { forMonsterhearts, fromMonsterhearts } from '../../state';
 
-const mapStateToProps = ({monsterhearts}) => {
-  const { slowActionsById } = monsterhearts.socket;
-  return {slowActionsById};
-}
+const { createSideCharacter } = forMonsterhearts;
+
+const mapStateToProps = state => ({
+  slowActionsById: fromMonsterhearts.getSlowActionsById(state)
+})
 
 const mapDispatchToProps = {createSideCharacter};
 

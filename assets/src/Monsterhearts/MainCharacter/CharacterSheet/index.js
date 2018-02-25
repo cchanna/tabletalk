@@ -2,19 +2,15 @@ import { connect } from 'react-redux'
 import CharacterSheet from './CharacterSheet';
 import { compose } from 'redux';
 import withSizes from 'common/withSize';
+import { fromMonsterhearts } from '../../state';
 
-const mapStateToProps = ({monsterhearts}, {here, path}) => {
-  const id = parseInt(here[2], 10);
-  const { charactersById, definitions } = monsterhearts;
-  const { playbooksByName } = definitions;
-  const { mainCharacter } = charactersById[id];
+const mapStateToProps = (state, {id, depth}) => {
   const { 
     eyes, look, origin, moves, playbook 
-  } = mainCharacter;
-  const playbookDefinition = playbooksByName[playbook];
-  const { sexMove, advice } = playbookDefinition;
+  } = fromMonsterhearts.getCharacter(state, id).mainCharacter;
+  const { sexMove, advice } = fromMonsterhearts.getPlaybookDefinition(state, playbook);
   return {
-    id, path, here,
+    id, depth,
     eyes, look, origin,
     moves, playbook,
     sexMove, advice

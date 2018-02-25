@@ -19,14 +19,18 @@ const getJwt = state => state.jwt;
 const getIsLoggingIn = state => state.pending;
 const getIsFailed = state => state.error;
 const getGoogleJwt = state => state.googleJwt;
-const loggedInWithGoogle = state => !!getGoogleJwt(state)
+const getIsLoggedInWithGoogle = state => !!getGoogleJwt(state);
+const getIsLoggedIn = state => !!state.jwt;
+const getIsReady = state => state.ready; 
 
 export const fromAuth = globalizeSelectors(state => state[name], {
   getJwt,
   getIsFailed,
   getIsLoggingIn,
   getGoogleJwt,
-  loggedInWithGoogle
+  getIsLoggedInWithGoogle,
+  getIsLoggedIn,
+  getIsReady
 });
 
 export const forAuth = prefixedActions(prefix, {

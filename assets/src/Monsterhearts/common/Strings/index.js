@@ -1,25 +1,17 @@
 import { connect } from 'react-redux'
 import Strings from './Strings';
 
-import { spendString, deleteString } from './actionCreators';
-import { addString, createString } from '../actionCreators';
+import { forMonsterhearts, fromMonsterhearts } from '../../state';
+const { spendString, deleteString, addString, createString } = forMonsterhearts;
 
-const mapStateToProps = ({monsterhearts}, {id, path, here}) => {
-  const { charactersById, stringsById, strings, socket, me, playersById } = monsterhearts;
-  const { slowActionsById } = socket;
-  const stringsTo = strings
-    .filter(string => stringsById[string].from === id);
-  const stringsFrom = strings
-    .filter(string => stringsById[string].to === id);
-  const { mainCharacter } = charactersById[id];
-  let readOnly = !playersById[me].isGM;
-  if (readOnly && mainCharacter && mainCharacter.playerId === me) {
-    readOnly = false;
-  }
+const mapStateToProps = (state, {id, depth, sideCharacter = false}) => {
   return {
-    path, here, slowActionsById,
-    id, stringsTo, stringsFrom, stringsById, charactersById,
-    readOnly
+    sideCharacter,
+    id, 
+    depth, 
+    slowActionsById: fromMonsterhearts.getSlowActionsById(state),
+    readOnly: fromMonsterhearts.getReadOnly(state, id),
+    strings: fromMonsterhearts.getCharacterStrings(state, id), 
   };
 };
 

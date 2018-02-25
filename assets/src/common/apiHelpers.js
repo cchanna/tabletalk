@@ -10,20 +10,8 @@ const checkStatus = response => {
 
 const deserialize = response => response.json(); 
 
-const request = (urlInput, {method = "GET", queries, urlParams, body, jwt}) => {
-  // build url with url params
-  const urlParts = urlInput.split("/");
-  let url = urlParts[0];
-  for (let i=1; i < urlParts.length; i++) {
-    const urlPart = urlParts[i];
-    if (urlPart[0] === '$') {
-      const param = urlPart.substring(1);
-      url += "/" + urlParams[param];
-    }
-    else {
-      url += "/" + urlPart;
-    }
-  }
+const request = (urlInput, {method = "GET", queries, body, jwt}) => {
+  let url = urlInput;
 
   // build query string
   let first = true;
@@ -56,8 +44,8 @@ const request = (urlInput, {method = "GET", queries, urlParams, body, jwt}) => {
     .then(deserialize);
 }
 
-export const get = (url, {queries, urlParams, jwt} = {}) => request(url, {method: "GET", queries, urlParams, jwt});
-export const post = (url, {body, urlParams, jwt} = {}) => request(url, {method: "POST", body, urlParams, jwt});
+export const get = (url, {queries, jwt} = {}) => request(url, {method: "GET", queries, jwt});
+export const post = (url, {body, jwt} = {}) => request(url, {method: "POST", body, jwt});
 
 const addUrl = (fn, added) => (url, opts) => fn(`${added}/${url}`, opts);
 

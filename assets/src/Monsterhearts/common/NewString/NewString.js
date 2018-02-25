@@ -19,8 +19,12 @@ const Container = rx('div')`
 class NewString extends Component {
   static propTypes = {
     id: number.isRequired, 
-    characters: arrayOf(number).isRequired, 
-    charactersById: object.isRequired,
+    characters: arrayOf(shape({
+      id: number.isRequired,
+      name: string,
+      playbook: string,
+      notes: string.isRequired
+    })).isRequired, 
     slowActionsById: object.isRequired,
     createString: func.isRequired, 
     goBack: func.isRequired
@@ -47,31 +51,22 @@ class NewString extends Component {
   }
   
   render() {
-    const { id, characters, charactersById } = this.props;
+    const { id, characters } = this.props;
     const { actionId } = this.state;
-    let content;
-    if (!actionId) {
-      content = characters
-        .map(c => {
-          const { name, notes, mainCharacter } = charactersById[c];
-          const playbook = mainCharacter ? mainCharacter.playbook : null
-          return (
-            <Character 
-              key={c} 
-              id={c} 
-              createString={this.createString}
-              myId={id} 
-              {...{name, notes, playbook}}/>
-          )
-        })
-      return (
-        <Container>
-          {content}
-          <NewSideCharacter/>
-        </Container>
-      );
-    }
-    return null;
+    if (actionId) return null;
+    return (
+      <Container>
+        {characters.map(({name, notes, playbook, id: c}) => 
+          <Character 
+            key={c} 
+            id={c} 
+            createString={this.createString}
+            myId={id} 
+            {...{name, notes, playbook}}/>
+        )}
+        <NewSideCharacter/>
+      </Container>
+    );
   }
 }
 

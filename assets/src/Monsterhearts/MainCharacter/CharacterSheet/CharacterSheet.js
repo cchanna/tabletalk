@@ -82,8 +82,7 @@ class CharacterSheet extends Component {
     look: string,
     origin: string,
     
-    path: arrayOf(string).isRequired,
-    here: arrayOf(string).isRequired,
+    depth: number.isRequired,
     sexMove: string.isRequired,
     advice: string.isRequired,
     moves: arrayOf(string).isRequired,
@@ -93,7 +92,7 @@ class CharacterSheet extends Component {
   
   render() {
     const { 
-      id, eyes, look, origin, path, here, 
+      id, eyes, look, origin, depth, 
       sexMove, advice, moves, playbook, sizes
     } = this.props;
       
@@ -110,11 +109,11 @@ class CharacterSheet extends Component {
             </Section>
             <Section>
               <Header>Strings</Header>
-              <Strings {...{id, path, here}}/>
+              <Strings id={id} depth={depth}/>
             </Section>
             <Section>
               <Experience id={id}/>
-              <Advancements id={id} depth={here.length}/>
+              <Advancements id={id} depth={depth}/>
             </Section>
           </Mechanics>
           <div>

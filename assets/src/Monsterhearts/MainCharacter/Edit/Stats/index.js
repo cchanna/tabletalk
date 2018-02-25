@@ -2,15 +2,14 @@ import { connect } from 'react-redux'
 import { compose } from 'redux';
 import withSize from 'common/withSize';
 import Stats from './Stats';
-import { setStats } from './actionCreators';
 
-const mapStateToProps = ({monsterhearts}, {here}) => {
-  const id = parseInt(here[2], 10);
-  const { charactersById, definitions } = monsterhearts;
-  const { mainCharacter } = charactersById[id];
-  const { hot, cold, volatile, dark, playbook } = mainCharacter;
-  const { playbooksByName } = definitions;
-  const { stats } = playbooksByName[playbook];
+import { forMonsterhearts, fromMonsterhearts } from '../../../state';
+const { setStats } = forMonsterhearts;
+
+const mapStateToProps = (state, {id}) => {
+  const { 
+    hot, cold, volatile, dark, playbook } = fromMonsterhearts.getCharacter(state, id).mainCharacter;
+  const { stats } = fromMonsterhearts.getPlaybookDefinition(state, playbook);
   return {
     id,
     hot, cold, volatile, dark,

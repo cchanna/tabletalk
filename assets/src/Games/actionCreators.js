@@ -1,5 +1,5 @@
 import { forGames } from './state';
-import { goTo } from 'Routing/actionCreators';
+import { goTo } from 'Routing';
 import { get, post } from 'common/api';
 
 const {
@@ -41,7 +41,7 @@ export const getGames = () => dispatch => {
 
 export const getGame = ({slug}) => dispatch => {
   dispatch(startLoading());
-  dispatch(get("games/$slug", {urlParams: {slug}}))
+  dispatch(get(`games/${slug}`))
     .then(game => {
       const {gamesBySlug, playersById} = mapGames([game]);
       dispatch(add({gamesBySlug, playersById}));
@@ -52,7 +52,7 @@ export const getGame = ({slug}) => dispatch => {
 export const openGame = slug => goTo(["games", slug])
 
 export const joinGame = ({slug, player}) => dispatch => {
-  return dispatch(post("games/$slug/join", {player}, {urlParams: {slug}}))
+  return dispatch(post(`games/${slug}/join`, {player}))
     .then(game => {
       const {gamesBySlug, playersById} = mapGames([game]);
       dispatch(add({gamesBySlug, playersById}));

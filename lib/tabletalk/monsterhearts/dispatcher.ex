@@ -264,7 +264,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     end
     if value !== nil do
       new_value = value + 1
-      if new_value < 3 do
+      if new_value <= 3 do
         Monsterhearts.create_advancement!(%{"main_character_id" => main_character.id, "name" => "+stat"})
         Monsterhearts.update_main_character!(main_character, %{
           "experience" => 0, 

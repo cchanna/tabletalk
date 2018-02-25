@@ -35,16 +35,16 @@ class SideCharacters extends Component {
   static propTypes = {
     sideCharacters: arrayOf(number).isRequired,
     path: arrayOf(string).isRequired,
-    here: arrayOf(string).isRequired,
+    depth: number.isRequired,
     readOnly: bool.isRequired,
     sizes: arrayOf(string).isRequired
   }
   
   render() {
-    const { sideCharacters, path, here, readOnly, sizes } = this.props;
+    const { sideCharacters, path, depth, readOnly, sizes } = this.props;
     if (path.length < 2) {
       const content = sideCharacters.map(id => (
-        <SideCharacter key={id} {...{id, path, here, readOnly, sizes}}/>
+        <SideCharacter key={id} {...{id, depth, readOnly, sizes}}/>
       ))
       return (
         <Container>
@@ -56,12 +56,10 @@ class SideCharacters extends Component {
       );
     }
     else {
-      const [id, newString, ...newPath] = path;
-      const newHere = [...here, id, newString];
       return (
         <Container>
           <Wrapper rx={sizes}>
-            <NewString path={newPath} here={newHere}/>
+            <NewString id={path[0]}/>
           </Wrapper>
         </Container>
       )

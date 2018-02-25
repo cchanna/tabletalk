@@ -2,22 +2,40 @@ import { connect as reduxConnect  } from 'react-redux'
 import SocketManager from './SocketManager';
 import { fromAuth } from 'Auth';
 
-import { connect, disconnect, answer, answerSlow, send, chat } from './actionCreators';
+import { getPath } from 'Routing';
+import { forMonsterhearts, fromMonsterhearts } from '../state';
+
+const { 
+  connectSocket, 
+  disconnectSocket, 
+  answerSocketMessage, 
+  answerSlowSocketMessage, 
+  sendSocketMessages, 
+  chat 
+} = forMonsterhearts;
 
 const mapStateToProps = (state) => {
-  const {path, monsterhearts} = state;
-  const slug = path[1];
+  const slug = getPath(state).path[1];
   const jwt = fromAuth.getJwt(state);
-  const { socket } = monsterhearts;
-  const { actionQueue, slowActionQueue, actionsById, slowActionsById } = socket;
   return {
     slug, jwt,
-    actionQueue, slowActionQueue, actionsById, slowActionsById
+    actionQueue: fromMonsterhearts.getActionQueue(state), 
+    slowActionQueue: fromMonsterhearts.getSlowActionQueue(state), 
+    actionsById: fromMonsterhearts.getActionsById(state), 
+    slowActionsById: fromMonsterhearts.getSlowActionsById(state)
   };
 };
 
 const dispatch = x => x;
 
-const mapDispatchToProps = {chat, dispatch, connect, disconnect, answer, answerSlow, send};
+const mapDispatchToProps = {
+  chat, 
+  dispatch, 
+  connect: connectSocket, 
+  disconnect: disconnectSocket, 
+  answer: answerSocketMessage, 
+  answerSlow: answerSlowSocketMessage, 
+  send: sendSocketMessages
+};
 
 export default reduxConnect(mapStateToProps, mapDispatchToProps)(SocketManager);

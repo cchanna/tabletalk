@@ -14,12 +14,33 @@ export const prefixedReducer = (prefix, reducer, exceptions) => (state, action) 
   return state;
 }
 
-export const prefixedActions = (prefix, actions) => {
-  const convertToActionCreator = ([type, ...args]) => actionCreator(prefix + type, ...args);
+export const prefixTypes = (prefix, types) => {
+  const result = {};
+  types.forEach(type => {
+    result[type] = prefix + type
+  });
+  return result;
+}
+
+export const prefixActions = (prefix, actions) => {
+  const convertToActionCreator = (arg) => {
+    if (typeof arg === "string") {
+      return prefix + arg;
+    }
+    else {
+      const [type, ...args] = arg;
+      return [prefix + type, ...args];
+    }
+  }
   return mapObject(actions, convertToActionCreator);
 }
 
-export const makeActions = (actions) => mapObject(actions, action => actionCreator(...action));
+export const actions = (actions, creator = actionCreator) => mapObject(actions, action => {
+  if (typeof action === "string") return creator(action);
+  else return creator(...action);
+});
+
+export const prefixedActions = (prefix, a) => actions(prefixActions(prefix, a));
 
 export const globalizeSelectors = (globalSelector, selectors) => 
   mapObject(selectors, selector => 

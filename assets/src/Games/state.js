@@ -11,6 +11,7 @@ const ADD = "ADD";
 const FLAG_RELOAD = "FLAG_RELOAD";
 const FAIL_LOADING = "FAIL_LOADING";
 
+export const name = "games";
 const prefix = "GAMES_";
 
 export const forGames = prefixedActions(prefix, {
@@ -27,8 +28,15 @@ const getPlayer = (state, id) => ({
   ...state.playersById[id]
 });
 
+const getGamesBySlug = state => state.gamesBySlug;
+
 const getGame = (state, slug) => {
-  const { players, ...rest } = state.gamesBySlug[slug];
+  if (slug === "new") return null;
+  const gamesBySlug = getGamesBySlug(state);
+  if (!gamesBySlug) return null;
+  const game = gamesBySlug[slug];
+  if (!game) return null;
+  const { players, ...rest } = gamesBySlug[slug];
   return {
     players: players.map(id => getPlayer(state, id)),
     ...rest
@@ -49,7 +57,7 @@ const getIsFailed = state => state.error;
 
 const getLastLoaded = state => state.lastLoaded;
 
-export const fromGames = globalizeSelectors(state => state.games, {
+export const fromGames = globalizeSelectors(state => state[name], {
   getGame,
   getGames,
   getIsGameLoaded,

@@ -1,19 +1,7 @@
-import {
-  MONSTERHEARTS_CHARACTER_ADVANCEMENT_DELETE,
-  MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT,
-  MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT_CANCEL
-} from 'common/actions';
-
-import { serverActionCreator } from 'Monsterhearts/serverActionCreator';
-import actionCreator from 'utils/actionCreator';
-
-import { createAdvancement } from '../../actionCreators';
 import { goTo } from 'Routing/actionCreators';
 import { getPath } from 'Routing/selectors';
- 
-const addStat = actionCreator(MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT, "id");
-const cancelAddStat = actionCreator(MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT_CANCEL, "id");
-const deleteAdv = serverActionCreator(MONSTERHEARTS_CHARACTER_ADVANCEMENT_DELETE, "id", "advancementId");
+import { forMonsterhearts } from '../../../state';
+const { createAdvancement, addStat, cancelAddStat, deleteAdvancement } = forMonsterhearts;
 
 export const add = ({id, advancementId}) => (dispatch, getState) => {
   if (advancementId === "+stat") {
@@ -38,6 +26,6 @@ export const remove = ({id, advancementId}) => (dispatch, getState) => {
     dispatch(cancelAddStat({id}))
   }
   else {
-    dispatch(deleteAdv({id, advancementId}))
+    dispatch(deleteAdvancement({id, advancementId}))
   }
 }

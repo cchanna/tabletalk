@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { bool, func, arrayOf, string, object, number } from 'prop-types'
+import { bool, func, arrayOf, string, object, number, shape } from 'prop-types'
 import rx from 'resplendence'
 
 import Input from './Input';
-import Chat from './Chat';  
+import Chat, { chatProperties } from './Chat';  
 import DiceRoller from './DiceRoller';
 
 rx`
@@ -139,10 +139,8 @@ class Chatbox extends Component {
   static propTypes = {
     overlay: bool.isRequired,
     collapsed: bool.isRequired,
-    chats: arrayOf(number).isRequired,
-    chatsById: object.isRequired,
+    chats: arrayOf(shape(chatProperties)).isRequired,
     playersById: object.isRequired,
-    me: number.isRequired,
     setChatboxCollapsed: func.isRequired,
     chat: func.isRequired
   }
@@ -190,7 +188,7 @@ class Chatbox extends Component {
   }
 
   render() {
-    const { overlay, collapsed, chats, chatsById, playersById, me } = this.props;
+    const { overlay, collapsed, chats, playersById } = this.props;
     let toggle = null;
     if (overlay) toggle = (
       <Toggle rx={{collapsed}} onClick={this.handleToggle}>
@@ -199,15 +197,14 @@ class Chatbox extends Component {
     )
     const chatComponents = [];
     let prevPlayerId = null;
-    chats.forEach((id, index) => {
-      const chat = chatsById[id];
-      const mine = (chat.playerId === me);
-      if (chat.playerId !== prevPlayerId) {
+    chats.forEach((chat, index) => {
+      const { id, playerId, mine } = chat;
+      if (playerId !== prevPlayerId) {
         chatComponents.push(
-          <Header key={id + "-header"} rx={{mine}}>{playersById[chat.playerId].name}</Header>
+          <Header key={id + "-header"} rx={{mine}}>{playersById[playerId].name}</Header>
         )
       }
-      prevPlayerId = chat.playerId;
+      prevPlayerId = playerId;
       chatComponents.push(
         <Chat key={id} newest={index === chats.length - 1} {...{playersById, mine}} {...chat}/>
       );

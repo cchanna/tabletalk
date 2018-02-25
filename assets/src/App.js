@@ -8,10 +8,9 @@ import Games from 'Games';
 import Play from 'Play';
 import Auth from 'Auth';
 
-import { getStatus } from 'Status/actionCreators';
-import { login, loginReady, signout } from 'Auth';
-import { replace } from 'Routing/actionCreators';
-import route from 'Routing/route';
+import { getStatus, fromStatus } from 'Status';
+import { login, loginReady, signout, fromAuth } from 'Auth';
+import { replace, Route, getPath } from 'Routing';
 
 import Spinner from 'common/components/Spinner';
 import "./index.scss";
@@ -77,9 +76,9 @@ const FloatAbove = rx('div')`
 class App extends Component {
 static propTypes = {
     up: bool.isRequired,
-    googleJwt: string,
+    loggedInWithGoogle: bool.isRequired,
     loginReady: bool.isRequired,
-    path: arrayOf(string).isRequired,
+    next: string,
     loggedIn: bool.isRequired,
     downMessage: bool.isRequired,
     loggingIn: bool.isRequired,
@@ -96,11 +95,11 @@ static propTypes = {
   }
   componentDidUpdate(prevProps) {
     {
-      const { up, googleJwt, login } = this.props;
+      const { up, loggedInWithGoogle, login } = this.props;
 
-      const canLogIn = (up && googleJwt);
-      const couldLogIn = (prevProps.up && prevProps.googleJwt);
-      if (canLogIn && (!couldLogIn || googleJwt !== prevProps.googleJwt)) {
+      const canLogIn = (up && loggedInWithGoogle);
+      const couldLogIn = (prevProps.up && prevProps.loggedInWithGoogle);
+      if (canLogIn && (!couldLogIn || loggedInWithGoogle !== prevProps.loggedInWithGoogle)) {
         login();
       }
     }
@@ -111,8 +110,8 @@ static propTypes = {
       }
     }
     {
-      const { path, loggedIn, replace } = this.props;
-      if (loggedIn && path.length === 0) {
+      const { next, loggedIn, replace } = this.props;
+      if (loggedIn && !next) {
         replace(["games"]);
       }
     }
@@ -130,7 +129,7 @@ static propTypes = {
   ]
 
   render() {
-    const { up, downMessage, loggedIn, loggingIn, ready, path, signout } = this.props;
+    const { up, downMessage, loggedIn, loggingIn, ready, signout } = this.props;
 
     let content
     if (up === false) {
@@ -138,7 +137,7 @@ static propTypes = {
     }
     else if (!ready) content = <Spinner/>;
     else if (loggedIn) {
-      content = route(path, [], this.pages);
+      content = <Route pages={this.pages}/>
     }
 
     const signoutButton = loggedIn ? <SignoutButton onClick={signout}>signout</SignoutButton> : null;
@@ -155,15 +154,16 @@ static propTypes = {
   }
 }
 
-const mapStateToProps = ({auth, path, status}) => {
+const mapStateToProps = (state) => {
+  const { next } = getPath(state);
   return {
-    up: status.up,
-    downMessage: status.message,
-    ready: auth.ready,
-    googleJwt: auth.googleJwt,
-    loggedIn: !!auth.jwt,
-    loggingIn: auth.pending,
-    path
+    up: fromStatus.getIsUp(state),
+    downMessage: fromStatus.getMessage(state),
+    ready: fromAuth.getIsReady(state),
+    loggedInWithGoogle: fromAuth.getIsLoggedInWithGoogle(state),
+    loggedIn: fromAuth.getIsLoggedIn(state),
+    loggingIn: fromAuth.getIsLoggingIn(state),
+    next
   }
 }
 

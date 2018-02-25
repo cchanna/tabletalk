@@ -2,13 +2,15 @@ import { connect } from 'react-redux'
 import Advancements from './Advancements';
 
 import { add, remove } from './actionCreators';
-import { 
+import { fromMonsterhearts } from '../../../state';
+
+const {
   getCharacter, 
   getReadOnly, 
   getPlaybookAdvancements, 
   listSeasonAdvancements,
   getIsSeasonFinale
-} from 'Monsterhearts/selectors';
+} = fromMonsterhearts;
 
 const mapStateToProps = (state, {id, depth}) => {
   const { mainCharacter } = getCharacter(state, id);

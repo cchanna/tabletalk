@@ -1,18 +1,14 @@
 import { connect } from 'react-redux'
 import Harm from './Harm';
 
-import { incrementHarm, decrementHarm } from './actionCreators';
+import { forMonsterhearts, fromMonsterhearts } from '../../../state';
+const { incrementHarm, decrementHarm } = forMonsterhearts;
 
-const mapStateToProps = ({monsterhearts}, {id}) => {
-  const { charactersById, playersById, me } = monsterhearts;
-  const { mainCharacter } = charactersById[id];
-  const { harm, playerId } = mainCharacter;
-  
-  const readOnly = (playerId !== me) && !playersById[me].isGM;
-  return {
-    id, harm, readOnly
-  };
-};
+const mapStateToProps = (state, {id}) => ({
+  id, 
+  harm: fromMonsterhearts.getCharacter(state, id).mainCharacter.harm, 
+  readOnly: fromMonsterhearts.getReadOnly(state, id)
+});
 
 const mapDispatchToProps = {incrementHarm, decrementHarm}
 

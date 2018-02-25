@@ -1,19 +1,15 @@
-import {
-  STATUS_SET_UP,
-  STATUS_SET_DOWN
-} from "common/actions"
+import { get } from 'common/baseApi';
+import { forStatus } from './state';
 
-import actionCreator from 'utils/actionCreator';
-import api from './api';
-
-const setStatusUp = actionCreator(STATUS_SET_UP);
-const setStatusDown = actionCreator(STATUS_SET_DOWN, "reason");
-
+const { 
+  setStatusUp,
+  setStatusDown
+} = forStatus;
 
 const defaultReason = "Tabletalk is down right now. Sorry!";
 
 export const getStatus = () => dispatch => {
-  api.get()
+  dispatch(get("status"))
     .then(() => dispatch(setStatusUp()))
     .catch(error => {
       if (error.response && error.response.status === 503) {

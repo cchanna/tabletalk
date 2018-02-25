@@ -2,14 +2,11 @@ import React, { Component } from 'react'
 import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 import rx from 'resplendence'
   
-import Link from 'Routing/Link';
-import route from 'Routing/route';
+import { Link, Route } from 'Routing';
 import Identity from './Identity';
 import Stats from './Stats';
 import Moves from './Moves';
 import Backstory from './Backstory';
-
-import { exactMatch } from 'utils/pathTools';
 
 rx`
 @import '~common/styles';
@@ -110,13 +107,14 @@ const Details = rx('div')`
 
 class Edit extends Component {
   static propTypes = {
+    id: number.isRequired,
     identityDone: bool.isRequired,
     statsDone: bool.isRequired,
     movesDone: bool.isRequired,
     backstoryDone: bool.isRequired,
     sizes: arrayOf(string).isRequired,
-    path: arrayOf(string).isRequired,
-    here: arrayOf(string).isRequired,
+    next: string,
+    depth: number.isRequired,
     readOnly: bool.isRequired,
     goBack: func.isRequired,
     replace: func.isRequired
@@ -127,21 +125,21 @@ class Edit extends Component {
   }
 
   route = () => {
-    const { here, readOnly, replace } = this.props;
+    const { depth, readOnly, replace } = this.props;
     if (readOnly) {
-      replace(here.slice(0, -1));
+      replace([], depth - 1);
     }
   }
 
   componentDidMount = this.route;
   componentDidUpdate(prevProps) {
-    if (!exactMatch(this.props.path, prevProps.path)) {
+    if (this.props.next !== prevProps.next) {
       this.route();
     }
   }
   
   render() {
-    const { identityDone, statsDone, movesDone, backstoryDone, sizes } = this.props;
+    const { id, depth, next, identityDone, statsDone, movesDone, backstoryDone, sizes } = this.props;
 
     const pages = [
       {
@@ -170,12 +168,11 @@ class Edit extends Component {
       }
     ]
 
-    const { path, here } = this.props;
     let root = null;
     const showBoth = !sizes.includes("under-max");
-    if (showBoth || path.length === 0) {
+    if (showBoth || !next) {
       const tabs = pages.map(({path, name, done}) => (
-        <Tab to={[...here, path]} key={path} rx={{done}}>
+        <Tab to={path} depth={depth} key={path} rx={{done}}>
           {name}
         </Tab>
       ))
@@ -190,10 +187,14 @@ class Edit extends Component {
     if (showBoth) divider = <Divider/>
     let details = null;
     let backButton = null;
-    if (showBoth || path.length > 0) {
+    if (showBoth || next) {
       details = (
         <Details>
-          {route(path, here, pages, {showBackButton: showBoth})}
+          <Route 
+            depth={depth} 
+            pages={pages} 
+            showBackButton={showBoth}
+            id={id}/>
         </Details>
       )
     }

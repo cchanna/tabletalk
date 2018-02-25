@@ -1,18 +1,9 @@
 import { connect } from 'react-redux'
 import DarkestSelf from './DarkestSelf';
 
-import {
-  getDarkestSelf,
-  getCanCustomizeDarkestSelf
-} from 'Monsterhearts/selectors';
-
-import {
-  MONSTERHEARTS_CHARACTER_DARKEST_SELF_SET
-} from 'common/actions';
-
-import { serverActionCreator } from 'Monsterhearts/serverActionCreator';
-
-const edit = serverActionCreator(MONSTERHEARTS_CHARACTER_DARKEST_SELF_SET, "id", "value");
+import { forMonsterhearts, fromMonsterhearts } from '../../../state';
+const { editDarkestSelf } = forMonsterhearts;
+const { getDarkestSelf, getCanCustomizeDarkestSelf } = fromMonsterhearts
 
 const mapStateToProps = (state, {id}) => {
   return {
@@ -21,6 +12,6 @@ const mapStateToProps = (state, {id}) => {
   };
 };
 
-const mapDispatchToProps = {edit}
+const mapDispatchToProps = {edit: editDarkestSelf}
 
 export default connect(mapStateToProps, mapDispatchToProps)(DarkestSelf);

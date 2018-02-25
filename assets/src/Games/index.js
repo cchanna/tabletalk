@@ -8,6 +8,7 @@ import { compose } from 'redux';
 import withSize from 'common/withSize';
 
 import { fromGames } from './state';
+export { reducer, name } from './state';
 
 const mapStateToProps = (state, {depth}) => {
   const { next } = getPath(state, depth);
@@ -32,3 +33,9 @@ export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   withSize({375: "tiny", 482: "narrow"})
 )(Games);
+
+export const forGames = {
+  getGame
+}
+
+export { fromGames };

@@ -2,9 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux'
 import BigTabList from './BigTabList';
 
-import { 
-  getCharacterTabs
-} from 'Monsterhearts/selectors'
+import { fromMonsterhearts } from '../state';
+
+const { getCharacterTabs } = fromMonsterhearts;
 
 const mapStateToProps = (state, {depth}) => {
   const tabs = getCharacterTabs(state, {retired: true});

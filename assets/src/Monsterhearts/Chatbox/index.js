@@ -1,20 +1,18 @@
 import { connect } from 'react-redux'
 import Chatbox from './Chatbox';
 
-import { setChatboxCollapsed, chat } from './actionCreators';
+import { forMonsterhearts, fromMonsterhearts } from '../state';
+const { setChatboxCollapsed, sendChat } = forMonsterhearts;
 
-const mapStateToProps = ({monsterhearts}, {overlay}) => {
-  const { chatboxCollapsed, playersById, chats, chatsById, me } = monsterhearts;
+const mapStateToProps = (state, {overlay}) => {
   return {
     overlay,
-    collapsed: chatboxCollapsed,
-    playersById,
-    chats,
-    chatsById,
-    me
+    collapsed: fromMonsterhearts.getIsChatboxCollapsed(state),
+    playersById: fromMonsterhearts.getPlayersById(state),
+    chats: fromMonsterhearts.getChats(state),
   };
 };
 
-const mapDispatchToProps = {setChatboxCollapsed, chat}
+const mapDispatchToProps = {setChatboxCollapsed, chat: sendChat}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chatbox);

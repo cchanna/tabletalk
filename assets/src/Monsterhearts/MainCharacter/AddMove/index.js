@@ -1,23 +1,11 @@
 import { connect } from 'react-redux'
 import AddMove from './AddMove';
 
+import { fromMonsterhearts } from '../../state';
 
-const mapStateToProps = ({monsterhearts}, {id, onAdd}) => {
-  const { charactersById, definitions } = monsterhearts;
-  const { mainCharacter } = charactersById[id];
-  const { moves } = mainCharacter;
-  const { playbooksByName, playbooks } = definitions;
-  
-  return {
-    id, onAdd,
-    playbooks: playbooks.map(name => ({
-      name,
-      moves: playbooksByName[name].moves
-        .filter(move => !moves.includes(move))
-    }))
-  };
-};
+const mapStateToProps = (state, {id, onAdd}) => ({
+  id, onAdd,
+  playbooks: fromMonsterhearts.getUnchosenPlaybookMoves(state, id)
+});
 
-const mapDispatchToProps = {}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddMove);
+export default connect(mapStateToProps)(AddMove);

@@ -2,25 +2,23 @@ import { connect } from 'react-redux';
 
 import Play from './Play';
 
-import { getGame } from 'Games/actionCreators';
-import { replace } from 'Routing/actionCreators';
+import { forGames, fromGames } from 'Games';
+import { replace, getPath } from 'Routing';
 
-const mapStateToProps = ({games}, {path, here}) => {
-  const { gamesBySlug } = games;
-  const [slug, ...tail] = path;
-  let game = null;
-  if (gamesBySlug && slug !== "new" && gamesBySlug[slug]) {
-    game = gamesBySlug[slug];
-  }
+const mapStateToProps = (state, {depth}) => {
+  const { next: slug } = getPath(state, depth);
+  const game = fromGames.getGame(state, slug);
   return {
-    path: tail,
-    here: [...here, slug],
+    depth,
     slug,
-    game
+    game: !game ? null : {
+      kind: game.kind,
+      me: game.me
+    }
   }
 }
 
-const mapDispatchToProps = {replace, getGame};
+const mapDispatchToProps = {replace, getGame: forGames.getGame};
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(Play);

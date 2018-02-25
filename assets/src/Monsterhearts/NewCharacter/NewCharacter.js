@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 import rx from 'resplendence'
   
-import Link from 'Routing/Link';
+import { Link } from 'Routing';
 import Skin from './Skin';
 
 rx`
@@ -107,7 +107,7 @@ const Button = rx('button')`
 class NewCharacter extends Component {
   static propTypes = {
     slug: string, 
-    here: arrayOf(string).isRequired,
+    depth: number.isRequired,
     playbooks: arrayOf(string).isRequired, 
     sizes: arrayOf(string).isRequired,
     myCharacters: arrayOf(number).isRequired,
@@ -129,11 +129,11 @@ class NewCharacter extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {here, goTo, myCharacters} = this.props;
+    const {depth, goTo, myCharacters} = this.props;
     if (myCharacters.length > prevProps.myCharacters.length) {
       myCharacters.forEach(id => {
         if (!prevProps.myCharacters.includes(id)) {
-          goTo([...here.slice(0, -1), id.toString(), "edit"]);
+          goTo([id.toString(), "edit"], depth - 1);
           return;
         }
       })
@@ -142,14 +142,14 @@ class NewCharacter extends Component {
 
   render() {
     const { 
-      here, playbook, playbooks,
+      depth, playbook, playbooks,
       sizes
     } = this.props;
     const { creating } = this.state;
     const skins = playbooks
       .map(name => {
         return (
-          <SkinLink to={[...here, name.toLowerCase()]} key={name} rx={{dull: !!playbook}}>
+          <SkinLink to={name.toLowerCase()} depth={depth} key={name} rx={{dull: !!playbook}}>
             The <BigName>{name}</BigName>
           </SkinLink>
         ) 

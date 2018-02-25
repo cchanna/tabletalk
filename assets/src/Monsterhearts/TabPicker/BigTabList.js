@@ -3,7 +3,7 @@ import { string, number, bool, shape, arrayOf } from 'prop-types'
 import { tabsShape } from './propTypes';
 import rx from 'resplendence'
   
-import Link from 'Routing/Link';
+import { Link } from 'Routing';
 
 rx`
 @import '~common/styles';

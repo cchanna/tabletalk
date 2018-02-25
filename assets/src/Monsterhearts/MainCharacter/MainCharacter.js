@@ -4,12 +4,12 @@ import rx from 'resplendence'
   
 import Edit from './Edit';
 import CharacterSheet from './CharacterSheet';
-import Link from 'Routing/Link';
+import { Link } from 'Routing';
 import NewString from 'Monsterhearts/common/NewString';
 import AnyMove from './AnyMove';
 import SelfMove from './SelfMove';
 
-import route from 'Routing/route';
+import { Route } from 'Routing';
 import { exactMatch } from 'utils/pathTools';
 
 rx`
@@ -88,8 +88,8 @@ const BackButton = rx('button')`
 
 class MainCharacter extends Component {
   static propTypes = {
+    depth: number.isRequired,
     path: arrayOf(string).isRequired,
-    here: arrayOf(string).isRequired,
     id: number.isRequired, 
     name: string,
     playbook: string,
@@ -123,38 +123,36 @@ class MainCharacter extends Component {
   ]
 
   route = () => {
-    const { path, here, editDone, replace, readOnly } = this.props;
+    const { path, depth, editDone, replace, readOnly } = this.props;
     if (path.length === 0 && !editDone && !readOnly) {
-      replace([...here, "edit"]);
+      replace(["edit"], depth);
     }
     else if (path.length > 0 && readOnly) {
-      replace(here);
+      replace([], depth);
     }
   }
 
   componentDidMount = this.route;
   componentDidUpdate(prevProps) {
-    if (!exactMatch(this.props.path, prevProps.path) || !exactMatch(this.props.here, prevProps.here)) {
+    if (!exactMatch(this.props.path, prevProps.path) || this.props.id !== prevProps.id) {
       this.route();
     }
   }
 
   render() {
-    const { id, path, here, name, playbook, sizes, editDone, readOnly, goBack } = this.props;
-    let content;
+    const { id, path, depth, name, playbook, sizes, editDone, readOnly, goBack } = this.props;
     let editLink;
     if (playbook === null) return null;
     if (editDone && !readOnly) {
       if (path.length === 0) {
         editLink = (
-          <EditLink to={[...here, 'edit']} rx={sizes}>Edit</EditLink>
+          <EditLink to='edit' depth={depth} rx={sizes}>Edit</EditLink>
         )
       }
       else if (path[0] === "edit") {
-        editLink = <EditLink to={here} rx={sizes}>Done</EditLink>
+        editLink = <EditLink depth={depth} rx={sizes}>Done</EditLink>
       }
     }
-    content = route(path, here, MainCharacter.pages, {sizes, id});
     let backButton = null;
     if (path.length && (path[0] !== 'edit' || (path.length > 1 && sizes.includes('under-max')) || path.length > 2)) {
       backButton = <BackButton rx={sizes} onClick={goBack}>Back</BackButton>
@@ -179,7 +177,10 @@ class MainCharacter extends Component {
         {backButton}
         {editLink}
         <Content>
-          {content}
+          <Route 
+            depth={depth} 
+            pages={MainCharacter.pages} 
+            extraProperties={{sizes, id}}/>
         </Content>
       </Container>
     );

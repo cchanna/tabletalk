@@ -1,15 +1,14 @@
 import { connect } from 'react-redux'
 import Experience from './Experience';
 
-import { incrementXP, decrementXP } from './actionCreators';
+import { forMonsterhearts, fromMonsterhearts } from '../../../state';
+const { incrementXP, decrementXP } = forMonsterhearts;
 
-const mapStateToProps = ({monsterhearts}, {id}) => {
-  const { charactersById, playersById, me } = monsterhearts;
-  const { mainCharacter } = charactersById[id];
-  const { experience, playerId } = mainCharacter;
-  const readOnly = (playerId !== me) && !playersById[me].isGM;
-  return {id, experience, readOnly};
-};
+const mapStateToProps = (state, {id}) => ({
+  id, 
+  experience: fromMonsterhearts.getCharacter(state, id).mainCharacter.experience, 
+  readOnly: fromMonsterhearts.getReadOnly(state, id)
+});
 
 const mapDispatchToProps = {incrementXP, decrementXP}
 

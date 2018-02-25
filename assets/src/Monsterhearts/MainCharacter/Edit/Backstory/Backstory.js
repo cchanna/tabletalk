@@ -22,32 +22,32 @@ class Backstory extends Component {
   static propTypes = {
     id: number.isRequired,
     backstory: arrayOf(string).isRequired,
-    path: arrayOf(string).isRequired,
-    here: arrayOf(string).isRequired
+    depth: number.isRequired,
+    next: string
   }
   
   render() {
-    const { id, backstory, path, here } = this.props;
+    const { id, backstory, depth, next } = this.props;
     const backstories = backstory.map((b, i) => (
       <p key={i}>
         {b}
       </p>
     ))
     
-    if (path.length === 0) {
+    if (next) {
       return (
         <Container>
-          {backstories}
-          <Strings {...{id, path, here}}/>
+          <NewString id={id}/>
         </Container>
-      )
+      );
     }
     else {
       return (
         <Container>
-          <NewString here={here} path={path}/>
+          {backstories}
+          <Strings id={id} depth={depth}/>
         </Container>
-      );
+      )
     }
 
   }

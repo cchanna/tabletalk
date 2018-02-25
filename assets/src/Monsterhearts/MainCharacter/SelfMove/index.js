@@ -1,18 +1,14 @@
 import { connect } from 'react-redux'
 import SelfMove from './SelfMove';
 
-import { createAdvancement } from '../actionCreators';
-import { goBack } from 'Routing/actionCreators';
+import { goBack } from 'Routing';
+import { fromMonsterhearts } from '../../state';
+const { createAdvancement } = fromMonsterhearts;
 
-const mapStateToProps = ({monsterhearts}, {id}) => {
-  const { definitions, charactersById } = monsterhearts;
-  const { mainCharacter } = charactersById[id];
-  const { playbook, moves } = mainCharacter;
-  const { playbooksByName } = definitions;
-  const { moves: playbookMoves } = playbooksByName[playbook];
+const mapStateToProps = (state, {id}) => {
   return {
     id,
-    moves: playbookMoves.filter(name => !moves.includes(name))
+    moves: fromMonsterhearts.getUnchosenSelfMoves(state, id)
   };
 };
 

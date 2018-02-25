@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { string, number, func, shape, arrayOf } from 'prop-types'
 import rx from 'resplendence'
-import { exactMatch } from 'utils/pathTools';
 
 import Monsterhearts from 'Monsterhearts';
 
@@ -15,10 +14,11 @@ const Container = rx('div')`
  width: 100%;
 `
 
+const componentsForKind = [Monsterhearts];
+
 class Play extends Component {
   static propTypes = {
-    path: arrayOf(string).isRequired,
-    here: arrayOf(string).isRequired,
+    depth: number.isRequired,
     slug: string,
     game: shape({
       kind: number.isRequired,
@@ -42,7 +42,7 @@ class Play extends Component {
   }
   componentDidMount = this.route;
   componentDidUpdate(prevProps) {
-    if (!exactMatch(this.props.path, prevProps.path)) {
+    if (this.props.slug !== prevProps.slug) {
       this.route();
     }
     if (!prevProps.game && this.props.game && !this.props.game.me) {
@@ -52,16 +52,13 @@ class Play extends Component {
   }
 
   render() {
-    const { game, path, here } = this.props;
+    const { game, depth } = this.props;
     let content = null;
-    const args = {path, here};
     if (game && game.me) {
-      switch(game.kind) {
-        case 0:
-          content = <Monsterhearts {...args}/>;
-          break;
-        default:
-          console.error("Can't play a game with no kind.");
+      const Component = componentsForKind[game.kind];
+      if (Component) content = <Component depth={depth + 1}/>
+      else {
+        console.error("invalid component!");
       }
     }
     return (

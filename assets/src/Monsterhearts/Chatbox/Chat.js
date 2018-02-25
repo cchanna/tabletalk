@@ -100,19 +100,23 @@ const makeBonusString = bonus => {
   else return "− " + (-bonus);
 }
 
+export const chatProperties = {
+  insertedAt: string.isRequired,
+  talk: shape({
+    text: string.isRequired,
+    isLog: bool.isRequired
+  }),
+  roll: shape({
+    dice: arrayOf(number).isRequired,
+    bonus: number.isRequired
+  }),
+  mine: bool.isRequired,
+}
+
 class Chat extends Component {
   static propTypes = {
-    insertedAt: string.isRequired,
-    talk: shape({
-      text: string.isRequired,
-      isLog: bool.isRequired
-    }),
-    roll: shape({
-      dice: arrayOf(number).isRequired,
-      bonus: number.isRequired
-    }),
+    ...chatProperties,
     playersById: object.isRequired,
-    mine: bool.isRequired,
     newest: bool.isRequired
   }
   

@@ -1,130 +1,87 @@
 import { combineReducers } from "redux";
-
-import {
-  MONSTERHEARTS_CHATBOX_SET_COLLAPSED,
-  MONSTERHEARTS_LOAD,
-  MONSTERHEARTS_SOCKET_DISCONNECT,
-  
-  MONSTERHEARTS_CHARACTER_MAIN_CREATE,
-  MONSTERHEARTS_CHARACTER_SIDE_CREATE,
-  MONSTERHEARTS_CHARACTER_SIDE_EDIT,
-  MONSTERHEARTS_CHARACTER_NAME_SET,
-  MONSTERHEARTS_CHARACTER_LOOK_SET,
-  MONSTERHEARTS_CHARACTER_EYES_SET,
-  MONSTERHEARTS_CHARACTER_ORIGIN_SET,
-  MONSTERHEARTS_CHARACTER_STATS_SET,
-  MONSTERHEARTS_CHARACTER_NOTES_SET,
-  MONSTERHEARTS_CHARACTER_HARM_INCREMENT,
-  MONSTERHEARTS_CHARACTER_HARM_DECREMENT,
-  MONSTERHEARTS_CHARACTER_XP_INCREMENT,
-  MONSTERHEARTS_CHARACTER_XP_DECREMENT,
-  MONSTERHEARTS_CHARACTER_MOVE_CREATE,
-  MONSTERHEARTS_CHARACTER_MOVE_DELETE,
-  MONSTERHEARTS_CHARACTER_MOVE_EDIT_NOTES,
-  MONSTERHEARTS_CHARACTER_CONDITION_CREATE,
-  MONSTERHEARTS_CHARACTER_CONDITION_DELETE,
-  MONSTERHEARTS_CHARACTER_ADVANCEMENT_CREATE,
-  MONSTERHEARTS_CHARACTER_ADVANCEMENT_DELETE,
-  MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT,
-  MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT_CANCEL,
-  MONSTERHEARTS_CHARACTER_DARKEST_SELF_SET,
-  MONSTERHEARTS_STRING_ADD,
-  MONSTERHEARTS_STRING_SPEND,
-  MONSTERHEARTS_STRING_CREATE,
-  MONSTERHEARTS_CHAT
-
-} from "common/actions";
-
-import socket from './SocketManager/reducer';
-
+import { LOAD } from './actions';
 import update from 'immutability-helper';
 
+const MAIN_CREATE = "MAIN_CREATE";
+const SIDE_CREATE = "SIDE_CREATE";
+const SIDE_EDIT = "SIDE_EDIT";
+const NAME_SET = "NAME_SET";
+const LOOK_SET = "LOOK_SET";
+const EYES_SET = "EYES_SET";
+const ORIGIN_SET = "ORIGIN_SET";
+const STATS_SET = "STATS_SET";
+const NOTES_SET = "NOTES_SET";
+const HARM_INCREMENT = "HARM_INCREMENT";
+const HARM_DECREMENT = "HARM_DECREMENT";
+const XP_INCREMENT = "XP_INCREMENT";
+const XP_DECREMENT = "XP_DECREMENT";
+const MOVE_CREATE = "MOVE_CREATE";
+const MOVE_DELETE = "MOVE_DELETE";
+const MOVE_EDIT_NOTES = "MOVE_EDIT_NOTES";
+const CONDITION_CREATE = "CONDITION_CREATE";
+const CONDITION_DELETE = "CONDITION_DELETE";
+const ADVANCEMENT_CREATE = "ADVANCEMENT_CREATE";
+const ADVANCEMENT_DELETE = "ADVANCEMENT_DELETE";
+const ADVANCEMENT_STAT = "ADVANCEMENT_STAT";
+const ADVANCEMENT_STAT_CANCEL = "ADVANCEMENT_STAT_CANCEL";
+const DARKEST_SELF_SET = "DARKEST_SELF_SET";
 
+export const actions = {
+  normal: {
+    addStat: [ADVANCEMENT_STAT, "id"],
+    cancelAddStat: [ADVANCEMENT_STAT_CANCEL, "id"],
+  },
+  server: {
+    createMove: [MOVE_CREATE, "id", "name"],
+    deleteMove: [MOVE_DELETE, "id", "name"],
+    deleteAdvancement: [ADVANCEMENT_DELETE, "id", "advancementId"],
+    editDarkestSelf: [DARKEST_SELF_SET, "id", "value"],
+    incrementXP: [XP_INCREMENT, "id"],
+    decrementXP: [XP_DECREMENT, "id"],
+    incrementHarm: [HARM_INCREMENT, "id"],
+    decrementHarm: [HARM_DECREMENT, "id"],
+    setNotes: [NOTES_SET, "id", "notes"],
+    setName: [NAME_SET, "id", "value"],  
+    setLook: [LOOK_SET, "id", "value"],
+    setEyes: [EYES_SET, "id", "value"],
+    setOrigin: [ORIGIN_SET, "id", "value"],  
+    setStats: [STATS_SET, "id", "hot", "cold", "volatile", "dark"],
+    editSideCharacter: [SIDE_EDIT, "id", "name", "notes"],
+    createCondition: [CONDITION_CREATE, "id", "condition"],
+    deleteCondition: [CONDITION_DELETE, "id", "condition"],
+    editMoveNotes: [MOVE_EDIT_NOTES, "id", "name", "notes"],
+    createAdvancement: [ADVANCEMENT_CREATE, "id", "advancementId", "stat", "move"],
+  },
+  slow: {
+    createCharacter: [MAIN_CREATE, "playbook"],
+    createSideCharacter: [SIDE_CREATE, "name", "notes"]
+  }
+}
 
-export default combineReducers({
-  socket,
-  loaded: (state = false, action) => {
+export const selectors = {
+  getCharactersById: state => state.byId,
+  getCharacterIds: state => state.ids
+}
+
+export const reducer = combineReducers({
+  ids: (state = null, action) => {
     switch(action.type) {
-      case MONSTERHEARTS_LOAD:
-        return true;
-      case MONSTERHEARTS_SOCKET_DISCONNECT:
-        return false;
-      default:
-        return state;
-    }
-  },
-  chatboxCollapsed: (state = true, action) => {
-    switch(action.type) {
-      case MONSTERHEARTS_CHATBOX_SET_COLLAPSED:
-        return action.collapsed;
-      default:
-        return state;  
-    }
-  },
-  players: (state = null, action) => {
-    switch(action.type) {
-      case MONSTERHEARTS_LOAD:
-        return action.players;
-      default: return state;
-    }
-  },
-  playersById: (state = null, action) => {
-    switch(action.type) {
-      case MONSTERHEARTS_LOAD:
-        return action.playersById;
-      default: return state;
-    }
-  },
-  chats: (state = null, action) => {
-    switch(action.type) {
-      case MONSTERHEARTS_LOAD:
-        return action.chats;
-      case MONSTERHEARTS_CHAT:
-        return [...state, action.id];
-      default: return state;
-    }
-  },
-  chatsById: (state = null, action) => {
-    switch(action.type) {
-      case MONSTERHEARTS_LOAD:
-        return action.chatsById;
-      case MONSTERHEARTS_CHAT:
-        return update(state, {
-          [action.id]: {
-            $set: {
-              insertedAt: action.insertedAt,
-              playerId: action.playerId,
-              talk: action.talk,
-              roll: action.roll
-            }
-          }
-        })
-      default: return state;
-    }
-  },
-  me: (state = null, action) => {
-    switch(action.type) {
-      case MONSTERHEARTS_LOAD:
-        return action.me;
-      default: return state;
-    }
-  },
-  characters: (state = null, action) => {
-    switch(action.type) {
-      case MONSTERHEARTS_LOAD:
+      case LOAD:
         return action.characters;
-      case MONSTERHEARTS_CHARACTER_MAIN_CREATE:
-      case MONSTERHEARTS_CHARACTER_SIDE_CREATE:
+      case MAIN_CREATE:
+      case SIDE_CREATE:
         return [...state, action.id]
       default: return state;
     }
   },
-  charactersById: (state = null, action) => {
+
+  byId: (state = null, action) => {
     switch(action.type) {
-      case MONSTERHEARTS_LOAD:
+      case LOAD:
         return action.charactersById;
-      case MONSTERHEARTS_CHARACTER_MAIN_CREATE:
-      case MONSTERHEARTS_CHARACTER_SIDE_CREATE:
+
+      case MAIN_CREATE:
+      case SIDE_CREATE:
         return {
           ...state,
           [action.id]: {
@@ -134,14 +91,16 @@ export default combineReducers({
             mainCharacter: action.mainCharacter
           }
         }
-      case MONSTERHEARTS_CHARACTER_SIDE_EDIT:
+
+      case SIDE_EDIT:
         return update(state, {
           [action.id]: {
             name: {$set: action.name},
             notes: {$set: action.notes}
           }
         })
-      case MONSTERHEARTS_CHARACTER_NAME_SET:
+
+      case NAME_SET:
         return {
           ...state,
           [action.id]: {
@@ -149,7 +108,8 @@ export default combineReducers({
             name: action.value
           }
         }
-      case MONSTERHEARTS_CHARACTER_LOOK_SET:
+
+      case LOOK_SET:
         return {
           ...state,
           [action.id]: {
@@ -160,7 +120,8 @@ export default combineReducers({
             }
           }
         }
-      case MONSTERHEARTS_CHARACTER_EYES_SET:
+
+      case EYES_SET:
         return {
           ...state,
           [action.id]: {
@@ -171,7 +132,8 @@ export default combineReducers({
             }
           }
         }
-      case MONSTERHEARTS_CHARACTER_ORIGIN_SET:
+
+      case ORIGIN_SET:
         return {
           ...state,
           [action.id]: {
@@ -182,7 +144,8 @@ export default combineReducers({
             }
           }
         }
-      case MONSTERHEARTS_CHARACTER_STATS_SET:
+
+      case STATS_SET:
         return {
           ...state,
           [action.id]: {
@@ -196,39 +159,43 @@ export default combineReducers({
             }
           }
         }
-      case MONSTERHEARTS_CHARACTER_NOTES_SET:
+
+      case NOTES_SET:
         return update(state, {
           [action.id]: {notes: {$set: action.notes}}
         })
-      case MONSTERHEARTS_CHARACTER_HARM_INCREMENT:
+
+      case HARM_INCREMENT:
         return update(state, {
           [action.id]: {mainCharacter: {harm: (harm) => 
             (harm < 4) ? (harm + 1) : harm
           }}
         })
-      case MONSTERHEARTS_CHARACTER_HARM_DECREMENT:
+      case HARM_DECREMENT:
         return update(state, {
           [action.id]: {mainCharacter: {harm: (harm) => 
             (harm > 0) ? (harm - 1) : harm
           }}
         })
-      case MONSTERHEARTS_CHARACTER_XP_INCREMENT:
+
+      case XP_INCREMENT:
         return update(state, {
           [action.id]: {mainCharacter: {experience: (experience) => 
             (experience < 5) ? (experience + 1) : experience
           }}
         })
-      case MONSTERHEARTS_CHARACTER_XP_DECREMENT:
+      case XP_DECREMENT:
         return update(state, {
           [action.id]: {mainCharacter: {experience: (experience) => 
             (experience > 0) ? (experience - 1) : experience
           }}
         })
-      case MONSTERHEARTS_CHARACTER_MOVE_CREATE: 
+
+      case MOVE_CREATE: 
         return update(state, {
           [action.id]: {mainCharacter: {moves: {$push: [action.name]}}}
         })
-      case MONSTERHEARTS_CHARACTER_MOVE_DELETE:
+      case MOVE_DELETE:
         return update(state, {
           [action.id]: {
             mainCharacter: {
@@ -237,17 +204,19 @@ export default combineReducers({
             }
           }
         })
-      case MONSTERHEARTS_CHARACTER_CONDITION_CREATE: 
+
+      case CONDITION_CREATE: 
         return update(state, {
           [action.id]: {conditions: {$push: [action.condition]}}
         })
-      case MONSTERHEARTS_CHARACTER_CONDITION_DELETE:
+      case CONDITION_DELETE:
         return update(state, {
           [action.id]: {
             conditions: (conditions) => conditions.filter(condition => condition !== action.condition)
           }
         })
-      case MONSTERHEARTS_CHARACTER_ADVANCEMENT_CREATE: {
+
+      case ADVANCEMENT_CREATE: {
         const common = {
           advancements: {$push: [action.advancementId]},
           experience: {$set: 0}
@@ -290,7 +259,7 @@ export default combineReducers({
             })
         }
       } 
-      case MONSTERHEARTS_CHARACTER_ADVANCEMENT_DELETE: {
+      case ADVANCEMENT_DELETE: {
         const common = {
           advancements: advancements => {
             const index = advancements.findIndex(id => id === action.advancementId);
@@ -320,7 +289,7 @@ export default combineReducers({
             })
         }
       }
-      case MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT:
+      case ADVANCEMENT_STAT:
         return update(state, {
           [action.id]: {
             mainCharacter: {
@@ -328,7 +297,7 @@ export default combineReducers({
             }
           }
         })
-      case MONSTERHEARTS_CHARACTER_ADVANCEMENT_STAT_CANCEL:
+      case ADVANCEMENT_STAT_CANCEL:
         return update(state, {
           [action.id]: {
             mainCharacter: {
@@ -336,13 +305,15 @@ export default combineReducers({
             }
           }
         })
-      case MONSTERHEARTS_CHARACTER_MOVE_EDIT_NOTES:
+
+      case MOVE_EDIT_NOTES:
         return update(state, {
           [action.id]: {
             mainCharacter: {moveNotesByName: {[action.name]: {$set: action.notes}}}
           }
         })
-      case MONSTERHEARTS_CHARACTER_DARKEST_SELF_SET:
+        
+      case DARKEST_SELF_SET:
         return update(state, {
           [action.id]: {
             mainCharacter: {darkestSelf: {$set: action.value}}
@@ -351,56 +322,4 @@ export default combineReducers({
       default: return state;
     }
   },
-  stringsById: (state = null, action) => {
-    switch(action.type) {
-      case MONSTERHEARTS_LOAD:
-        return action.stringsById;
-      case MONSTERHEARTS_STRING_ADD: {
-        const string = state[action.id];
-        return {
-          ...state,
-          [action.id]: {
-            ...string,
-            value: string.value + 1
-          }
-        }
-      }
-      case MONSTERHEARTS_STRING_SPEND: {
-        const string = state[action.id];
-        return {
-          ...state,
-          [action.id]: {
-            ...string,
-            value: string.value - 1
-          }
-        }
-      }
-      case MONSTERHEARTS_STRING_CREATE:
-        return {
-          ...state,
-          [action.id]: {
-            to: action.to,
-            from: action.from,
-            value: action.value
-          }
-        }
-      default: return state;
-    }
-  },
-  strings: (state = null, action) => {
-    switch(action.type) {
-      case MONSTERHEARTS_LOAD:
-        return action.strings;
-      case MONSTERHEARTS_STRING_CREATE:
-        return [...state, action.id];
-      default: return state;
-    }
-  },
-  definitions: (state = null, action) => {
-    switch(action.type) {
-      case MONSTERHEARTS_LOAD:
-        return action.definitions;
-      default: return state;
-    }
-  }
 })

@@ -1,4 +1,4 @@
-import { makeActions, globalizeSelectors } from 'utils/stateTools';
+import { actions, globalizeSelectors } from 'utils/stateTools';
 
 const ROUTE = "ROUTE";
 
@@ -16,7 +16,7 @@ export const fromRouting = globalizeSelectors(state => state.path, {
   getPath
 });
 
-export const forRouting = makeActions({
+export const forRouting = actions({
   route: [ROUTE, "path"]
 })
 

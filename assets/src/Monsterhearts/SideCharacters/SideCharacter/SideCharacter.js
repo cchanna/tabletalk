@@ -81,8 +81,7 @@ const ConditionsSection = rx('div')`
 class SideCharacter extends Component {
   static propTypes = {
     id: number.isRequired, 
-    path: arrayOf(string).isRequired, 
-    here: arrayOf(string).isRequired,
+    depth: number.isRequired,
     name: string.isRequired, 
     notes: string.isRequired,
     editSideCharacter: func.isRequired,
@@ -107,7 +106,7 @@ class SideCharacter extends Component {
   }
   
   render() {
-    const { id, path, here, name, notes, sizes } = this.props;
+    const { id, depth, name, notes, sizes } = this.props;
     const { editing } = this.state;
     let info;
     if (editing) {
@@ -137,7 +136,7 @@ class SideCharacter extends Component {
           {info}
           <Stats rx={sizes}>
             <StringsSection rx={sizes}>
-              <Strings {...{id, path, here}}/>
+              <Strings id={id} depth={depth} sideCharacter/>
             </StringsSection>
             <ConditionsSection rx={sizes}>
               <Conditions {...{id}}/>

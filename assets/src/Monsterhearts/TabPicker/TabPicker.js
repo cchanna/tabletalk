@@ -10,7 +10,7 @@ import NewCharacter from 'Monsterhearts/NewCharacter';
 import SideCharacters from 'Monsterhearts/SideCharacters';
 import RetiredCharacters from './RetiredCharacters';
 
-import route from 'Routing/routeNext';
+import { Route } from 'Routing';
 
 rx`
 @import '~common/styles';
@@ -57,19 +57,17 @@ class TabPicker extends Component {
   static propTypes = {
     tabs: tabsShape.isRequired,
     depth: number.isRequired,
-    showRetired: bool,
-    next: string
+    showRetired: bool
   }
 
   render() {
-    const { tabs, depth, next, showRetired } = this.props;
+    const { tabs, depth, showRetired } = this.props;
 
-    let window = route(depth, next, pages, {tabs, showRetired});
     return (
       <Container>
         <TabList {...{tabs, depth, showRetired}}/>
         <Content>
-          {window}
+          <Route depth={depth} pages={pages} extraProperties={{tabs, showRetired}}/>
         </Content>
       </Container>
     )

@@ -1,17 +1,15 @@
 import { connect } from 'react-redux'
 import Stats from './Stats';
 
-import { createAdvancement } from '../../actionCreators';
+import { forMonsterhearts, fromMonsterhearts } from '../../../state';
+const { createAdvancement } = forMonsterhearts;
 
-const mapStateToProps = ({monsterhearts}, {id}) => {
-  const { charactersById, playersById, me } = monsterhearts;
-  const { mainCharacter } = charactersById[id];
-  const { 
-    hot, cold, volatile, dark, playerId, addingStat
-  } = mainCharacter;
-  const readOnly = (playerId != me) && !playersById[me].isGM;
+const mapStateToProps = (state, {id}) => {
+  const { hot, cold, volatile, dark, addingStat } = fromMonsterhearts.getCharacter(state, id).mainCharacter;
   return {
-    id, hot, cold, volatile, dark, readOnly, addingStat: !!addingStat
+    id, hot, cold, volatile, dark, 
+    addingStat: !!addingStat,
+    readOnly: fromMonsterhearts.getReadOnly(state, id)
   };
 };
 

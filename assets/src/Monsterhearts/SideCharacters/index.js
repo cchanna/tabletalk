@@ -3,21 +3,15 @@ import SideCharacters from './SideCharacters';
 import { compose } from 'redux';
 import withSizes from 'common/withSize';
 
-import { getPath } from 'Routing/selectors';
+import { getPath } from 'Routing';
+import { fromMonsterhearts } from '../state';
 
-const mapStateToProps = (state, {depth}) => {
-  const { path, here } = getPath(state, depth);
-  const { monsterhearts } = state;
-  const { charactersById, characters, playersById, me } = monsterhearts;
-  const sideCharacters = characters
-    .filter(id => !charactersById[id].mainCharacter);
-
-  const readOnly = !playersById[me].isGM
-  return {
-    sideCharacters, readOnly,
-    path, here
-  };
-};
+const mapStateToProps = (state, {depth}) => ({
+  path: getPath(state, depth).path,
+  sideCharacters: fromMonsterhearts.getSideCharacterIds(state), 
+  readOnly: !fromMonsterhearts.getAmIGM(state),
+  depth
+});
 
 const mapDispatchToProps = {}
 

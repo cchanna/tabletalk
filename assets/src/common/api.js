@@ -1,6 +1,5 @@
-import * as api from './apiHelpers';
-import { getStatus } from 'Status/actionCreators';
-import { fromAuth } from 'Auth';
+import * as api from './baseApi';
+import { getStatus } from 'Status';
 
 const catchStatus = error => dispatch => {
   if (error.response.status === 503) {
@@ -11,14 +10,12 @@ const catchStatus = error => dispatch => {
   }
 }
 
-export const get = (url, {queries, urlParams, baseUrl = "api"} = {}) => (dispatch, getState) => {
-  const jwt = fromAuth.getJwt(getState());
-  return api.get(`${baseUrl}/${url}`, {queries, urlParams, jwt})
+export const get = (url, {queries, baseUrl = "api"} = {}) => dispatch => {
+  return dispatch(api.get(`${baseUrl}/${url}`, {queries}))
     .catch(err => dispatch(catchStatus(err)));
 }
 
-export const post = (url, body, {queries, urlParams, baseUrl = "api"} = {}) => (dispatch, getState) => {
-  const jwt = fromAuth.getJwt(getState());
-  return api.post(`${baseUrl}/${url}`, {queries, urlParams, body, jwt})
+export const post = (url, body, {queries, baseUrl = "api"} = {}) => dispatch => {
+  return dispatch(api.post(`${baseUrl}/${url}`, {queries, body}))
     .catch(err => dispatch(catchStatus(err)));
 }

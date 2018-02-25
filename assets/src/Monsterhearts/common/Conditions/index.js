@@ -1,17 +1,14 @@
 import { connect } from 'react-redux'
 import Conditions from './Conditions';
 
-import { createCondition, deleteCondition } from './actionCreators';
+import { forMonsterhearts, fromMonsterhearts } from '../../state';
+const { createCondition, deleteCondition } = forMonsterhearts
 
-const mapStateToProps = ({monsterhearts}, {id}) => {
-  const { charactersById, me, playersById } = monsterhearts;
-  const { conditions, mainCharacter } = charactersById[id];
-  let readOnly = !playersById[me].isGM;
-  if (readOnly && mainCharacter && me === mainCharacter.playerId) {
-    readOnly = false;
-  }
-  return {id, conditions, readOnly};
-};
+const mapStateToProps = (state, {id}) => ({
+  id, 
+  conditions: fromMonsterhearts.getCharacter(state, id).conditions, 
+  readOnly: fromMonsterhearts.getReadOnly(state, id)
+});
 
 const mapDispatchToProps = {createCondition, deleteCondition}
 

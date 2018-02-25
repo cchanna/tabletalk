@@ -2,19 +2,15 @@ import { connect } from 'react-redux'
 import Edit from './Edit';
 import { compose } from 'redux';
 
-import { goBack, replace } from 'Routing/actionCreators';
-import editDone from '../editDone';
+import { goBack, replace, getPath } from 'Routing';
+import { fromMonsterhearts } from '../../state';
 
-const mapStateToProps = (state, {here}) => {
-  const id = parseInt(here[2], 10);
-  const { monsterhearts } = state;
-  const { charactersById, playersById, me } = monsterhearts;
-  const { mainCharacter } = charactersById[id];
-  const { playerId } = mainCharacter;
-  const readOnly = (playerId !== me) && !playersById[me].isGM;
+const mapStateToProps = (state, {id, depth}) => {
   return {
-    ...editDone(id, state),
-    readOnly
+    id, depth,
+    next: getPath(state, depth).next,
+    ...fromMonsterhearts.getEditDone(state, id),
+    readOnly: fromMonsterhearts.getReadOnly(state, id)
   }
 };
 

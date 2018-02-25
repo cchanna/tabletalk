@@ -45,7 +45,7 @@ class Monsterhearts extends Component {
     sizes: arrayOf(string).isRequired,
     loaded: bool.isRequired,
     connected: bool.isRequired,
-    here: arrayOf(string).isRequired,
+    depth: number.isRequired,
     load: func.isRequired
   }
 
@@ -61,7 +61,7 @@ class Monsterhearts extends Component {
   }
   
   render() {
-    const { sizes, loaded, connected, here } = this.props;
+    const { sizes, loaded, connected, depth } = this.props;
     const overlay = sizes.includes("mobile");
     // const overlay = true;
     if (loaded) {
@@ -69,7 +69,7 @@ class Monsterhearts extends Component {
       if (connected) {
         content = (
           <Content rx={{overlay}}>
-            <TabPicker depth={here.length}/>
+            <TabPicker depth={depth}/>
             <Chatbox overlay={overlay}/>
           </Content>
         )

@@ -1,20 +1,20 @@
 import { connect } from 'react-redux'
 import Moves from './Moves';
 
-import { deleteMove } from './actionCreators';
-import { createMove } from '../../actionCreators';
-import { goBack } from 'Routing/actionCreators';
+import { goBack, getPath } from 'Routing';
+import { forMonsterhearts, fromMonsterhearts } from '../../../state';
+const { createMove, deleteMove } = forMonsterhearts;
 
-const mapStateToProps = ({monsterhearts}, {path, here, showBackButton}) => {
-  const id = parseInt(here[2], 10);
-  const { charactersById, definitions } = monsterhearts;
-  const { mainCharacter } = charactersById[id];
-  const { moves, playbook } = mainCharacter;
-  const { playbooksByName } = definitions;
-  const { moves: playbookMoves, startingMoves, startingMoveChoices } = playbooksByName[playbook];
+const mapStateToProps = (state, {depth, id, showBackButton}) => {
+  const { moves, playbook } = fromMonsterhearts.getCharacter(state, id).mainCharacter;
+  const { 
+    moves: playbookMoves, startingMoves, startingMoveChoices 
+  } = fromMonsterhearts.getPlaybookDefinition(state, playbook);
   return {
-    path, here, showBackButton,
-    id, moves, playbookMoves, startingMoves, startingMoveChoices
+    depth,
+    id, moves, playbookMoves, startingMoves, startingMoveChoices,
+    showBackButton,
+    next: getPath(state, depth).next
   };
 };
 

@@ -1,15 +1,13 @@
 import { connect } from 'react-redux'
 import Identity from './Identity';
 
-import { setName, setLook, setEyes, setOrigin } from './actionCreators';
+import { forMonsterhearts, fromMonsterhearts } from '../../../state';
+const { setName, setLook, setEyes, setOrigin } = forMonsterhearts;
 
-const mapStateToProps = ({monsterhearts}, {here}) => {
-  const id = parseInt(here[2], 10);
-  const { charactersById, definitions } = monsterhearts;
-  const { name, mainCharacter } = charactersById[id];
+const mapStateToProps = (state, {id}) => {
+  const { name, mainCharacter } = fromMonsterhearts.getCharacter(state, id);
   const { look, eyes, origin, playbook } = mainCharacter;
-  const { playbooksByName } = definitions;
-  const { names, looks, eyesList, origins } = playbooksByName[playbook];
+  const { names, looks, eyesList, origins } = fromMonsterhearts.getPlaybookDefinition(state, playbook);
   return {
     id,
     name, look, eyes, origin,

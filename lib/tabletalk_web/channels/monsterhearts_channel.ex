@@ -44,7 +44,7 @@ defmodule TabletalkWeb.MonsterheartsChannel do
   end
 
   def handle_in("dispatch", action = %{"type" => type}, socket = %{assigns: %{player_id: player_id, game_id: game_id}}) do
-    data = Dispatcher.dispatch(type |> String.replace(~r/^monsterhearts_/, ""), action, player_id, game_id)
+    data = Dispatcher.dispatch(type |> String.downcase() |> String.replace(~r/^monsterhearts_/, ""), action, player_id, game_id)
     |> data_for(action, player_id)
     if data !== nil do
       broadcast! socket, "dispatch", data

@@ -46,8 +46,9 @@ defmodule Tabletalk.Monsterhearts do
 
   defp list_characters!(game_id) do
     string_count = from c in Character,
-      left_join: s in String, on: (c.id == s.to_id or c.id == s.from_id),
-      select: %{id: c.id, string_count: count(s.id)},
+      join: s in String, on: (c.id == s.to_id or c.id == s.from_id),
+      where: s.count > 0,
+      select: %{id: c.id},
       group_by: [c.id]
 
     query = from c in Character,
@@ -56,8 +57,8 @@ defmodule Tabletalk.Monsterhearts do
       left_join: sc in subquery(string_count), on: c.id == sc.id,
       preload: [:conditions, :main_character, main_character: [:moves, :advancements]],
       order_by: [
-        fragment("CASE WHEN ? IS NULL THEN CASE WHEN ? = 0 THEN 3 ELSE 2 END ELSE 1 END", mc.id, sc.string_count), 
-        desc: sc.string_count,
+        fragment("CASE WHEN ? IS NULL THEN 2 ELSE 1 END", mc.id),
+        fragment("CASE WHEN ? IS NULL THEN 2 ELSE 1 END", sc.id), 
         asc: c.name
       ]
     Repo.all(query)

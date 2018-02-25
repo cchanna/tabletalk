@@ -5,7 +5,7 @@ import rx from 'resplendence'
 import ToggleMove from './ToggleMove';
 import DeleteableMove from './DeleteableMove';
 import movesInstructions from 'Monsterhearts/movesInstructions';
-import Link from 'Routing/Link';
+import { Link } from 'Routing';
 import AddMove from '../../AddMove';
 
 rx`
@@ -58,8 +58,8 @@ class Moves extends Component {
     createMove: func.isRequired,
     deleteMove: func.isRequired,
     goBack: func.isRequired,
-    path: arrayOf(string).isRequired,
-    here: arrayOf(string).isRequired
+    depth: number.isRequired,
+    next: string,
   }
 
   constructor(props) {
@@ -77,7 +77,7 @@ class Moves extends Component {
   }
   
   render() {
-    const { id, moves, playbookMoves, startingMoves, startingMoveChoices, createMove, deleteMove, path, here } = this.props;
+    const { id, moves, playbookMoves, startingMoves, startingMoveChoices, createMove, deleteMove, depth, next } = this.props;
     const { initial } = this.state;
     if (initial) {
       const content = playbookMoves
@@ -104,7 +104,7 @@ class Moves extends Component {
         );
       }
     else {
-      if (path.length > 0) {
+      if (next) {
         return (
           <Container>
             <AddMove id={id} onAdd={this.handleAdd}/>
@@ -122,7 +122,7 @@ class Moves extends Component {
         return (
           <Container>
             {content}
-            <NewMove to={[...here, "add"]}>New Move</NewMove>
+            <NewMove to="add" depth={depth}>New Move</NewMove>
           </Container>
         )
       }

@@ -3,7 +3,7 @@ import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 import rx from 'resplendence'
   
 import Checkbox from 'Monsterhearts/common/Checkbox';
-import Link from 'Routing/Link';
+import { Link } from 'Routing';
 import parseAdvancement from 'Monsterhearts/common/parseAdvancement';
 
 rx`

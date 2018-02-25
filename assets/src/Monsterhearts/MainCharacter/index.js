@@ -3,35 +3,28 @@ import { compose } from 'redux'
 import withSize from 'common/withSize';
 import MainCharacter from './MainCharacter';
 
-import isEditDone from './editDone';
-
-import { replace, goBack } from 'Routing/actionCreators';
-import { getPath } from 'Routing/selectors';
+import { replace, goBack, getPath } from 'Routing';
+import { fromMonsterhearts } from '../state';
 
 const mapStateToProps = (state, {depth}) => {
   const { path, here } = getPath(state, depth);
-  const { monsterhearts } = state;
-  const { charactersById, playersById, me } = monsterhearts;
   const id = parseInt(here[2], 10);
-  const character = charactersById[id];
+  const character = fromMonsterhearts.getCharacter(state, id);
   let name = null;
   let playbook = null;
-  let readOnly = true;
   let editDone = true;
   if (character) {
     name = character.name;
     const { mainCharacter } = character;
     if (mainCharacter) {
       playbook = mainCharacter.playbook;
-      const { playerId } = mainCharacter;
-      readOnly = (playerId !== me) && !playersById[me].isGM;
     }
-    editDone = isEditDone(id, {monsterhearts}).allDone;
+    editDone = fromMonsterhearts.getEditDone(state, id).allDone;
   }
   return {
-    path, here, editDone,
+    path, depth, editDone,
     id, name, playbook,
-    readOnly
+    readOnly: fromMonsterhearts.getReadOnly(state, id)
   };
 };
 

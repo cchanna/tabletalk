@@ -1,18 +1,13 @@
 import { connect } from 'react-redux'
 import Notes from './Notes';
 
-import { setNotes } from './actionCreators';
+import { forMonsterhearts, fromMonsterhearts } from '../../../state';
+const { setNotes } = forMonsterhearts;
 
-const mapStateToProps = ({monsterhearts}, {id}) => {
-  const { charactersById, playersById, me } = monsterhearts;
-  const { notes, mainCharacter } = charactersById[id];
-  let readOnly = false;
-  if (mainCharacter) {
-    const { playerId } = mainCharacter;
-    readOnly = (playerId !== me) && !playersById[me].isGM;
-  }
-  return {notes, readOnly};
-};
+const mapStateToProps = (state, {id}) => ({
+  notes: fromMonsterhearts.getCharacter(state, id).notes, 
+  readOnly: fromMonsterhearts.getReadOnly(state, id)
+});
 
 const mapDispatchToProps = {setNotes}
 

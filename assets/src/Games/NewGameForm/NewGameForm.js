@@ -3,7 +3,7 @@ import rx from 'resplendence';
 import { func, arrayOf, string, shape, number, bool } from 'prop-types';
 
 import { kindsById, kindsOrder } from 'common/gameKinds';
-import { InputStyle, Input, Select, Option, Label, Error, SubmitButton } from 'Games/FormComponents';
+import { InputStyle, Input, Select, Option, Label, Error, SubmitButton } from '../FormComponents';
 import { Formik, Form } from 'formik';
 
 rx`

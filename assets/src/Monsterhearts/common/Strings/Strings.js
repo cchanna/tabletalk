@@ -3,7 +3,7 @@ import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 import rx from 'resplendence'
   
 import String from './String';
-import Link from 'Routing/Link';
+import { Link } from 'Routing';
 
 rx`
 @import '~Monsterhearts/styles';
@@ -29,84 +29,48 @@ const AddLink = rx(Link)`
 
 class Strings extends Component {
   static propTypes = {
-    path: arrayOf(string).isRequired, 
-    here: arrayOf(string).isRequired, 
+    sideCharacter: bool.isRequired,
+    depth: number.isRequired,
     slowActionsById: object.isRequired,
     id: number.isRequired, 
-    stringsTo: arrayOf(number).isRequired, 
-    stringsFrom: arrayOf(number).isRequired, 
-    stringsById: object.isRequired, 
-    charactersById: object.isRequired,
     readOnly: bool.isRequired,
+    strings: arrayOf(shape({
+      name: string.isRequired,
+      theirId: number.isRequired,
+      toStringId: number,
+      fromStringId: number,
+      myStrings: number.isRequired,
+      theirStrings: number.isRequired
+    })).isRequired,
     addString: func.isRequired,
     createString: func.isRequired,
-    spendString: func.isRequired
+    spendString: func.isRequired,
   }
   
   render() {
     const { 
-      id, stringsTo, stringsFrom, stringsById, charactersById, 
-      here, slowActionsById, addString, createString, spendString,
+      id, strings, depth, sideCharacter, slowActionsById, 
+      addString, createString, spendString,
       readOnly 
     } = this.props;
-    
-    const allStrings = {}
-
-    stringsTo
-      .forEach(id => {
-        const {to, value} = stringsById[id]
-        allStrings[to] = {
-          to: value,
-          from: 0,
-          toStringId: id,
-          fromStringId: null
-        }
-      });
-    stringsFrom
-      .forEach(id => {
-        const {from, value} = stringsById[id]
-        if (allStrings[from]) {
-          allStrings[from].from = value;
-          allStrings[from].fromStringId = id;
-        }
-        else {
-          allStrings[from] = {
-            to: 0,
-            from: value,
-            toStringId: null,
-            fromStringId: id
-          }
-        }
-      });
-    
-    const ids = Object.keys(allStrings);
-    const content = ids.map(them => {
-      const { to, from, toStringId, fromStringId } = allStrings[them];
-      const { name, mainCharacter } = charactersById[them];
-      let fullName = name;
-      if (!name && mainCharacter) fullName = "The " + mainCharacter.playbook;
-      return (
-        <String 
-          key={`${id} ${them}`}
-          name={fullName}
-          myId={id} 
-          {...{slowActionsById, toStringId, fromStringId, addString, createString, spendString, readOnly}}
-          theirId={parseInt(them)} 
-          myStrings={to} 
-          theirStrings={from}
-          giveString={() => {}}/>
-      )
-    })
 
     
     let addLink = null;
     if (!readOnly) {
-      const linkTo = (here[2] === 'side') ? [...here, id.toString(), "newstring"] : [...here, "newstring"];
-      addLink = <AddLink to={linkTo}>New string</AddLink>
+      const linkTo = sideCharacter ? [id.toString(), "newstring"] : "newstring";
+      addLink = <AddLink to={linkTo} depth={depth}>New string</AddLink>
     }
     return (
       <Container>
-        {content}
+        {strings.map(({name, theirId, toStringId, fromStringId, myStrings, theirStrings}) => 
+          <String 
+            key={`${id} ${theirId}`}
+            myId={id}
+            {...{
+              name, theirId, toStringId, fromStringId, myStrings, theirStrings, 
+              slowActionsById, addString, createString, spendString, readOnly
+            }}/>
+        )}
         {addLink}
       </Container>
     );
