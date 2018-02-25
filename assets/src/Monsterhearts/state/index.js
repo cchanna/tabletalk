@@ -61,7 +61,7 @@ const slowServerActionCreator = (...actionCreatorArgs) => {
 const serverActions = args => actions(args, serverActionCreator);
 const slowActions = args => actions(args, slowServerActionCreator);
 
-const charactersPrefix = "CHARACTERS_";
+const charactersPrefix = "CHARACTER_";
 
 export const forMonsterhearts = {
   ...actions(prefixActions(prefix, {
