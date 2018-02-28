@@ -115,7 +115,8 @@ const AdvancementLink = rx(Link)`
 
 const links = {
   "any": "anymove",
-  "self": "selfmove"
+  "self": "selfmove",
+  "grow": "grow"
 }
 
 class Advancement extends Component {

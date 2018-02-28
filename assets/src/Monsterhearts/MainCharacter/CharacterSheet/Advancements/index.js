@@ -1,8 +1,35 @@
 import { connect } from 'react-redux'
 import Advancements from './Advancements';
 
-import { add, remove } from './actionCreators';
-import { fromMonsterhearts } from '../../../state';
+import { fromMonsterhearts, forMonsterhearts } from '../../../state';
+import { goTo } from 'Routing/actionCreators';
+import { getPath } from 'Routing/selectors';
+const { createAdvancement, addStat, cancelAddStat, deleteAdvancement } = forMonsterhearts;
+
+export const add = ({id, advancementId}) => (dispatch, getState) => {
+  if (advancementId === "+stat") {
+    dispatch(addStat({id}));
+  }
+  else {
+    if (advancementId === "rtire") {
+      const state = getState();
+      const { here } = getPath(state, 2);
+      dispatch(goTo([...here, "new"]));
+    }
+    return dispatch(createAdvancement({id, advancementId}));
+  }
+}
+
+export const remove = ({id, advancementId}) => (dispatch, getState) => {
+  const state = getState();
+  const { addingStat } = fromMonsterhearts.getCharacter(state, id).mainCharacter; 
+  if (addingStat && advancementId === "+stat") {
+    dispatch(cancelAddStat({id}))
+  }
+  else {
+    dispatch(deleteAdvancement({id, advancementId}))
+  }
+}
 
 const {
   getCharacter, 

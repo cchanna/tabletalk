@@ -779,14 +779,14 @@ you see them.
       },
       "Make Others Feel Beautiful" => %{
         text: """
-          When you make others feel beautiful, roll with Hot. On a 10 up, choose two from below.
-          
-          - they take 1 Forward,
-          - they remove a Condition,
-          - they mark experience, or
-          - you take 1 forward
+When you make others feel beautiful, roll with Hot. On a 10 up, choose two from below.
 
-          On a 7-9, you can tempt them to do what you want, as if you'd just spent a string.
+- they take 1 Forward,
+- they remove a Condition,
+- they mark experience, or
+- you take 1 forward
+
+On a 7-9, you can tempt them to do what you want, as if you'd just spent a string.
         """,
         notes: false
       },

@@ -50,7 +50,7 @@ export const actions = {
     createCondition: [CONDITION_CREATE, "id", "condition"],
     deleteCondition: [CONDITION_DELETE, "id", "condition"],
     editMoveNotes: [MOVE_EDIT_NOTES, "id", "name", "notes"],
-    createAdvancement: [ADVANCEMENT_CREATE, "id", "advancementId", "stat", "move"],
+    createAdvancement: [ADVANCEMENT_CREATE, "id", "advancementId", "stat", "move", "moves"],
   },
   slow: {
     createCharacter: [MAIN_CREATE, "playbook"],
@@ -222,6 +222,15 @@ export const reducer = combineReducers({
           experience: {$set: 0}
         }
         switch (action.advancementId) {
+          case "grow": 
+            return update(state, {
+              [action.id]: {
+                mainCharacter: {
+                  ...common,
+                  moves: {$push: action.moves}
+                }
+              }
+            })
           case "+stat":
             return update(state, {
               [action.id]: {

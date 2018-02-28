@@ -2,11 +2,10 @@ import React, { Component } from 'react'
 import { string, number, bool, func, object, arrayOf } from 'prop-types'
 import rx from 'resplendence'
   
-import ToggleMove from './ToggleMove';
 import DeleteableMove from './DeleteableMove';
-import movesInstructions from 'Monsterhearts/movesInstructions';
 import { Link } from 'Routing';
 import AddMove from '../../AddMove';
+import SelectMovesList from '../../SelectMovesList';
 
 rx`
 @import '~common/styles';
@@ -23,16 +22,6 @@ const Container = rx('div')`
     flex: 0 0 auto;
   }
   padding-left: 30px;
-`
-
-const Instructions = rx('div')`
-  width: 100%;
-  font-family: $body;
-  font-style: italic;
-  font-size: 20px;
-  max-width: 600px;
-  color: darken($foreground, 10%);
-  margin-bottom: 20px;
 `
 
 const NewMove = rx(Link)`
@@ -70,47 +59,45 @@ class Moves extends Component {
     }
   }
 
+  handleAddAndGoBack = name => {
+    this.handleAdd(name);
+    this.props.goBack();
+  }
+
   handleAdd = name => {
-    const { id, createMove, goBack } = this.props;
+    const { id, createMove } = this.props;
     createMove({name, id});
-    goBack();
+  }
+
+  handleRemove = name => {
+    const { id, deleteMove } = this.props;
+    deleteMove({name, id});
   }
   
   render() {
     const { id, moves, playbookMoves, startingMoves, startingMoveChoices, createMove, deleteMove, depth, next } = this.props;
     const { initial } = this.state;
     if (initial) {
-      const content = playbookMoves
-        .map(name => {
-          const selected = moves.includes(name);
-          const disabled = (
-            (startingMoves.includes(name) && selected) || (
-              !selected &&
-              moves.length >= startingMoves.length + startingMoveChoices
-            ) 
-          )
-          return (
-            <ToggleMove
-              key={name}
-              characterId={id}
-              {...{id, createMove, deleteMove, name, selected, disabled}}/>
-          )
-        })
-        return (
-          <Container>
-            <Instructions>{movesInstructions(startingMoves, startingMoveChoices)}</Instructions>
-            {content}
-          </Container>
-        );
-      }
+      return (
+        <Container>
+          <SelectMovesList 
+            requiredMoves={startingMoves} 
+            availableChoices={startingMoveChoices}
+            availableMoves={playbookMoves}
+            selectedMoves={moves}
+            add={this.handleAdd}
+            remove={this.handleRemove}/>
+        </Container>
+      )
+    }
     else {
       if (next) {
         return (
           <Container>
-            <AddMove id={id} onAdd={this.handleAdd}/>
+            <AddMove id={id} onAdd={this.handleAddAndGoBack}/>
           </Container>
         ) 
-
+        
       }
       else {
         const content = moves

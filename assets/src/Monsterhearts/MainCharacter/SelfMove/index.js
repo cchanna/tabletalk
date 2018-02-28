@@ -2,8 +2,8 @@ import { connect } from 'react-redux'
 import SelfMove from './SelfMove';
 
 import { goBack } from 'Routing';
-import { fromMonsterhearts } from '../../state';
-const { createAdvancement } = fromMonsterhearts;
+import { fromMonsterhearts, forMonsterhearts } from '../../state';
+const { createAdvancement } = forMonsterhearts;
 
 const mapStateToProps = (state, {id}) => {
   return {

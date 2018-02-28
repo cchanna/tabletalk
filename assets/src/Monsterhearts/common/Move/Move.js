@@ -34,7 +34,7 @@ const Name = rx('h2')`
 
 class Move extends Component {
   static propTypes = {
-    id: number.isRequired,
+    id: number,
     name: string.isRequired,
     text: string,
     notes: string,
@@ -63,7 +63,7 @@ class Move extends Component {
   handleBlur = () => {
     const { notes } = this.state;
     const { disabled, editMoveNotes, id, name } = this.props;
-    if (!disabled) {
+    if (id && !disabled) {
       editMoveNotes({id, name, notes});
       this.setState({editing: false});
     }
@@ -82,7 +82,7 @@ class Move extends Component {
 
   handleEdit = ({value}) => {
     const { disabled, editMoveNotes, id, name } = this.props;
-    if (!disabled) editMoveNotes({id, name, notes: value});
+    if (id && !disabled) editMoveNotes({id, name, notes: value});
   }
 
   componentDidUpdate(prevProps) {

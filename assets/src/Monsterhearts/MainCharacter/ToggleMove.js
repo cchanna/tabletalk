@@ -3,7 +3,7 @@ import { string, number, bool, func } from 'prop-types'
 import rx from 'resplendence'
   
 import BaseMove from 'Monsterhearts/common/Move';
-import Button from '../../MoveButton';
+import Button from './MoveButton';
 
 rx`
 @import '~Monsterhearts/styles';
@@ -26,29 +26,28 @@ const Container = rx('div')`
 
 class Move extends Component {
   static propTypes = {
-    id: number.isRequired,
     name: string.isRequired,
     disabled: bool.isRequired,
     selected: bool.isRequired,
-    createMove: func.isRequired,
-    deleteMove: func.isRequired
+    add: func.isRequired,
+    remove: func.isRequired
   }
 
   handleClick = () => {
-    const { id, name, selected, disabled, createMove, deleteMove } = this.props;
+    const { name, selected, disabled, add, remove } = this.props;
     if (!disabled) {
-      if (selected) deleteMove({id, name});
+      if (selected) remove(name);
       else {
-        createMove({id, name});
+        add(name);
       }
     }
   }
   
   render() {
-    const { id, selected, name, disabled } = this.props;
+    const { selected, name, disabled } = this.props;
     return (
       <Container rx={{selected, disabled}}>
-        <BaseMove id={id} name={name} disabled={!selected} showNotes={selected}/> 
+        <BaseMove name={name} disabled={!selected} showNotes={selected}/> 
         <Button onClick={this.handleClick} disabled={disabled}>{selected ? "X" : "+"}</Button>
       </Container>
     );

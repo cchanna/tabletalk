@@ -8,6 +8,7 @@ import { Link } from 'Routing';
 import NewString from 'Monsterhearts/common/NewString';
 import AnyMove from './AnyMove';
 import SelfMove from './SelfMove';
+import GrowingUpMove from './GrowingUpMove';
 
 import { Route } from 'Routing';
 import { exactMatch } from 'utils/pathTools';
@@ -116,6 +117,10 @@ class MainCharacter extends Component {
     {
       path: "selfmove",
       component: SelfMove
+    },
+    {
+      path: "grow",
+      component: GrowingUpMove
     },
     {
       component: CharacterSheet

@@ -279,6 +279,17 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     end
   end
 
+  def dispatch("character_advancement_create", %{"id" => id, "advancementId" => "grow", "moves" => moves}, _player_id, _game_id) do
+    character = Monsterhearts.get_character!(id)
+    main_character = character.main_character
+    Enum.each(moves, fn(m) -> 
+      Monsterhearts.create_move!(%{"main_character_id" => main_character.id, "name" => m}) 
+    end)
+    Monsterhearts.create_advancement!(%{"main_character_id" => main_character.id, "name" => "grow"})
+    Monsterhearts.update_main_character!(main_character, %{"experience" => 0})
+    {:ok, "#{get_name(character)} is growing up."}
+  end
+
   def dispatch("character_advancement_create", %{"id" => id, "advancementId" => name, "move" => move}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
     main_character = character.main_character

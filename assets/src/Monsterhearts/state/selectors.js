@@ -45,6 +45,17 @@ export const getPlaybookDefinition = (state, playbook) => getDefinitions(state).
 export const getCharacterPlaybookDefinition = (state, id) => getPlaybookDefinition(state, getCharacter(state, id).mainCharacter.playbook);
 const getMovesByName = state => getDefinitions(state).movesByName;
 const getAdvancementsById = state => getDefinitions(state).advancementsById;
+export const getGrowingUpMoves = state => getDefinitions(state).growingUpMoves;
+export const getCharacterGrowingUpMoves = (state, id) => {
+  const growingUpMoves = getGrowingUpMoves(state);
+  const { moves } = getCharacter(state, id).mainCharacter;
+  return moves.filter(name => growingUpMoves.includes(name));
+}
+export const getUnchosenGrowingUpMoves = (state, id) => {
+  const growingUpMoves = getGrowingUpMoves(state);
+  const { moves } = getCharacter(state, id).mainCharacter;
+  return growingUpMoves.filter(name => !moves.includes(name));
+}
 
 export const getPlaybookAdvancements = (state, playbook) => {
   const advancementsById = getAdvancementsById(state);
@@ -160,6 +171,7 @@ export const getMove = (state, name, characterId = null) => {
   }
   let notes = null;
   if (def.notes && characterId) {
+    notes = "";
     const character = getCharacter(state, characterId);
     if (character) {
       const { mainCharacter } = character;
