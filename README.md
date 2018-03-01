@@ -18,7 +18,7 @@ install node (need to get [special repo](https://nodejs.org/en/download/package-
     
 install build-essential
 
-```
+```sh
 npm i
 npm rebuild node-sass
 ```
@@ -27,7 +27,7 @@ create secret config, make secret keys and database password
 
 set password on psql
 
-```
+```sh
 mix deps.get
 mix compile
 sudo bash build_assets.sh
