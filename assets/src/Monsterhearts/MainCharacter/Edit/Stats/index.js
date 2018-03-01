@@ -3,7 +3,7 @@ import { compose } from 'redux';
 import withSize from 'common/withSize';
 import Stats from './Stats';
 
-import { forMonsterhearts, fromMonsterhearts } from '../../../state';
+import { forMonsterhearts, fromMonsterhearts } from 'state';
 const { setStats } = forMonsterhearts;
 
 const mapStateToProps = (state, {id}) => {

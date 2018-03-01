@@ -15,8 +15,8 @@ defmodule Tabletalk.Monsterhearts.Character do
     field :notes, :string
 
     has_one :main_character, MainCharacter, on_delete: :delete_all
-    has_many :strings, String, on_delete: :delete_all
-    has_many :strings_on, String, on_delete: :delete_all, foreign_key: :on_id
+    has_many :strings, String, on_delete: :delete_all, foreign_key: :from_id
+    has_many :strings_on, String, on_delete: :delete_all, foreign_key: :to_id
     has_many :conditions, Condition, on_delete: :delete_all
   end
 

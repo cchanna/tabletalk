@@ -8,8 +8,9 @@ import Games from 'Games';
 import Play from 'Play';
 import Auth from 'Auth';
 
-import { getStatus, fromStatus } from 'Status';
-import { login, loginReady, signout, fromAuth } from 'Auth';
+import { fromAuth, fromStatus } from 'state';
+import getStatus from 'common/getStatus';
+import { login, loginReady, signout } from 'Auth';
 import { replace, Route, getPath } from 'Routing';
 
 import Spinner from 'common/components/Spinner';
@@ -75,14 +76,14 @@ const FloatAbove = rx('div')`
 
 class App extends Component {
 static propTypes = {
-    up: bool.isRequired,
+    up: bool,
     loggedInWithGoogle: bool.isRequired,
-    loginReady: bool.isRequired,
     next: string,
     loggedIn: bool.isRequired,
-    downMessage: bool.isRequired,
+    downMessage: string,
     loggingIn: bool.isRequired,
     ready: bool.isRequired,
+    loginReady: func.isRequired,
     getStatus: func.isRequired,
     login: func.isRequired,
     replace: func.isRequired,

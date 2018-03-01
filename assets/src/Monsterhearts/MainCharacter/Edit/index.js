@@ -3,7 +3,7 @@ import Edit from './Edit';
 import { compose } from 'redux';
 
 import { goBack, replace, getPath } from 'Routing';
-import { fromMonsterhearts } from '../../state';
+import { fromMonsterhearts } from 'state';
 
 const mapStateToProps = (state, {id, depth}) => {
   return {

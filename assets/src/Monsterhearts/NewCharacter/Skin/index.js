@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Skin from './Skin';
 
-import { fromMonsterhearts } from '../../state';
+import { fromMonsterhearts } from 'state';
 const { getPlaybookDefinition, getPlaybookAdvancements, getPlaybookMoves } = fromMonsterhearts;
 
 const mapStateToProps = (state, {playbook, sizes}) => {

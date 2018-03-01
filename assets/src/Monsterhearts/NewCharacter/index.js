@@ -5,7 +5,7 @@ import { compose } from 'redux';
 import withSize from 'common/withSize';
 
 import { goTo, getPath } from 'Routing';
-import { forMonsterhearts, fromMonsterhearts } from '../state';
+import { forMonsterhearts, fromMonsterhearts } from 'state';
 
 const { createCharacter } = forMonsterhearts;
 const { getPlaybooks, getMyCharacters } = fromMonsterhearts;

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import AddMove from './AddMove';
 
-import { fromMonsterhearts } from '../../state';
+import { fromMonsterhearts } from 'state';
 
 const mapStateToProps = (state, {id, onAdd}) => ({
   id, onAdd,

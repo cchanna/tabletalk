@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import SideCharacter from './SideCharacter';
 
-import { forMonsterhearts, fromMonsterhearts } from '../../state';
+import { forMonsterhearts, fromMonsterhearts } from 'state';
 const { editSideCharacter } = forMonsterhearts;
 
 const mapStateToProps = (state, {id, depth, readOnly}) => {

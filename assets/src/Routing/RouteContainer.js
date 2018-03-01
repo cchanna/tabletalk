@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Component from './RouteComponent';
 
-import { fromRouting } from './state';
+import { fromRouting } from 'state';
 
 const routeForPage = (page, depth, extraProperties, ...rest) => {
   const properties = {
@@ -18,7 +18,7 @@ const routeForPage = (page, depth, extraProperties, ...rest) => {
 
 const mapStateToProps = (state, {depth = 0, pages, extraProperties = {}}) => {
   let fallback = null;
-  const { next } = fromRouting.getPath(state, depth);
+  const next = fromRouting.getNext(state, depth);
   for (const page of pages) {
     if (page.path === "*") fallback = page;
     else if ((!next && !page.path) || (next === page.path)) {

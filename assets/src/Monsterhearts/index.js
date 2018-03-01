@@ -5,15 +5,13 @@ import withSize from 'common/withSize';
 import { compose } from 'redux';
 
 import { load } from './actionCreators';
-import { fromMonsterhearts } from './state';
-
-export { reducer, name } from './state';
+import { fromMonsterhearts, fromSocket } from 'state';
 
 const mapStateToProps = (state, {depth}) => {
   return {
     depth,
     loaded: fromMonsterhearts.getIsLoaded(state), 
-    connected: fromMonsterhearts.getIsSocketConnected(state)
+    connected: fromSocket.getIsConnected(state)
   }
 }
 const mapDispatchToProps = {load};

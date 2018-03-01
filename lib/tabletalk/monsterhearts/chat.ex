@@ -2,7 +2,6 @@ defmodule Tabletalk.Monsterhearts.Chat do
   use Ecto.Schema
   import Ecto.Changeset
   
-  alias Tabletalk.Games.Game
   alias Tabletalk.Games.Player
   alias Tabletalk.Monsterhearts.Chat
   alias Tabletalk.Monsterhearts.Talk

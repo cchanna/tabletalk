@@ -1,5 +1,5 @@
 import * as api from './apiHelpers';
-import { fromAuth } from 'Auth';
+import { fromAuth } from 'state';
 
 export const get = (url, {queries} = {}) => (dispatch, getState) => {
   const jwt = fromAuth.getJwt(getState());

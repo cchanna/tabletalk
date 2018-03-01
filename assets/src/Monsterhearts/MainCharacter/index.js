@@ -4,7 +4,7 @@ import withSize from 'common/withSize';
 import MainCharacter from './MainCharacter';
 
 import { replace, goBack, getPath } from 'Routing';
-import { fromMonsterhearts } from '../state';
+import { fromMonsterhearts } from 'state';
 
 const mapStateToProps = (state, {depth}) => {
   const { path, here } = getPath(state, depth);

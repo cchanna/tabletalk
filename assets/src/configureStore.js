@@ -1,9 +1,8 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-import reducer from './reducer';
+import { reducer, forRouting, forSocket } from './state';
+import { makeBangMiddleware } from 'utils/stateTools';
 import { createBrowserHistory } from 'history';
-
-import { setPath } from 'Routing';
 
 const pathToArray = pathname => {
   let path = pathname.split('/');
@@ -16,20 +15,50 @@ const pathToArray = pathname => {
   return path;
 }
 
+const randomString = (length, chars) => {
+  var result = '';
+  for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+  return result;
+}
+const randomUniqueId = () => randomString(36, "abcdefghijklmnopqrstuvwxyz0123456789")
+
+const socketMiddleware = makeBangMiddleware("socket", (actionIn, {dispatch, next}) => {
+  const action = {
+    ...actionIn,
+    uniqueId: randomUniqueId()
+  }
+  dispatch(forSocket.queueAction({action}));
+  return next(action);
+});
+
+const slowSocketMiddleware = makeBangMiddleware("slowsocket", (actionIn, {dispatch, next}) => {
+  const action = {
+    ...actionIn,
+    uniqueId: randomUniqueId()
+  }
+  next(forSocket.queueSlowAction({action}));
+  return action.uniqueId;
+})
+
+
 
 export default  () => {
   const history = createBrowserHistory();
 
   const devTools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
 
-  let enhance = applyMiddleware(thunk.withExtraArgument({history}));
+  let enhance = applyMiddleware(
+    socketMiddleware,
+    slowSocketMiddleware,
+    thunk.withExtraArgument({history})
+  );
 
   if (devTools) {
     enhance = compose(enhance, devTools);
   }
 
   const handleHistoryChange = (location) => {
-    store.dispatch(setPath({path: pathToArray(location.pathname)}));
+    store.dispatch(forRouting.route({path: pathToArray(location.pathname)}));
   }
   
   const store = createStore(
@@ -39,7 +68,7 @@ export default  () => {
   );
 
   if (process.env.NODE_ENV !== "production" && module.hot) {
-    module.hot.accept('./reducer', () => {
+    module.hot.accept('./state/index', () => {
       store.replaceReducer(reducer);
     })
   }

@@ -75,7 +75,7 @@ class Moves extends Component {
   }
   
   render() {
-    const { id, moves, playbookMoves, startingMoves, startingMoveChoices, createMove, deleteMove, depth, next } = this.props;
+    const { id, moves, playbookMoves, startingMoves, startingMoveChoices, deleteMove, depth, next } = this.props;
     const { initial } = this.state;
     if (initial) {
       return (

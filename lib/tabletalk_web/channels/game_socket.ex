@@ -1,8 +1,6 @@
 defmodule TabletalkWeb.GameSocket do
   use Phoenix.Socket
 
-  alias Tabletalk.Guardian
-
   ## Channels
   channel "monsterhearts:*", TabletalkWeb.MonsterheartsChannel
 

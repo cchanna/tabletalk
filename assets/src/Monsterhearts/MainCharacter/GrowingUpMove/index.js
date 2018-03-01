@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import GrowingUpMove from './GrowingUpMove';
 
-import { fromMonsterhearts, forMonsterhearts } from '../../state';
+import { fromMonsterhearts, forMonsterhearts } from 'state';
 import { goBack } from 'Routing';
 
 const mapStateToProps = (state, {id}) => ({

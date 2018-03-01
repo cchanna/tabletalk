@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Advancements from './Advancements';
 
-import { fromMonsterhearts, forMonsterhearts } from '../../../state';
+import { fromMonsterhearts, forMonsterhearts } from 'state';
 import { goTo } from 'Routing/actionCreators';
 import { getPath } from 'Routing/selectors';
 const { createAdvancement, addStat, cancelAddStat, deleteAdvancement } = forMonsterhearts;

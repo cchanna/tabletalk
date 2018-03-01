@@ -3,8 +3,10 @@ import Link from './Link';
 
 import { goTo } from '../actionCreators';
 import { exactMatch, subPath } from 'utils/pathTools';
+import { fromRouting } from 'state';
 
-const mapStateToProps = ({path}, {to = [], depth = 0, ...ownProps}) => {
+const mapStateToProps = (state, {to = [], depth = 0, ...ownProps}) => {
+  const path = fromRouting.getPath(state);
   const inputTo = Array.isArray(to) ? to : [to.toString()];
   const fullTo = path.slice(0, depth).concat(inputTo);
 

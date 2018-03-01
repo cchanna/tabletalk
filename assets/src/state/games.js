@@ -1,9 +1,4 @@
 import { combineReducers } from 'redux';
-import { 
-  prefixedReducer,  
-  prefixedActions, 
-  globalizeSelectors 
-} from 'utils/stateTools';
 
 const START_LOADING = "START_LOADING";
 const SET_LIST = "SET_LIST";
@@ -11,61 +6,15 @@ const ADD = "ADD";
 const FLAG_RELOAD = "FLAG_RELOAD";
 const FAIL_LOADING = "FAIL_LOADING";
 
-export const name = "games";
-const prefix = "GAMES_";
-
-export const forGames = prefixedActions(prefix, {
+export const actions = {
   startLoading: [START_LOADING],
   setList: [SET_LIST, "list"],
   failLoading: [FAIL_LOADING],
   flagReload: [FLAG_RELOAD],
   add: [ADD, "gamesBySlug", "playersById"]
-});
+};
 
-
-const getPlayer = (state, id) => ({
-  id,
-  ...state.playersById[id]
-});
-
-const getGamesBySlug = state => state.gamesBySlug;
-
-const getGame = (state, slug) => {
-  if (slug === "new") return null;
-  const gamesBySlug = getGamesBySlug(state);
-  if (!gamesBySlug) return null;
-  const game = gamesBySlug[slug];
-  if (!game) return null;
-  const { players, ...rest } = gamesBySlug[slug];
-  return {
-    players: players.map(id => getPlayer(state, id)),
-    ...rest
-  } 
-}
-
-const getGames = state => {
-  if (!state.list) return null;
-  return state.list.map(slug => ({
-    slug,
-    name: state.gamesBySlug[slug].name
-  }));
-}
-
-const getIsGameLoaded = (state, id) => !!state.gamesBySlug && !!state.gamesBySlug[id];
-
-const getIsFailed = state => state.error;
-
-const getLastLoaded = state => state.lastLoaded;
-
-export const fromGames = globalizeSelectors(state => state[name], {
-  getGame,
-  getGames,
-  getIsGameLoaded,
-  getIsFailed,
-  getLastLoaded
-});
-
-export const reducer = prefixedReducer(prefix, combineReducers({
+export const reducer = combineReducers({
   list: (state = null, action) => {
     switch(action.type) {
       case START_LOADING:
@@ -120,4 +69,46 @@ export const reducer = prefixedReducer(prefix, combineReducers({
         return state;
     }
   }
-}));
+});
+
+const getPlayer = (state, id) => ({
+  id,
+  ...state.playersById[id]
+});
+
+const getGamesBySlug = state => state.gamesBySlug;
+
+const getGame = (state, slug) => {
+  if (slug === "new") return null;
+  const gamesBySlug = getGamesBySlug(state);
+  if (!gamesBySlug) return null;
+  const game = gamesBySlug[slug];
+  if (!game) return null;
+  const { players, ...rest } = gamesBySlug[slug];
+  return {
+    players: players.map(id => getPlayer(state, id)),
+    ...rest
+  } 
+}
+
+const getGames = state => {
+  if (!state.list) return null;
+  return state.list.map(slug => ({
+    slug,
+    name: state.gamesBySlug[slug].name
+  }));
+}
+
+const getIsGameLoaded = (state, id) => !!state.gamesBySlug && !!state.gamesBySlug[id];
+
+const getIsFailed = state => state.error;
+
+const getLastLoaded = state => state.lastLoaded;
+
+export const selectors = {
+  getGame,
+  getGames,
+  getIsGameLoaded,
+  getIsFailed,
+  getLastLoaded
+};

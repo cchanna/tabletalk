@@ -2,7 +2,8 @@ import { connect } from 'react-redux';
 
 import Play from './Play';
 
-import { forGames, fromGames } from 'Games';
+import { getGame } from 'Games';
+import { fromGames } from 'state';
 import { replace, getPath } from 'Routing';
 
 const mapStateToProps = (state, {depth}) => {
@@ -18,7 +19,7 @@ const mapStateToProps = (state, {depth}) => {
   }
 }
 
-const mapDispatchToProps = {replace, getGame: forGames.getGame};
+const mapDispatchToProps = {replace, getGame};
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(Play);

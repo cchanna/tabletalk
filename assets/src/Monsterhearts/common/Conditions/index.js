@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Conditions from './Conditions';
 
-import { forMonsterhearts, fromMonsterhearts } from '../../state';
+import { forMonsterhearts, fromMonsterhearts } from 'state';
 const { createCondition, deleteCondition } = forMonsterhearts
 
 const mapStateToProps = (state, {id}) => ({

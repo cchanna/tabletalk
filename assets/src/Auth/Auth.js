@@ -51,10 +51,7 @@ const Status = rx('div')`
   text-align: center;
 `
 
-const GoogleLoginButton = ({className}) => <div className={`g-signin2 ${className}`} data-onsuccess="onSignIn" data-uxmode="redirect"/>;
-GoogleLoginButton.propTypes = {
-  className: string.isRequired
-}
+const GoogleLoginButton = () => <div className="g-signin2" data-onsuccess="onSignIn" data-uxmode="redirect"/>;
 
 class Auth extends React.Component {
   static propTypes = {

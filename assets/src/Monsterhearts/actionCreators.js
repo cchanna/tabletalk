@@ -1,6 +1,6 @@
 import { get } from 'common/api';
 import { getPath } from 'Routing';
-import { forMonsterhearts } from './state';
+import { forMonsterhearts } from 'state';
 
 export const load = () => (dispatch, getState) => {
   const { path } = getPath(getState());

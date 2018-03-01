@@ -1,5 +1,5 @@
 import * as api from './baseApi';
-import { getStatus } from 'Status';
+import getStatus from 'common/getStatus';
 
 const catchStatus = error => dispatch => {
   if (error.response.status === 503) {

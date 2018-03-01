@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import CharacterSheet from './CharacterSheet';
 import { compose } from 'redux';
 import withSizes from 'common/withSize';
-import { fromMonsterhearts } from '../../state';
+import { fromMonsterhearts } from 'state';
 
 const mapStateToProps = (state, {id, depth}) => {
   const { 

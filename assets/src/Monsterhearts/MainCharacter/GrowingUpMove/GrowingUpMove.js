@@ -32,7 +32,6 @@ const DoneButton = rx('button')`
 class GrowingUpMove extends Component {
   static propTypes = {
     id: number.isRequired,
-    alreadyHas: arrayOf(string).isRequired,
     moves: arrayOf(string).isRequired,
     createAdvancement: func.isRequired,
     goBack: func.isRequired
@@ -64,7 +63,7 @@ class GrowingUpMove extends Component {
   }
   
   render() {
-    const { id, moves, alreadyHas } = this.props;
+    const { moves } = this.props;
     const { selectedMoves } = this.state;
     return (
       <Container>

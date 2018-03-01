@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import Moves from './Moves';
 
 import { goBack, getPath } from 'Routing';
-import { forMonsterhearts, fromMonsterhearts } from '../../../state';
+import { forMonsterhearts, fromMonsterhearts } from 'state';
 const { createMove, deleteMove } = forMonsterhearts;
 
 const mapStateToProps = (state, {depth, id, showBackButton}) => {

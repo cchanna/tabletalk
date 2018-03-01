@@ -12,7 +12,7 @@ defmodule TabletalkWeb.ErrorView do
     %{message: "The requested resource could not be found."}
   end
 
-  def render("400.json", err) do
+  def render("400.json", _err) do
     %{message: "The request was incorrectly formatted"}
   end
 end

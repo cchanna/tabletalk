@@ -1,4 +1,4 @@
-import { fromRouting } from './state';
+import { fromRouting } from 'state';
 
 const getFullPath = (path, depth, state) => {
   if (depth === 0) return path;

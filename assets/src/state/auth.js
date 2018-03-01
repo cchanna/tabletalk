@@ -1,9 +1,4 @@
 import { combineReducers } from 'redux';
-import { 
-  prefixedReducer, 
-  prefixedActions, 
-  globalizeSelectors 
-} from 'utils/stateTools';
 
 const START = "START";
 const SUCCESS = "SUCCESS";
@@ -12,37 +7,16 @@ const GOOGLE = "GOOGLE";
 const READY = "READY";
 const LOGOUT = "LOGOUT";
 
-export const name = "auth";
-const prefix = "AUTH_";
-
-const getJwt = state => state.jwt;
-const getIsLoggingIn = state => state.pending;
-const getIsFailed = state => state.error;
-const getGoogleJwt = state => state.googleJwt;
-const getIsLoggedInWithGoogle = state => !!getGoogleJwt(state);
-const getIsLoggedIn = state => !!state.jwt;
-const getIsReady = state => state.ready; 
-
-export const fromAuth = globalizeSelectors(state => state[name], {
-  getJwt,
-  getIsFailed,
-  getIsLoggingIn,
-  getGoogleJwt,
-  getIsLoggedInWithGoogle,
-  getIsLoggedIn,
-  getIsReady
-});
-
-export const forAuth = prefixedActions(prefix, {
-  startLogin: [START],
+export const actions = {
+  startLogin: START,
   setJWT: [SUCCESS, "jwt"],
-  failLogin: [FAIL],
-  logout: [LOGOUT],
-  loginReady: [READY],
+  failLogin: FAIL,
+  logout: LOGOUT,
+  loginReady: READY,
   setGoogleJWT: [GOOGLE, "jwt"]
-});
+};
 
-export const reducer = prefixedReducer(prefix, combineReducers({
+export const reducer = combineReducers({
   ready: (state = false, action) => {
     switch(action.type) {
       case READY:
@@ -96,4 +70,23 @@ export const reducer = prefixedReducer(prefix, combineReducers({
         return state;
     }
   }
-}));
+});
+
+
+const getJwt = state => state.jwt;
+const getIsLoggingIn = state => state.pending;
+const getIsFailed = state => state.error;
+const getGoogleJwt = state => state.googleJwt;
+const getIsLoggedInWithGoogle = state => !!getGoogleJwt(state);
+const getIsLoggedIn = state => !!state.jwt;
+const getIsReady = state => state.ready; 
+
+export const selectors = {
+  getJwt,
+  getIsFailed,
+  getIsLoggingIn,
+  getGoogleJwt,
+  getIsLoggedInWithGoogle,
+  getIsLoggedIn,
+  getIsReady
+};

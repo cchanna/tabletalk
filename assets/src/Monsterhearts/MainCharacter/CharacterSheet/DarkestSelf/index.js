@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import DarkestSelf from './DarkestSelf';
 
-import { forMonsterhearts, fromMonsterhearts } from '../../../state';
+import { forMonsterhearts, fromMonsterhearts } from 'state';
 const { editDarkestSelf } = forMonsterhearts;
 const { getDarkestSelf, getCanCustomizeDarkestSelf } = fromMonsterhearts
 

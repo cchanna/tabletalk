@@ -1,4 +1,4 @@
-import { forGames } from './state';
+import { forGames } from 'state';
 import { goTo } from 'Routing';
 import { get, post } from 'common/api';
 

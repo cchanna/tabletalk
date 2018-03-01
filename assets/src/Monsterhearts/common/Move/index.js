@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import Move from './Move';
-import { forMonsterhearts, fromMonsterhearts } from '../../state';
+import { forMonsterhearts, fromMonsterhearts } from 'state';
 
 const { editMoveNotes } = forMonsterhearts;
 

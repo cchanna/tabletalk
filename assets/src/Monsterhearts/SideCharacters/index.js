@@ -4,7 +4,7 @@ import { compose } from 'redux';
 import withSizes from 'common/withSize';
 
 import { getPath } from 'Routing';
-import { fromMonsterhearts } from '../state';
+import { fromMonsterhearts } from 'state';
 
 const mapStateToProps = (state, {depth}) => ({
   path: getPath(state, depth).path,

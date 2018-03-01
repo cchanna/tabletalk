@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Identity from './Identity';
 
-import { forMonsterhearts, fromMonsterhearts } from '../../../state';
+import { forMonsterhearts, fromMonsterhearts } from 'state';
 const { setName, setLook, setEyes, setOrigin } = forMonsterhearts;
 
 const mapStateToProps = (state, {id}) => {

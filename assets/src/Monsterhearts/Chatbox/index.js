@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Chatbox from './Chatbox';
 
-import { forMonsterhearts, fromMonsterhearts } from '../state';
+import { forMonsterhearts, fromMonsterhearts } from 'state';
 const { setChatboxCollapsed, sendChat } = forMonsterhearts;
 
 const mapStateToProps = (state, {overlay}) => {

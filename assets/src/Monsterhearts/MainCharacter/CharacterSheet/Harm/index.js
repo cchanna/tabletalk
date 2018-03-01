@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Harm from './Harm';
 
-import { forMonsterhearts, fromMonsterhearts } from '../../../state';
+import { forMonsterhearts, fromMonsterhearts } from 'state';
 const { incrementHarm, decrementHarm } = forMonsterhearts;
 
 const mapStateToProps = (state, {id}) => ({

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import BigTabList from './BigTabList';
 
-import { fromMonsterhearts } from '../state';
+import { fromMonsterhearts } from 'state';
 
 const { getCharacterTabs } = fromMonsterhearts;
 

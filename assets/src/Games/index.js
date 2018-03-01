@@ -7,9 +7,9 @@ import { getGames, getGame, openGame, joinGame, openNewGame } from './actionCrea
 import { compose } from 'redux';
 import withSize from 'common/withSize';
 
-import { fromGames } from './state';
-export { reducer, name } from './state';
-
+import { fromGames } from 'state';
+export { getGame } from './actionCreators';
+  
 const mapStateToProps = (state, {depth}) => {
   const { next } = getPath(state, depth);
   const slug = next;
@@ -33,9 +33,3 @@ export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   withSize({375: "tiny", 482: "narrow"})
 )(Games);
-
-export const forGames = {
-  getGame
-}
-
-export { fromGames };

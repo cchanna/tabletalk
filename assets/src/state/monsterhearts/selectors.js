@@ -1,8 +1,14 @@
 import { selectors as characterSelectors } from './characters';
-import { globalizeSelectors } from 'utils/stateTools';
-const fromCharacters = globalizeSelectors(state => state.characters, characterSelectors);
+import { selectors as stringSelectors } from './strings';
+import { prefixedSelectors } from 'utils/stateTools';
+
+
+const fromCharacters = prefixedSelectors('characters', characterSelectors);
 const { getCharactersById, getCharacterIds } = fromCharacters;
 export { getCharactersById, getCharacterIds };
+
+const fromStrings = prefixedSelectors('strings', stringSelectors);
+
 
 export const getMe = state => state.me;
 export const getPlayersById = state => state.playersById;
@@ -192,8 +198,8 @@ export const getMove = (state, name, characterId = null) => {
 export const getUnattachedCharacters = (state, id) => {
   const charactersById = getCharactersById(state);
   const characters = getCharacterIds(state);
-  const strings = state.strings;
-  const stringsById = state.stringsById;
+  const strings = fromStrings.getIds(state);
+  const stringsById = fromStrings.getById(state);
 
   const excludeFrom = strings
     .filter(s => stringsById[s].from === id)
@@ -223,7 +229,8 @@ export const getUnattachedCharacters = (state, id) => {
     })
 }
 export const getCharacterStrings = (state, id) => {
-  const { stringsById, strings } = state;
+  const stringsById = fromStrings.getById(state);
+  const strings = fromStrings.getIds(state);
   const allStrings = {};
   
   strings
@@ -291,7 +298,8 @@ export const getUnchosenSelfMoves = (state, id) => {
 }
 
 export const getEditDone = (state, id) => {
-  const { strings, stringsById } = state;
+  const stringsById = fromStrings.getById(state);
+  const strings = fromStrings.getIds(state);
   const character = getCharacter(state, id);
   const { name, mainCharacter } = character;
   const { look, eyes, origin, hot, cold, volatile, dark, moves, playbook } = mainCharacter;

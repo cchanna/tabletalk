@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import TabPicker from './TabPicker';
 
-import { fromMonsterhearts } from '../state';
+import { fromMonsterhearts } from 'state';
 
 import { getPath } from 'Routing';
 

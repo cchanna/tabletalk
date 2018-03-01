@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 import { LOAD } from './actions';
 import update from 'immutability-helper';
+import { socketActions, slowSocketActions } from './socketActions';
 
 const MAIN_CREATE = "MAIN_CREATE";
 const SIDE_CREATE = "SIDE_CREATE";
@@ -27,11 +28,9 @@ const ADVANCEMENT_STAT_CANCEL = "ADVANCEMENT_STAT_CANCEL";
 const DARKEST_SELF_SET = "DARKEST_SELF_SET";
 
 export const actions = {
-  normal: {
-    addStat: [ADVANCEMENT_STAT, "id"],
-    cancelAddStat: [ADVANCEMENT_STAT_CANCEL, "id"],
-  },
-  server: {
+  addStat: [ADVANCEMENT_STAT, "id"],
+  cancelAddStat: [ADVANCEMENT_STAT_CANCEL, "id"],
+  ...socketActions({
     createMove: [MOVE_CREATE, "id", "name"],
     deleteMove: [MOVE_DELETE, "id", "name"],
     deleteAdvancement: [ADVANCEMENT_DELETE, "id", "advancementId"],
@@ -51,11 +50,11 @@ export const actions = {
     deleteCondition: [CONDITION_DELETE, "id", "condition"],
     editMoveNotes: [MOVE_EDIT_NOTES, "id", "name", "notes"],
     createAdvancement: [ADVANCEMENT_CREATE, "id", "advancementId", "stat", "move", "moves"],
-  },
-  slow: {
+  }),
+  ...slowSocketActions({
     createCharacter: [MAIN_CREATE, "playbook"],
     createSideCharacter: [SIDE_CREATE, "name", "notes"]
-  }
+  })
 }
 
 export const selectors = {

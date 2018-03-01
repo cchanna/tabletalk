@@ -1,4 +1,4 @@
-const getFullPath = state => state.path;
+const getFullPath = state => state.routing;
 
 export const getPath = (state, depth = 0) => {
   const path = getFullPath(state);

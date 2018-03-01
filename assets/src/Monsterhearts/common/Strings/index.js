@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Strings from './Strings';
 
-import { forMonsterhearts, fromMonsterhearts } from '../../state';
+import { forMonsterhearts, fromMonsterhearts, fromSocket } from 'state';
 const { spendString, deleteString, addString, createString } = forMonsterhearts;
 
 const mapStateToProps = (state, {id, depth, sideCharacter = false}) => {
@@ -9,7 +9,7 @@ const mapStateToProps = (state, {id, depth, sideCharacter = false}) => {
     sideCharacter,
     id, 
     depth, 
-    slowActionsById: fromMonsterhearts.getSlowActionsById(state),
+    slowActionsById: fromSocket.getSlowActionsById(state),
     readOnly: fromMonsterhearts.getReadOnly(state, id),
     strings: fromMonsterhearts.getCharacterStrings(state, id), 
   };

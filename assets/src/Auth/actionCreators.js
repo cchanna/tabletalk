@@ -1,4 +1,4 @@
-import { forAuth, fromAuth } from './state';
+import { forAuth, fromAuth } from 'state';
 import { get } from 'common/api';
 
 const {
