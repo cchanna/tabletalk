@@ -5,7 +5,7 @@ import * as routing from './routing';
 import * as socket from './socket';
 import * as status from './status';
 import * as monsterhearts from './monsterhearts';
-import { prefixedReducer, prefixedSelectors, prefixedActionCreators } from 'utils/stateTools';
+import { prefixedReducer, prefixedSelectors, prefixedActionCreators } from 'redux-state-tools';
 
 
 export const forAuth = prefixedActionCreators("AUTH", auth.actions);

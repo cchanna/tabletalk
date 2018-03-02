@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { prefixedActions, prefixedReducer } from 'utils/stateTools';
+import { prefixedActions, prefixedReducer } from 'redux-state-tools';
 import * as characters from './characters';
 import * as strings from './strings';
 import update from 'immutability-helper';

@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { reducer, forRouting, forSocket } from './state';
-import { makeBangMiddleware } from 'utils/stateTools';
+import { makeMiddleware } from 'redux-state-tools';
 import { createBrowserHistory } from 'history';
 
 const pathToArray = pathname => {
@@ -22,7 +22,7 @@ const randomString = (length, chars) => {
 }
 const randomUniqueId = () => randomString(36, "abcdefghijklmnopqrstuvwxyz0123456789")
 
-const socketMiddleware = makeBangMiddleware("socket", (actionIn, {dispatch, next}) => {
+const socketMiddleware = makeMiddleware("socket", (actionIn, {dispatch, next}) => {
   const action = {
     ...actionIn,
     uniqueId: randomUniqueId()
@@ -31,7 +31,7 @@ const socketMiddleware = makeBangMiddleware("socket", (actionIn, {dispatch, next
   return next(action);
 });
 
-const slowSocketMiddleware = makeBangMiddleware("slowsocket", (actionIn, {dispatch, next}) => {
+const slowSocketMiddleware = makeMiddleware("slowsocket", (actionIn, {dispatch, next}) => {
   const action = {
     ...actionIn,
     uniqueId: randomUniqueId()

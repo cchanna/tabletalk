@@ -1,6 +1,6 @@
 import { selectors as characterSelectors } from './characters';
 import { selectors as stringSelectors } from './strings';
-import { prefixedSelectors } from 'utils/stateTools';
+import { prefixedSelectors } from 'redux-state-tools';
 
 
 const fromCharacters = prefixedSelectors('characters', characterSelectors);

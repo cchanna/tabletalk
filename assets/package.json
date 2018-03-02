@@ -45,6 +45,7 @@
     "react-redux": "^5.0.6",
     "react-textarea-autosize": "^5.2.1",
     "redux": "^3.7.2",
+    "redux-state-tools": "^1.0.0",
     "redux-thunk": "^2.2.0",
     "sass-loader": "^6.0.6",
     "style-loader": "0.19.0",
@@ -104,18 +105,28 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app", 
-      "eslint:recommended", 
+      "react-app",
+      "eslint:recommended",
       "plugin:react/recommended"
     ],
     "rules": {
-      "no-unused-vars": ["warn", {
-        "varsIgnorePattern": "(^_|string|number|bool|func|shape|object|arrayOf|oneOf|node)",
-        "argsIgnorePatter": "^_",
-        "ignoreRestSiblings": true
-      }],
+      "no-unused-vars": [
+        "warn",
+        {
+          "varsIgnorePattern": "(^_|string|number|bool|func|shape|object|arrayOf|oneOf|node)",
+          "argsIgnorePatter": "^_",
+          "ignoreRestSiblings": true
+        }
+      ],
       "no-extra-semi": 0,
-      "no-console": ["warn", {"allow": ["error"]}],
+      "no-console": [
+        "warn",
+        {
+          "allow": [
+            "error"
+          ]
+        }
+      ],
       "react/no-unescaped-entities": 0
     }
   }
