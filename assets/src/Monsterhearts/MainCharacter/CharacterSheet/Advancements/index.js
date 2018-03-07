@@ -36,7 +36,7 @@ const {
   getReadOnly, 
   getPlaybookAdvancements, 
   listSeasonAdvancements,
-  getIsSeasonFinale
+  getCanGetSeasonAdvancements
 } = fromMonsterhearts;
 
 const mapStateToProps = (state, {id, depth}) => {
@@ -52,7 +52,7 @@ const mapStateToProps = (state, {id, depth}) => {
 
   let seasonAdvancements = null;
 
-  if (selectedAdvancements.length >= 5 || getIsSeasonFinale(state)) {
+  if (getCanGetSeasonAdvancements(state, id)) {
     seasonAdvancements = listSeasonAdvancements(state)
       .map(advancement => ({
         ...advancement,

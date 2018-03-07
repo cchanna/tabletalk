@@ -33,8 +33,11 @@ class GrowingUpMove extends Component {
   static propTypes = {
     id: number.isRequired,
     moves: arrayOf(string).isRequired,
+    allowed: bool.isRequired,
+    depth: number.isRequired,
     createAdvancement: func.isRequired,
-    goBack: func.isRequired
+    goBack: func.isRequired,
+    replace: func.isRequired
   }
 
   state = {
@@ -60,6 +63,11 @@ class GrowingUpMove extends Component {
     const { id, createAdvancement, goBack } = this.props;
     createAdvancement({id, advancementId: "grow", moves: this.state.selectedMoves});
     goBack();
+  }
+
+  componentDidMount() {
+    const { allowed, replace, depth } = this.props;
+    if (!allowed) replace([], depth - 1); 
   }
   
   render() {

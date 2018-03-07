@@ -102,6 +102,12 @@ export const getIsSeasonFinale = state => {
     );
 }
 
+export const getCanGetSeasonAdvancements = (state, id) => {
+  const { mainCharacter } = getCharacter(state, id);
+  const { advancements } = mainCharacter;
+  return advancements.length >= 5 || getIsSeasonFinale(state);
+}
+
 export const getCharacterTabs = (state, {retired = false} = {}) => {
   const characters = getCharacterIds(state);
   const me = getMe(state);
