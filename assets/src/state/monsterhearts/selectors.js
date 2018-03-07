@@ -38,8 +38,9 @@ export const getAmIGM = state => {
   return getPlayer(state, me).isGM;
 }
 
-export const getReadOnly = (state, id) => {
+export const getReadOnly = (state, id = null) => {
   if (getAmIGM(state)) return false;
+  if (!id) return true;
   const me = getMe(state);
   const { mainCharacter } = getCharacter(state, id);
   return (!mainCharacter || mainCharacter.playerId !== me);
