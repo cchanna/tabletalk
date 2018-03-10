@@ -31,7 +31,7 @@ const socketMiddleware = makeMiddleware("socket", (actionIn, {dispatch, next}) =
   return next(action);
 });
 
-const slowSocketMiddleware = makeMiddleware("slowsocket", (actionIn, {dispatch, next}) => {
+const slowSocketMiddleware = makeMiddleware("slowsocket", (actionIn, {next}) => {
   const action = {
     ...actionIn,
     uniqueId: randomUniqueId()

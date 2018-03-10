@@ -18,7 +18,7 @@ const mapStateToProps = (state, {depth, id}) => {
     id,
     depth,
     allowed,
-    moves: fromMonsterhearts.getUnchosenGrowingUpMoves(state, id)
+    moves: getUnchosenGrowingUpMoves(state, id)
   }
 }
 
