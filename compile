@@ -1,0 +1,6 @@
+cd $phoenix_dir
+cd assets
+npm i
+npm build
+cd ..
+mix "${phoenix_ex}.digest"
