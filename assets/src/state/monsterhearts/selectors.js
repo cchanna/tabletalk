@@ -1,7 +1,7 @@
 import { selectors as characterSelectors } from './characters';
 import { selectors as stringSelectors } from './strings';
 import { prefixedSelectors } from 'redux-state-tools';
-
+import mapObject from 'utils/mapObject';
 
 const fromCharacters = prefixedSelectors('characters', characterSelectors);
 const { getCharactersById, getCharacterIds } = fromCharacters;
@@ -11,8 +11,8 @@ const fromStrings = prefixedSelectors('strings', stringSelectors);
 
 
 export const getMe = state => state.me;
-export const getPlayersById = state => state.playersById;
-const getPlayer = (state, id) => getPlayersById(state)[id];
+export const getPlayerNamesById = state => mapObject(state.playersById, player => player.name);
+const getPlayer = (state, id) => state.playersById(state)[id];
 
 const characterName = character => character.name || `The\u00A0${character.mainCharacter.playbook}`;
 

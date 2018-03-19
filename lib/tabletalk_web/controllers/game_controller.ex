@@ -20,7 +20,7 @@ defmodule TabletalkWeb.GameController do
 
   def create(conn, params) do
     user_id = Tabletalk.Guardian.Plug.current_resource(conn)
-    with {:ok, game} <- Games.new_game(user_id, params) do
+    with {:ok, game} <- Games.new_game(user_id, params["body"]) do
       conn
       |> put_status(:created)
       |> render("show.json", game: game)

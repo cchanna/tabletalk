@@ -3,6 +3,7 @@ import { string, number, func, shape, arrayOf } from 'prop-types'
 import rx from 'resplendence'
 
 import Monsterhearts from 'Monsterhearts';
+import Swords from 'Swords';
 
 rx`
 @import '~common/styles';
@@ -14,7 +15,7 @@ const Container = rx('div')`
  width: 100%;
 `
 
-const componentsForKind = [Monsterhearts];
+const componentsForKind = [Monsterhearts, Swords];
 
 class Play extends Component {
   static propTypes = {

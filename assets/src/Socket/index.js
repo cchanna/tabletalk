@@ -1,5 +1,5 @@
 import { connect as reduxConnect  } from 'react-redux'
-import SocketManager from './SocketManager';
+import SocketManager from './Socket';
 import { fromAuth } from 'state';
 
 import { getPath } from 'Routing';
@@ -16,11 +16,11 @@ const {
   send, 
 } = forSocket;
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, {game}) => {
   const slug = getPath(state).path[1];
   const jwt = fromAuth.getJwt(state);
   return {
-    slug, jwt,
+    game, slug, jwt,
     actionQueue: fromSocket.getActionQueue(state), 
     slowActionQueue: fromSocket.getSlowActionQueue(state), 
     actionsById: fromSocket.getActionsById(state), 

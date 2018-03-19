@@ -8,7 +8,7 @@ const mapStateToProps = (state, {overlay}) => {
   return {
     overlay,
     collapsed: fromMonsterhearts.getIsChatboxCollapsed(state),
-    playersById: fromMonsterhearts.getPlayersById(state),
+    playerNamesById: fromMonsterhearts.getPlayerNamesById(state),
     chats: fromMonsterhearts.getChats(state),
   };
 };

@@ -28,6 +28,10 @@ export const actions = {
   ...prefixedActions("CHARACTER", characters.actions)
 };
 
+export const types = {
+  LOAD
+};
+
 export const reducer = combineReducers({
   characters: prefixedReducer("CHARACTER", characters.reducer, [LOAD]),
   strings: prefixedReducer("STRING", strings.reducer, [LOAD]),

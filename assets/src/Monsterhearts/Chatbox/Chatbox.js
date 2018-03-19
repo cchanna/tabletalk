@@ -4,6 +4,7 @@ import rx from 'resplendence'
 
 import Input from './Input';
 import Chat, { chatProperties } from './Chat';  
+import BaseChatbox from 'common/components/Chatbox';
 import DiceRoller from './DiceRoller';
 
 rx`
@@ -11,11 +12,33 @@ rx`
 @import '~Monsterhearts/colors';
 `
 
+const Styling = rx(BaseChatbox)`--1
+font-family: $body;
+  color: hsl(240, 10%, 95%);
+  background: hsl(240, 10%, 21%);
+  .toggle {
+    color: black;
+    background-color: $foreground;
+    &.notify {
+      background-color: black;
+      color: white;
+    }
+  }
+  .input {
+    color: hsl(240, 10%, 7%);
+    background-color: hsl(240, 10%, 95%);
+  }
+  &::-webkit-scrollbar-thumb {
+    background: darken($foreground, 50%);
+    &:hover {
+      background: darken($foreground, 40%);
+    }
+  }
+`
+
 const Container = rx('div')`
   width: 320px;
   height: 100%;
-  color: hsl(240, 10%, 95%);
-  background: hsl(240, 10%, 21%);
   box-shadow: -2px 0px 2px 1px fade-out(black, .5);
   flex: 0 0 auto;
   font-size: 16px;
@@ -56,8 +79,6 @@ const Toggle = rx('div')`
   border: none;
   box-shadow: 0 1px 1px 1px fade-out(black, .8);
   padding: 0;
-  color: black;
-  background-color: $foreground;
   position: relative;
   top: 0px;
   transition-property: height, top, padding;
@@ -66,10 +87,6 @@ const Toggle = rx('div')`
   text-align: center;
   &:focus {
     outline: none;
-  }
-  &.notify {
-    background-color: black;
-    color: white;
   }
 `
 
@@ -99,12 +116,6 @@ const Conversation = rx('div')`
   overflow-y: scroll;
   height: 100%;
   padding: 1em;
-  &::-webkit-scrollbar-thumb {
-    background: darken($foreground, 50%);
-    &:hover {
-      background: darken($foreground, 40%);
-    }
-  }
   margin-right: 6px;
   
 `
@@ -140,46 +151,9 @@ class Chatbox extends Component {
     overlay: bool.isRequired,
     collapsed: bool.isRequired,
     chats: arrayOf(shape(chatProperties)).isRequired,
-    playersById: object.isRequired,
+    playerNamesById: object.isRequired,
     setChatboxCollapsed: func.isRequired,
     chat: func.isRequired
-  }
-
-  conversation = null;
-  atBottom = false;
-
-  handleToggle = () => {
-    const { collapsed, setChatboxCollapsed } = this.props;
-    setChatboxCollapsed({collapsed: !collapsed});
-  }
-
-  handleRef = e => this.conversation = e;
-
-  scrollToBottom = () => {
-    if (this.conversation) {
-      this.conversation.scrollTop = this.conversation.scrollHeight;
-      this.atBottom = true;
-    }
-  }
-
-  componentWillUpdate() {
-    if (this.conversation) {
-      const { scrollTop, offsetHeight, scrollHeight } = this.conversation;
-      this.atBottom = scrollTop + offsetHeight === scrollHeight;
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.collapsed && !this.props.collapsed) {
-      setTimeout(this.scrollToBottom, 700);
-    }
-    else if (this.atBottom) {
-      setTimeout(this.scrollToBottom, 50);
-    }
-  }
-
-  componentDidMount() {
-    setTimeout(this.scrollToBottom, 700);
   }
 
   handleChat = ({text}) => {
@@ -188,41 +162,14 @@ class Chatbox extends Component {
   }
 
   render() {
-    const { overlay, collapsed, chats, playersById } = this.props;
-    let toggle = null;
-    if (overlay) toggle = (
-      <Toggle rx={{collapsed}} onClick={this.handleToggle}>
-        {collapsed ? '%' : '^'}
-      </Toggle>
-    )
-    const chatComponents = [];
-    let prevPlayerId = null;
-    chats.forEach((chat, index) => {
-      const { id, playerId, mine } = chat;
-      if (playerId !== prevPlayerId) {
-        chatComponents.push(
-          <Header key={id + "-header"} rx={{mine}}>{playersById[playerId].name}</Header>
-        )
-      }
-      prevPlayerId = playerId;
-      chatComponents.push(
-        <Chat key={id} newest={index === chats.length - 1} {...{playersById, mine}} {...chat}/>
-      );
-    })
+    const { overlay, collapsed } = this.props;
     return (
-      <Container rx={{overlay, collapsed}}>
-        {toggle}
-        <DiceRoller onChat={this.handleChat} {...{overlay, collapsed}}/>
-        <Body rx={{overlay, collapsed}}>
-          <Conversation innerRef={this.handleRef}>
-            <ChatList>
-              {chatComponents}
-            </ChatList>
-          </Conversation>
-          <Divider/>
-          <Input onChat={this.handleChat}/>
-        </Body>
-      </Container>
+      <Styling {...this.props}
+        diceRoller={
+          <DiceRoller onChat={this.handleChat} {...{overlay, collapsed}}/>
+        }
+        Chat={Chat}
+      />
     );
   }
 }

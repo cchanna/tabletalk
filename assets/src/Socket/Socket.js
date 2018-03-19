@@ -7,6 +7,7 @@ class SocketManager extends Component {
   static propTypes = {
     slug: string.isRequired,
     jwt: string.isRequired,
+    game: string.isRequired,
     actionQueue: arrayOf(string).isRequired, 
     slowActionQueue: arrayOf(string).isRequired, 
     actionsById: object.isRequired, 
@@ -58,11 +59,11 @@ class SocketManager extends Component {
   }
 
   componentDidMount() {
-    const { slug, jwt, connect } = this.props;
+    const { slug, jwt, connect, game } = this.props;
     let baseUrl = (process.env.NODE_ENV === "production") ? "" : "ws://" + process.env.REACT_APP_API_URL;
     this.socket = new Socket(baseUrl + "/socket", {params: {jwt}});
     this.socket.connect();
-    this.channel = this.socket.channel(`monsterhearts:${slug}`);
+    this.channel = this.socket.channel(`${game}:${slug}`);
     this.channel.on("dispatch", this.dispatch);
     this.channel.join()
     .receive("ok", connect)

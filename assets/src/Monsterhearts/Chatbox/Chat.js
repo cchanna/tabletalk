@@ -76,25 +76,6 @@ const RollResult = rx('div')`
   }
 `
 
-const convertLog = (text, playersById) => {
-  const regex = /{(.+?):(\d+)}/g;
-  const players = [];
-  let m = regex.exec(text);
-  while (m !== null) {
-    if (m.index === regex.lastIndex) {
-      regex.lastIndex++;
-    }
-    if (m[1] === "player" && !players.includes(m[2])) {
-      players.push(m[2]);
-    }
-    m = regex.exec(text);
-  }
-  players.forEach(id => {
-    text = text.replace(`{player:${id}}`, playersById[id].name);
-  })
-  return text;
-}
-
 const makeBonusString = bonus => {
   if (bonus >= 0) return "+ " + bonus; 
   else return "− " + (-bonus);
@@ -116,17 +97,16 @@ export const chatProperties = {
 class Chat extends Component {
   static propTypes = {
     ...chatProperties,
-    playersById: object.isRequired,
     newest: bool.isRequired
   }
   
   render() {
-    const { talk, roll, mine, newest, playersById } = this.props;
+    const { talk, roll, mine, newest } = this.props;
 
     if (talk) {
       if (talk.isLog) {
         return (
-          <Log rx={{mine}}>{convertLog(talk.text, playersById)}</Log>
+          <Log rx={{mine}}>{talk.text}</Log>
         )
       }
       else {

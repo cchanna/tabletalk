@@ -5,7 +5,7 @@ import rx from 'resplendence'
 import TabPicker from './TabPicker';
 import Chatbox from './Chatbox';
 import Spinner from 'common/components/Spinner';
-import SocketManager from './SocketManager';
+import SocketManager from 'Socket';
 
 rx`
 @import '~Monsterhearts/colors';
@@ -81,7 +81,7 @@ class Monsterhearts extends Component {
       } 
       return (
         <Container>
-          <SocketManager/>
+          <SocketManager game="monsterhearts"/>
           {content}
         </Container>
       )

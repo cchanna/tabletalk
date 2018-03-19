@@ -57,7 +57,7 @@ defmodule TabletalkWeb.MonsterheartsView do
   def to_json(talk = %Talk{}) do
     %{
       text: talk.text,
-      isLog: talk.is_log
+      isLog: talk.is_log || false
     }
   end
 
