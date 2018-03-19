@@ -1,4 +1,3 @@
-cd $phoenix_dir
 cd assets
 npm i
 npm build
