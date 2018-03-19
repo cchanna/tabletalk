@@ -1,4 +1,5 @@
 cd $phoenix_dir
+mkdir -p lib/tabletalk_web/templates/page
 cd assets
 npm i
 npm run build
