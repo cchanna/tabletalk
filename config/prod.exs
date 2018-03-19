@@ -27,7 +27,7 @@ config :logger, level: :info
 # Configure your database
 config :tabletalk, Tabletalk.Repo,
   adapter: Ecto.Adapters.Postgres,
-  url: "${DATABASE_URL}"
+  url: "${DATABASE_URL}",
   database: "",
   pool_size: 1,
   ssl: true
