@@ -1,5 +1,5 @@
 cd assets
 npm i
-npm build
+npm run build
 cd ..
 mix "${phoenix_ex}.digest"
