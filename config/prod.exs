@@ -15,7 +15,7 @@ use Mix.Config
 # which you typically run after static files are built.
 config :tabletalk, TabletalkWeb.Endpoint,
   http: [port: {:system, "PORT"}],
-  url: [host: "tabletalk.gigalixirapp.com", port: 80], # This is critical for ensuring web-sockets properly authorize.
+  url: [host: "tabletalk.zone", port: 80], # This is critical for ensuring web-sockets properly authorize.
   cache_static_manifest: "priv/static/manifest.json",
   server: true,
   secret_key_base: "{$SECRET_KEY_BASE}"
