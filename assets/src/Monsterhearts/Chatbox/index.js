@@ -1,15 +1,17 @@
 import { connect } from 'react-redux'
 import Chatbox from './Chatbox';
 
-import { forMonsterhearts, fromMonsterhearts } from 'state';
+import { forMonsterhearts, fromMonsterhearts, fromSocket } from 'state';
 const { setChatboxCollapsed, sendChat } = forMonsterhearts;
 
 const mapStateToProps = (state, {overlay}) => {
   return {
     overlay,
     collapsed: fromMonsterhearts.getIsChatboxCollapsed(state),
-    playerNamesById: fromMonsterhearts.getPlayerNamesById(state),
-    chats: fromMonsterhearts.getChats(state),
+    playerNames: fromMonsterhearts.getPlayerNamesById(state),
+    characterNames: fromMonsterhearts.getCharacterNames(state),
+    chats: fromSocket.listEvents(state),
+    me: fromMonsterhearts.getMe(state)
   };
 };
 

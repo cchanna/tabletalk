@@ -1,2 +1,75 @@
+@import "~common/styles";
+
 $foreground: black;
 $background: white;
+
+$body: "Junction";
+$header: "Marvin Visions";
+$interact: "League Spartan";
+
+@mixin button-style {
+  @include button;
+  font-family: $interact;
+  font-size: 20px;
+  transition-property: color, opacity;
+  transition-duration: 300ms;
+  opacity: 1;
+  color: var(--text);
+  position: relative;
+  &:after {
+    content: "";
+    background: var(--text);
+    height: .2em;
+    width: 0;
+    transition-property: left, width, background-color;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
+    position: absolute;
+    left: 50%;
+    bottom: 0px;
+  }
+  &:hover:after {
+    width: 100%;
+    left: 0%;
+  }
+  &:focus:after {
+    width: 50%;
+    left: 25%;
+  }
+  &:active:after {
+    width: 120%;
+    left: -10%;
+  }
+  &:disabled {
+    opacity: 0;
+  }
+}
+
+@mixin mood-background {
+  color: var(--text-glum);
+  &:before, &:after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  &:before {
+    background: var(--color-glum);
+    z-index: -2;
+  }
+  &:after {
+    background: var(--color-jovial);
+    opacity: 0;
+    transition: 300ms opacity;
+    z-index: -1;
+  }
+  &.jovial {
+    color: var(--text-jovial);
+    &:after {
+      opacity: 1;
+    }
+  }
+
+}

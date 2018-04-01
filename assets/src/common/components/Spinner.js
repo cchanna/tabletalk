@@ -11,7 +11,6 @@ const Spinner = rx('div')`
     animation: load7 1.8s infinite ease-in-out;
   }
   @include shared;
-  color: #ffffff;
   margin: auto;
   position: relative;
   font-size: 10px;

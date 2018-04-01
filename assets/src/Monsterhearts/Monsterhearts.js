@@ -36,14 +36,14 @@ const Content = rx('div')`
   box-sizing: border-box;
   z-index: 1;
   &.overlay {
-    padding-top: 32px;
+    padding-top: 36px;
   }
 `
 
 class Monsterhearts extends Component {
   static propTypes = {
     sizes: arrayOf(string).isRequired,
-    loaded: bool.isRequired,
+    loaded: bool,
     connected: bool.isRequired,
     depth: number.isRequired,
     load: func.isRequired
@@ -81,7 +81,7 @@ class Monsterhearts extends Component {
       } 
       return (
         <Container>
-          <SocketManager game="monsterhearts"/>
+          <SocketManager/>
           {content}
         </Container>
       )

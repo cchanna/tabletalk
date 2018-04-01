@@ -1,5 +1,6 @@
 import { selectors as characterSelectors } from './characters';
 import { selectors as stringSelectors } from './strings';
+import { selectors as chatboxSelectors } from '../chatbox';
 import { prefixedSelectors } from 'redux-state-tools';
 import mapObject from 'utils/mapObject';
 
@@ -9,10 +10,12 @@ export { getCharactersById, getCharacterIds };
 
 const fromStrings = prefixedSelectors('strings', stringSelectors);
 
+const { getIsChatboxCollapsed } = prefixedSelectors('chatbox', chatboxSelectors);
+export { getIsChatboxCollapsed };
 
 export const getMe = state => state.me;
 export const getPlayerNamesById = state => mapObject(state.playersById, player => player.name);
-const getPlayer = (state, id) => state.playersById(state)[id];
+const getPlayer = (state, id) => state.playersById[id];
 
 const characterName = character => character.name || `The\u00A0${character.mainCharacter.playbook}`;
 
@@ -31,6 +34,21 @@ export const getSideCharacterIds = state => {
   const charactersById = getCharactersById(state);
   const characterIds = getCharacterIds(state);
   return characterIds.filter(id => !charactersById[id].mainCharacter);
+}
+
+export const getCharacterNames = state => {
+  const result = {};
+  getCharacterIds(state)
+    .forEach(id => {
+      const { name, mainCharacter } = getCharacter(state, id);
+      if (name) {
+        result[id] = name;
+      }
+      else if (mainCharacter) {
+        result[id] = "The " + mainCharacter.playbook;
+      }
+    });
+  return result;
 }
 
 export const getAmIGM = state => {
@@ -164,13 +182,10 @@ export const getCanCustomizeDarkestSelf = (state, id) => {
 }
 
 export const getIsLoaded = state => state.loaded;
-export const getIsChatboxCollapsed = state => state.chatboxCollapsed;
 export const getChats = state => {
   const chatsById = state.chatsById;
-  const me = state.me;
   return state.chats.map(id => ({
     id,
-    mine: chatsById[id].playerId === me,
     ...chatsById[id]
   }));
 }

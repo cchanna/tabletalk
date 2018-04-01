@@ -15,4 +15,9 @@ defmodule TabletalkWeb.ErrorView do
   def render("400.json", _err) do
     %{message: "The request was incorrectly formatted"}
   end
+
+  def render("422.json", err) do
+    Logger.error inspect(err.reason)
+    %{message: "The input was incorrect"}
+  end
 end

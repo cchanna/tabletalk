@@ -7,7 +7,6 @@ class SocketManager extends Component {
   static propTypes = {
     slug: string.isRequired,
     jwt: string.isRequired,
-    game: string.isRequired,
     actionQueue: arrayOf(string).isRequired, 
     slowActionQueue: arrayOf(string).isRequired, 
     actionsById: object.isRequired, 
@@ -18,21 +17,26 @@ class SocketManager extends Component {
     answerSlow: func.isRequired, 
     send: func.isRequired,
     chat: func.isRequired,
-    dispatch: func.isRequired
+    dispatch: func.isRequired,
+    handle: func.isRequired
   }
 
-  dispatch = action => {
-    const { actionsById, slowActionsById, answer, answerSlow, chat, dispatch } = this.props;
-    const { uniqueId, log } = action;
-    if (log) {
-      chat(log);
+  dispatch = event => {
+    const { actionsById, slowActionsById, answer, answerSlow, dispatch, handle } = this.props;
+    const { playerId, tempId, data } = event;
+    const action = {
+      ...data,
+      playerId
     }
-    if (actionsById[uniqueId]) {
-      answer({uniqueId});
+    if (tempId && actionsById[tempId]) {
+      answer(event);
     }
     else {
-      if (slowActionsById[uniqueId]) {
-        answerSlow({uniqueId});
+      if (tempId && slowActionsById[tempId]) {
+        answerSlow(event);
+      }
+      else {
+        handle(event);
       }
       dispatch(action);
     }
@@ -44,14 +48,20 @@ class SocketManager extends Component {
     if (!prevProps.actionQueue.length && actionQueue.length) {
       actionQueue.forEach(id => {
         const action = actionsById[id];
-        this.channel.push("dispatch", action);
+        this.channel.push("dispatch", {
+          tempId: id,
+          data: action
+        });
       });
       sent = true;
     }
     if (!prevProps.slowActionQueue.length && slowActionQueue.length) {
       slowActionQueue.forEach(id => {
         const action = slowActionsById[id];
-        this.channel.push("dispatch", action);
+        this.channel.push("dispatch", {
+          tempId: id,
+          data: action
+        });
       })
       sent = true;
     }
@@ -59,11 +69,11 @@ class SocketManager extends Component {
   }
 
   componentDidMount() {
-    const { slug, jwt, connect, game } = this.props;
+    const { slug, jwt, connect } = this.props;
     let baseUrl = (process.env.NODE_ENV === "production") ? "" : "ws://" + process.env.REACT_APP_API_URL;
     this.socket = new Socket(baseUrl + "/socket", {params: {jwt}});
     this.socket.connect();
-    this.channel = this.socket.channel(`${game}:${slug}`);
+    this.channel = this.socket.channel(`play:${slug}`);
     this.channel.on("dispatch", this.dispatch);
     this.channel.join()
     .receive("ok", connect)

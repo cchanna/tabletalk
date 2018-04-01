@@ -6,6 +6,7 @@ defmodule Tabletalk.Games.Player do
   alias Tabletalk.Games.Game
 
   alias Tabletalk.Monsterhearts.PlayerSettings
+  alias Tabletalk.Swords
 
   require Logger
 
@@ -16,6 +17,7 @@ defmodule Tabletalk.Games.Player do
     belongs_to :game, Game
 
     has_one :monsterhearts_player_settings, PlayerSettings
+    has_one :swords_player, Swords.Player
 
     timestamps()
   end

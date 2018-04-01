@@ -3,6 +3,9 @@ defmodule TabletalkWeb.GameController do
 
   alias Tabletalk.Games
   alias Tabletalk.Monsterhearts
+  alias Tabletalk.Swords
+
+  require Logger
 
   action_fallback TabletalkWeb.FallbackController
 
@@ -27,19 +30,34 @@ defmodule TabletalkWeb.GameController do
     end
   end
 
-  def join(conn, %{"slug" => slug, "player" => player}) do
-    user_id = Tabletalk.Guardian.Plug.current_resource(conn)
-    with {:ok, game} <- Games.join(user_id, player, slug) do
-      conn
-      |> put_status(200)
-      |> render("show.json", game: game)
-    end
+  def handle_join({:ok, data}, slug) do
+    Logger.debug inspect(data)
+    TabletalkWeb.Endpoint.broadcast("play:" <> slug, "dispatch", data)
   end
 
-  defp load_monsterhearts(conn, game_id, player_id) do
-    data = Monsterhearts.load(game_id, player_id)
+  def handle_join({:error, :none}, _game_id) do
+    nil
+  end
+
+  def join(conn, %{"slug" => slug, "body" => %{"player" => player_name}}) do
+    user_id = Tabletalk.Guardian.Plug.current_resource(conn)
+    {:ok, game, player} = Games.join(user_id, player_name, slug)
+    case game.kind do
+      1 -> Swords.handle_join(game.id, player.id)
+      _ -> {:error, :none}
+    end
+    |> handle_join(slug)
     conn
-    |> render(TabletalkWeb.MonsterheartsView, "load.json", data)
+    |> put_status(200)
+    |> render("show.json", game: game)
+  end
+
+  defp load_game(0, game_id, player_id) do
+    data = Monsterhearts.load(game_id, player_id)
+  end
+
+  defp load_game(1, game_id, player_id) do
+    data = Swords.load(game_id, player_id)
   end
 
   def load(conn, %{"slug" => slug}) do
@@ -51,10 +69,9 @@ defmodule TabletalkWeb.GameController do
       |> put_status(401) 
       |> json(%{message: "You are not a player in this game."})
     else 
-      case game.kind do
-        0 -> conn |> load_monsterhearts(game.id, player.id)
-        _else -> conn |> put_status(500) |> json("oops!")
-      end
+      data = load_game(game.kind, game.id, player.id)
+      conn
+      |> json(data)
     end
   end
 

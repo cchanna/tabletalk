@@ -13,6 +13,7 @@ import {
   prefixedActionCreators,  
 } from 'redux-state-tools';
 import { pagedReducer, pagedSelectors } from 'utils/pagedReducer';
+import prefixedMessages from 'utils/prefixedMessages';
 
 export const forAuth = prefixedActionCreators("AUTH", auth.actions);
 export const fromAuth = prefixedSelectors("auth", auth.selectors);
@@ -30,13 +31,14 @@ export const forStatus = prefixedActionCreators("STATUS", status.actions);
 export const fromStatus = prefixedSelectors("status", status.selectors);
 
 
-const monsterheartsTypes = prefixedTypes("MONSTERHEARTS", monsterhearts.types);
+export const monsterheartsTypes = prefixedTypes("MONSTERHEARTS", monsterhearts.types);
+export const monsterheartsMessages = prefixedMessages("MONSTERHEARTS", monsterhearts.messages);
 export const forMonsterhearts = prefixedActionCreators("MONSTERHEARTS", monsterhearts.actions);
 export const fromMonsterhearts = pagedSelectors("game", monsterheartsTypes.LOAD, monsterhearts.selectors);
 
-const loadSwords = prefixedTypes("SWORDS", swords.types).LOAD;
-export const forSwords = prefixedActionCreators("SWORDS", swords.selectors);
-export const fromSwords = pagedSelectors("game", loadSwords, swords.selectors);
+export const swordsMessages = prefixedMessages("SWORDS", swords.messages);
+export const forSwords = prefixedActionCreators("SWORDS", swords.actions);
+export const fromSwords = pagedSelectors("game", "SWORDS_LOAD", swords.selectors);
 
 export const reducer = combineReducers({
   auth: prefixedReducer("AUTH", auth.reducer),
@@ -46,6 +48,6 @@ export const reducer = combineReducers({
   status: prefixedReducer("STATUS", status.reducer), 
   game: pagedReducer({
     [monsterheartsTypes.LOAD]: prefixedReducer("MONSTERHEARTS", monsterhearts.reducer, ["SOCKET_DISCONNECT"]),
-    [loadSwords]: prefixedReducer("SWORDS", swords.reducer)
+    "SWORDS_LOAD": prefixedReducer("SWORDS", swords.reducer)
   }),
 });

@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { LOAD } from './actions';
-import { socketActions, slowSocketActions } from './socketActions';
+import { socketActions, slowSocketActions } from '../socketActions';
 
 const ADD = "ADD";
 const SPEND = "SPEND";

@@ -14,16 +14,17 @@ const {
   answer, 
   answerSlow, 
   send, 
+  handle
 } = forSocket;
 
-const mapStateToProps = (state, {game}) => {
+const mapStateToProps = (state) => {
   const slug = getPath(state).path[1];
   const jwt = fromAuth.getJwt(state);
   return {
-    game, slug, jwt,
+    slug, jwt,
     actionQueue: fromSocket.getActionQueue(state), 
     slowActionQueue: fromSocket.getSlowActionQueue(state), 
-    actionsById: fromSocket.getActionsById(state), 
+    actionsById: fromSocket.getQueuedActionsById(state), 
     slowActionsById: fromSocket.getSlowActionsById(state)
   };
 };
@@ -37,7 +38,8 @@ const mapDispatchToProps = {
   disconnect, 
   answer, 
   answerSlow, 
-  send
+  send,
+  handle
 };
 
 export default reduxConnect(mapStateToProps, mapDispatchToProps)(SocketManager);

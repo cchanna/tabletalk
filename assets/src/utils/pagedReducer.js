@@ -1,4 +1,3 @@
-import { wrappedSelectors } from 'redux-state-tools';
 import mapObject from 'utils/mapObject';
 
 export const pagedReducer = reducers => (state, action) => {
@@ -6,7 +5,6 @@ export const pagedReducer = reducers => (state, action) => {
     type: null,
     state: null
   };
-  let result = state;
   let reducer = reducers[action.type];
   if (reducer) {
     return {

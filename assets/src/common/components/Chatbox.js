@@ -13,7 +13,6 @@ const Container = rx('div')`
   font-size: 16px;
   z-index: 100;
   box-sizing: border-box;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   -moz-user-select: text;
@@ -24,7 +23,7 @@ const Container = rx('div')`
   cursor: text;
   position: relative;
   &.overlay {
-    box-shadow: 0px -6px 2px 1px fade-out(black, .5);
+    box-shadow: none;
     width: 100%;
     height: 100%;
     position: fixed;
@@ -32,7 +31,7 @@ const Container = rx('div')`
     left: 0;
     transition: height 0.2s cubic-bezier(1, 0, 0, 1);
     &.collapsed {
-      height: 32px;
+      height: 36px;
     }
   }
 `
@@ -51,11 +50,9 @@ const Toggle = rx('div')`
   color: black;
   background-color: white;
   position: relative;
-  top: 0px;
-  transition-property: height, top, padding;
-  transition-duration: 150ms;
   box-sizing: border-box;
   text-align: center;
+  flex: 0 0 auto;
   &:focus {
     outline: none;
   }
@@ -107,7 +104,7 @@ const Header = rx('div')`
 
 const Divider = rx('div')`
   height: 0px;
-  border: 1px inset black;
+  border: 1px solid black;
   flex: none;
   width: 90%;
   border-radius: 1em;
@@ -171,12 +168,12 @@ class Chatbox extends Component {
   static propTypes = {
     overlay: bool.isRequired,
     collapsed: bool.isRequired,
+    me: number.isRequired,
     chats: arrayOf(shape({
       id: number.isRequired,
-      playerId: number.isRequired,
-      mine: bool.isRequired
+      playerId: number.isRequired
     })).isRequired,
-    playerNamesById: object.isRequired,
+    playerNames: object.isRequired,
     Chat: func.isRequired,
     diceRoller: node,
     className: string,
@@ -224,7 +221,7 @@ class Chatbox extends Component {
   }
   
   render() {
-    const { overlay, collapsed, chats, playerNamesById, Chat, diceRoller, className } = this.props;
+    const { overlay, collapsed, chats, me, playerNames, Chat, diceRoller, className, ...rest } = this.props;
     let toggle = null;
     if (overlay) toggle = (
       <Toggle rx={{collapsed}} onClick={this.handleToggle}>
@@ -234,18 +231,22 @@ class Chatbox extends Component {
     const chatComponents = [];
     let prevPlayerId = null;
     chats.forEach((chat, index) => {
-      const { id, playerId, mine } = chat;
-      if (playerId !== prevPlayerId) {
-        chatComponents.push(
-          <Header key={id + "-header"} rx={{mine}}>
-            {playerNamesById[playerId]}
-          </Header>
-        )
+      const { id, playerId } = chat;
+      const mine = me === playerId;
+      const component = (
+        <Chat key={id} newest={index === chats.length - 1} {...{mine, playerNames}} {...chat} {...rest}/>
+      )
+      if (component) {
+        if (playerId !== prevPlayerId) {
+          chatComponents.push(
+            <Header key={id + "-header"} className="header" rx={{mine}}>
+              {playerNames[playerId]}
+            </Header>
+          )
+        }
+        prevPlayerId = playerId;
+        chatComponents.push(component);
       }
-      prevPlayerId = playerId;
-      chatComponents.push(
-        <Chat key={id} newest={index === chats.length - 1} {...{mine}} {...chat}/>
-      );
     })
     return (
       <Container rx={{overlay, collapsed}} className={className}>

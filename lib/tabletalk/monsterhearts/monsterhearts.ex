@@ -1,16 +1,17 @@
 defmodule Tabletalk.Monsterhearts do
   import Ecto.Query, warn: false
   alias Tabletalk.Repo
+  import Tabletalk.Monsterhearts.View
 
   alias Tabletalk.Monsterhearts.MainCharacter
   alias Tabletalk.Monsterhearts.PlayerSettings
-  alias Tabletalk.Monsterhearts.Chat
   alias Tabletalk.Monsterhearts.Game
   alias Tabletalk.Monsterhearts.Character
   alias Tabletalk.Monsterhearts.Move
   alias Tabletalk.Monsterhearts.Condition
   alias Tabletalk.Monsterhearts.String
   alias Tabletalk.Monsterhearts.Advancement
+  alias Tabletalk.Monsterhearts.Definitions
   alias Tabletalk.Games
 
   defp create_player_settings!(attrs) do
@@ -27,21 +28,6 @@ defmodule Tabletalk.Monsterhearts do
         p
       end
     end)
-  end
-
-  defp list_chats!(game_id) do
-    sq = from c in Chat,
-      join: p in Games.Player, on: p.id == c.player_id,
-      where: p.game_id == ^game_id,
-      order_by: [desc: c.inserted_at],
-      limit: 100
-
-    query = from c in Chat,
-      join: s in subquery(sq), on: s.id == c.id,
-      order_by: [asc: c.inserted_at],
-      preload: [:talk],
-      preload: [:roll]
-    Repo.all(query)
   end
 
   defp list_characters!(game_id) do
@@ -81,17 +67,30 @@ defmodule Tabletalk.Monsterhearts do
 
   def load(game_id, player_id) do
     players = list_players!(game_id) |> make_player_if_nil()
-    result = %{
-      players: players,
+    events = Games.list_chats!(game_id)
+    characters = list_characters!(game_id)
+    strings = list_strings!(game_id)
+    game = get_game!(game_id)
+    %{
+      charactersById: characters |> by_id,
+      characters: characters |> ids,
+      playersById: players |> by_id,
+      players: players |> ids,
       me: player_id,
-      chats: list_chats!(game_id),
-      characters: list_characters!(game_id),
-      strings: list_strings!(game_id),
-      game: get_game!(game_id)
+      eventsById: events |> by_id,
+      eventIds: events |> ids,
+      strings: strings |> ids,
+      stringsById: strings |> by_id,
+      definitions: %{
+        movesByName: Definitions.moves_by_name,
+        advancementsById: Definitions.advancements_by_id,
+        playbooks: Definitions.playbooks,
+        playbooksByName: Definitions.playbooks_by_name,
+        seasonAdvances: Definitions.season_advances,
+        growingUpMoves: Definitions.growing_up_moves
+      }
     }
-    result
   end
-
   def get_character!(id) do
     Character
     |> Repo.get!(id)
@@ -187,13 +186,5 @@ defmodule Tabletalk.Monsterhearts do
     string
     |> String.changeset(attrs)
     |> Repo.update!()
-  end
-
-  def create_chat!(attrs \\ %{}) do
-    %Chat{}
-    |> Chat.changeset(attrs)
-    |> Repo.insert!()
-    |> Repo.preload(:talk)
-    |> Repo.preload(:roll)
   end
 end
