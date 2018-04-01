@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { LOAD } from './actions';
 import update from 'immutability-helper';
-import { socketActions, slowSocketActions } from './socketActions';
+import { socketActions, slowSocketActions } from '../socketActions';
 
 const MAIN_CREATE = "MAIN_CREATE";
 const SIDE_CREATE = "SIDE_CREATE";
@@ -55,6 +55,11 @@ export const actions = {
     createCharacter: [MAIN_CREATE, "playbook"],
     createSideCharacter: [SIDE_CREATE, "name", "notes"]
   })
+}
+
+export const messages = {
+  [HARM_INCREMENT]: "{character:id} suffered a harm.",
+  [HARM_DECREMENT]: "{character:id} healed a harm." 
 }
 
 export const selectors = {

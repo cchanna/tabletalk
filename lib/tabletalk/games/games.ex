@@ -9,6 +9,7 @@ defmodule Tabletalk.Games do
   alias Tabletalk.Games.Game
   alias Tabletalk.Games.Player
   alias Tabletalk.Games.Permission
+  alias Tabletalk.Games.Chat
   
   require Logger
 
@@ -68,7 +69,29 @@ defmodule Tabletalk.Games do
   #   |> Game.changeset(attrs)
   #   |> Repo.insert()
   # end
-  
+
+  def create_chat!(attrs \\ %{}) do
+    %Chat{}
+    |> Chat.changeset(attrs)
+    |> Repo.insert!()
+  end
+
+  def list_chats_query(game_id) do
+    sq = from c in Chat,
+      join: p in Player, on: p.id == c.player_id,
+      where: p.game_id == ^game_id,
+      order_by: [desc: c.inserted_at],
+      limit: 100
+
+    from c in Chat,
+      join: s in subquery(sq), on: s.id == c.id,
+      order_by: [asc: c.inserted_at]
+  end
+
+  def list_chats!(game_id) do
+    list_chats_query(game_id)
+    |> Repo.all()
+  end
 
   def new_game(user_id, params = %{}) do
     {%{"player" => player_name}, game} = Map.split(params, ["player"]) 
@@ -101,7 +124,7 @@ defmodule Tabletalk.Games do
     with :ok <- check_already_joined(game),
          :ok <- check_max_players(game),
          {:ok, player} <- create_player(%{"name" => player_name, "admin" => false, "game_id" => game.id, "user_id" => user_id}),
-         do: {:ok, game_from_player(player)}
+         do: {:ok, game_from_player(player), player}
   end
 
   # defp update_game(%Game{} = game, attrs) do

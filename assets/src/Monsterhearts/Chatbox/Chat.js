@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 import rx from 'resplendence'
+import { monsterheartsMessages } from 'state';
   
 rx`
 @import '~common/styles';
@@ -76,25 +77,6 @@ const RollResult = rx('div')`
   }
 `
 
-const convertLog = (text, playersById) => {
-  const regex = /{(.+?):(\d+)}/g;
-  const players = [];
-  let m = regex.exec(text);
-  while (m !== null) {
-    if (m.index === regex.lastIndex) {
-      regex.lastIndex++;
-    }
-    if (m[1] === "player" && !players.includes(m[2])) {
-      players.push(m[2]);
-    }
-    m = regex.exec(text);
-  }
-  players.forEach(id => {
-    text = text.replace(`{player:${id}}`, playersById[id].name);
-  })
-  return text;
-}
-
 const makeBonusString = bonus => {
   if (bonus >= 0) return "+ " + bonus; 
   else return "− " + (-bonus);
@@ -102,61 +84,67 @@ const makeBonusString = bonus => {
 
 export const chatProperties = {
   insertedAt: string.isRequired,
-  talk: shape({
-    text: string.isRequired,
-    isLog: bool.isRequired
-  }),
-  roll: shape({
-    dice: arrayOf(number).isRequired,
-    bonus: number.isRequired
-  }),
-  mine: bool.isRequired,
+  data: object.isRequired,
+  playerId: number.isRequired,
 }
 
 class Chat extends Component {
   static propTypes = {
     ...chatProperties,
-    playersById: object.isRequired,
-    newest: bool.isRequired
+    newest: bool.isRequired,
+    mine: bool.isRequired,
+    playerNames: object,
+    characterNames: object,
   }
   
   render() {
-    const { talk, roll, mine, newest, playersById } = this.props;
+    const { data, mine, newest, characterNames } = this.props;
 
-    if (talk) {
-      if (talk.isLog) {
+    if (data.type === "MONSTERHEARTS_CHAT") {
+      if (data.die1) {
+        const bonusString = makeBonusString(data.bonus);
+        const result = data.die1 + data.die2 + data.bonus;
         return (
-          <Log rx={{mine}}>{convertLog(talk.text, playersById)}</Log>
-        )
+          <Roll>
+            <RollInfo>
+              <Dice>{data.die1}{data.die2}</Dice>
+              <Bonus>{bonusString}</Bonus>
+            </RollInfo>
+            <RollResult rx={{newest, strong: result >= 10, weak: (result >= 7 && result <= 9), miss: result <= 6}}>
+              {result}
+            </RollResult>
+          </Roll>
+        );
+      }
+      else if (data.text) {
+        if (data.isLog) {
+          return (
+            <Log rx={{mine}}>{data.text}</Log>
+          )
+        }
+        else {
+          const paragraphs = data.text
+            .trim()
+            .split("\n")
+            .map((paragraph, i) => <P key={i}>{paragraph}</P>);
+          return (
+            <Talk rx={{mine}}>{paragraphs}</Talk>
+          )
+        }
       }
       else {
-        const paragraphs = talk.text
-          .trim()
-          .split("\n")
-          .map((paragraph, i) => <P key={i}>{paragraph}</P>);
-        return (
-          <Talk rx={{mine}}>{paragraphs}</Talk>
-        )
+        return null;
       }
     }
-    else if (roll) {
-      const bonusString = makeBonusString(roll.bonus);
-      const result = roll.dice[0] + roll.dice[1] + roll.bonus;
-      return (
-        <Roll>
-          <RollInfo>
-            <Dice>{roll.dice[0]}{roll.dice[1]}</Dice>
-            <Bonus>{bonusString}</Bonus>
-          </RollInfo>
-          <RollResult rx={{newest, strong: result >= 10, weak: (result >= 7 && result <= 9), miss: result <= 6}}>
-            {result}
-          </RollResult>
-        </Roll>
-      );
-    }
     else {
-      return null;
+      const unformatted = monsterheartsMessages[data.type];
+      if (unformatted) {
+        const formatted = unformatted
+          .replace(/{character:(.*?)}/g, (_m, p1) => characterNames[data[p1]]);
+        return <Log rx={{mine}}>{formatted}</Log>
+      }
     }
+    return null;
   }
 }
 

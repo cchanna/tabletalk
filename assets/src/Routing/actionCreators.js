@@ -2,7 +2,7 @@ import { fromRouting } from 'state';
 
 const getFullPath = (path, depth, state) => {
   if (depth === 0) return path;
-  const { here } = fromRouting.getPath(state, depth);
+  const here = fromRouting.getHere(state, depth);
   return [...here, ...path];
 }
 

@@ -1,15 +1,15 @@
 import { combineReducers } from "redux";
 import { prefixedActions, prefixedReducer } from 'redux-state-tools';
+import prefixedMessages from 'utils/prefixedMessages';
 import * as characters from './characters';
 import * as strings from './strings';
-import update from 'immutability-helper';
 import * as mainSelectors from './selectors';
 import { LOAD } from './actions';
-import { slowSocketActions } from './socketActions';
+import { slowSocketActions } from '../socketActions';
+import * as chatbox from '../chatbox';
 
 export const name = "monsterhearts";
 
-const CHATBOX_SET_COLLAPSED = "CHATBOX_SET_COLLAPSED";
 
 const CHAT = "CHAT";
 
@@ -19,18 +19,28 @@ export const actions = {
     "players", "playersById", "chats", "chatsById", "me",
     "characters", "charactersById", "definitions", "stringsById", "strings", "movesById"
   ],
-  setChatboxCollapsed: [CHATBOX_SET_COLLAPSED, "collapsed"],
-  chat: [CHAT, "id", "insertedAt", "playerId", "talk", "roll"],
+  chat: [CHAT, "id", "insertedAt", "playerId", "data"],
   ...slowSocketActions({
     sendChat: [CHAT, "text"],
   }),
+  ...prefixedActions("CHATBOX", chatbox.actions),
   ...prefixedActions("STRING", strings.actions),
   ...prefixedActions("CHARACTER", characters.actions)
 };
 
+
+export const types = {
+  LOAD
+};
+
+export const messages = {
+  ...prefixedMessages("CHARACTER", characters.messages)
+}
+
 export const reducer = combineReducers({
   characters: prefixedReducer("CHARACTER", characters.reducer, [LOAD]),
   strings: prefixedReducer("STRING", strings.reducer, [LOAD]),
+  chatbox: prefixedReducer("CHATBOX", chatbox.reducer),
   loaded: (state = false, action) => {
     switch(action.type) {
       case LOAD:
@@ -39,14 +49,6 @@ export const reducer = combineReducers({
         return false;
       default:
         return state;
-    }
-  },
-  chatboxCollapsed: (state = true, action) => {
-    switch(action.type) {
-      case CHATBOX_SET_COLLAPSED:
-        return action.collapsed;
-      default:
-        return state;  
     }
   },
   players: (state = null, action) => {
@@ -63,30 +65,13 @@ export const reducer = combineReducers({
       default: return state;
     }
   },
-  chats: (state = null, action) => {
+  chats: (state = [], action) => {
     switch(action.type) {
-      case LOAD:
-        return action.chats;
-      case CHAT:
-        return [...state, action.id];
       default: return state;
     }
   },
-  chatsById: (state = null, action) => {
+  chatsById: (state = {}, action) => {
     switch(action.type) {
-      case LOAD:
-        return action.chatsById;
-      case CHAT:
-        return update(state, {
-          [action.id]: {
-            $set: {
-              insertedAt: action.insertedAt,
-              playerId: action.playerId,
-              talk: action.talk,
-              roll: action.roll
-            }
-          }
-        })
       default: return state;
     }
   },
@@ -97,7 +82,6 @@ export const reducer = combineReducers({
       default: return state;
     }
   },
-  
   definitions: (state = null, action) => {
     switch(action.type) {
       case LOAD:
@@ -110,5 +94,5 @@ export const reducer = combineReducers({
 
 
 export const selectors = {
-  ...mainSelectors,
+  ...mainSelectors
 }

@@ -24,7 +24,7 @@ export const login = () => (dispatch, getState) => {
 }
 
 export const signout = () => (dispatch, getState) => {
-  const loggedInWithGoogle = fromAuth.getLoggedInWithGoogle(getState());
+  const loggedInWithGoogle = fromAuth.getIsLoggedInWithGoogle(getState());
   dispatch(logout());
   if (loggedInWithGoogle && window.gapi) {
     window.gapi.auth2.getAuthInstance().signOut();

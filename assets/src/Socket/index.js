@@ -1,5 +1,5 @@
 import { connect as reduxConnect  } from 'react-redux'
-import SocketManager from './SocketManager';
+import SocketManager from './Socket';
 import { fromAuth } from 'state';
 
 import { getPath } from 'Routing';
@@ -14,6 +14,7 @@ const {
   answer, 
   answerSlow, 
   send, 
+  handle
 } = forSocket;
 
 const mapStateToProps = (state) => {
@@ -23,7 +24,7 @@ const mapStateToProps = (state) => {
     slug, jwt,
     actionQueue: fromSocket.getActionQueue(state), 
     slowActionQueue: fromSocket.getSlowActionQueue(state), 
-    actionsById: fromSocket.getActionsById(state), 
+    actionsById: fromSocket.getQueuedActionsById(state), 
     slowActionsById: fromSocket.getSlowActionsById(state)
   };
 };
@@ -37,7 +38,8 @@ const mapDispatchToProps = {
   disconnect, 
   answer, 
   answerSlow, 
-  send
+  send,
+  handle
 };
 
 export default reduxConnect(mapStateToProps, mapDispatchToProps)(SocketManager);

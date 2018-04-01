@@ -1,7 +1,8 @@
 import { selectors as characterSelectors } from './characters';
 import { selectors as stringSelectors } from './strings';
+import { selectors as chatboxSelectors } from '../chatbox';
 import { prefixedSelectors } from 'redux-state-tools';
-
+import mapObject from 'utils/mapObject';
 
 const fromCharacters = prefixedSelectors('characters', characterSelectors);
 const { getCharactersById, getCharacterIds } = fromCharacters;
@@ -9,10 +10,12 @@ export { getCharactersById, getCharacterIds };
 
 const fromStrings = prefixedSelectors('strings', stringSelectors);
 
+const { getIsChatboxCollapsed } = prefixedSelectors('chatbox', chatboxSelectors);
+export { getIsChatboxCollapsed };
 
 export const getMe = state => state.me;
-export const getPlayersById = state => state.playersById;
-const getPlayer = (state, id) => getPlayersById(state)[id];
+export const getPlayerNamesById = state => mapObject(state.playersById, player => player.name);
+const getPlayer = (state, id) => state.playersById[id];
 
 const characterName = character => character.name || `The\u00A0${character.mainCharacter.playbook}`;
 
@@ -33,13 +36,29 @@ export const getSideCharacterIds = state => {
   return characterIds.filter(id => !charactersById[id].mainCharacter);
 }
 
+export const getCharacterNames = state => {
+  const result = {};
+  getCharacterIds(state)
+    .forEach(id => {
+      const { name, mainCharacter } = getCharacter(state, id);
+      if (name) {
+        result[id] = name;
+      }
+      else if (mainCharacter) {
+        result[id] = "The " + mainCharacter.playbook;
+      }
+    });
+  return result;
+}
+
 export const getAmIGM = state => {
   const me = getMe(state);
   return getPlayer(state, me).isGM;
 }
 
-export const getReadOnly = (state, id) => {
+export const getReadOnly = (state, id = null) => {
   if (getAmIGM(state)) return false;
+  if (!id) return true;
   const me = getMe(state);
   const { mainCharacter } = getCharacter(state, id);
   return (!mainCharacter || mainCharacter.playerId !== me);
@@ -101,6 +120,12 @@ export const getIsSeasonFinale = state => {
     );
 }
 
+export const getCanGetSeasonAdvancements = (state, id) => {
+  const { mainCharacter } = getCharacter(state, id);
+  const { advancements } = mainCharacter;
+  return advancements.length >= 5 || getIsSeasonFinale(state);
+}
+
 export const getCharacterTabs = (state, {retired = false} = {}) => {
   const characters = getCharacterIds(state);
   const me = getMe(state);
@@ -157,13 +182,10 @@ export const getCanCustomizeDarkestSelf = (state, id) => {
 }
 
 export const getIsLoaded = state => state.loaded;
-export const getIsChatboxCollapsed = state => state.chatboxCollapsed;
 export const getChats = state => {
   const chatsById = state.chatsById;
-  const me = state.me;
   return state.chats.map(id => ({
     id,
-    mine: chatsById[id].playerId === me,
     ...chatsById[id]
   }));
 }

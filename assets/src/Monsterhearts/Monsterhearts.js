@@ -5,7 +5,7 @@ import rx from 'resplendence'
 import TabPicker from './TabPicker';
 import Chatbox from './Chatbox';
 import Spinner from 'common/components/Spinner';
-import SocketManager from './SocketManager';
+import SocketManager from 'Socket';
 
 rx`
 @import '~Monsterhearts/colors';
@@ -36,14 +36,14 @@ const Content = rx('div')`
   box-sizing: border-box;
   z-index: 1;
   &.overlay {
-    padding-top: 32px;
+    padding-top: 36px;
   }
 `
 
 class Monsterhearts extends Component {
   static propTypes = {
     sizes: arrayOf(string).isRequired,
-    loaded: bool.isRequired,
+    loaded: bool,
     connected: bool.isRequired,
     depth: number.isRequired,
     load: func.isRequired

@@ -2,7 +2,7 @@ defmodule TabletalkWeb.GameSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "monsterhearts:*", TabletalkWeb.MonsterheartsChannel
+  channel "play:*", TabletalkWeb.PlayChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

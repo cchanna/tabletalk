@@ -5,8 +5,15 @@ import * as routing from './routing';
 import * as socket from './socket';
 import * as status from './status';
 import * as monsterhearts from './monsterhearts';
-import { prefixedReducer, prefixedSelectors, prefixedActionCreators } from 'redux-state-tools';
-
+import * as swords from './swords';
+import { 
+  prefixedReducer, 
+  prefixedSelectors, 
+  prefixedTypes, 
+  prefixedActionCreators,  
+} from 'redux-state-tools';
+import { pagedReducer, pagedSelectors } from 'utils/pagedReducer';
+import prefixedMessages from 'utils/prefixedMessages';
 
 export const forAuth = prefixedActionCreators("AUTH", auth.actions);
 export const fromAuth = prefixedSelectors("auth", auth.selectors);
@@ -24,8 +31,14 @@ export const forStatus = prefixedActionCreators("STATUS", status.actions);
 export const fromStatus = prefixedSelectors("status", status.selectors);
 
 
+export const monsterheartsTypes = prefixedTypes("MONSTERHEARTS", monsterhearts.types);
+export const monsterheartsMessages = prefixedMessages("MONSTERHEARTS", monsterhearts.messages);
 export const forMonsterhearts = prefixedActionCreators("MONSTERHEARTS", monsterhearts.actions);
-export const fromMonsterhearts = prefixedSelectors("monsterhearts", monsterhearts.selectors);
+export const fromMonsterhearts = pagedSelectors("game", monsterheartsTypes.LOAD, monsterhearts.selectors);
+
+export const swordsMessages = prefixedMessages("SWORDS", swords.messages);
+export const forSwords = prefixedActionCreators("SWORDS", swords.actions);
+export const fromSwords = pagedSelectors("game", "SWORDS_LOAD", swords.selectors);
 
 export const reducer = combineReducers({
   auth: prefixedReducer("AUTH", auth.reducer),
@@ -33,5 +46,8 @@ export const reducer = combineReducers({
   games: prefixedReducer("GAMES", games.reducer), 
   socket: prefixedReducer("SOCKET", socket.reducer),
   status: prefixedReducer("STATUS", status.reducer), 
-  monsterhearts: prefixedReducer("MONSTERHEARTS", monsterhearts.reducer, ["SOCKET_DISCONNECT"])
+  game: pagedReducer({
+    [monsterheartsTypes.LOAD]: prefixedReducer("MONSTERHEARTS", monsterhearts.reducer, ["SOCKET_DISCONNECT"]),
+    "SWORDS_LOAD": prefixedReducer("SWORDS", swords.reducer)
+  }),
 });

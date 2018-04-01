@@ -100,7 +100,7 @@ class MainCharacter extends Component {
     replace: func.isRequired,
     goBack: func.isRequired
   }
-  
+
   static pages = [
     {
       path: "edit",

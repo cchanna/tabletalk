@@ -22,22 +22,19 @@ const randomString = (length, chars) => {
 }
 const randomUniqueId = () => randomString(36, "abcdefghijklmnopqrstuvwxyz0123456789")
 
-const socketMiddleware = makeMiddleware("socket", (actionIn, {dispatch, next}) => {
-  const action = {
+const socketMiddleware = makeMiddleware("socket", (actionIn, {dispatch, getState, next}) => {
+  const actionOut = {
     ...actionIn,
-    uniqueId: randomUniqueId()
+    playerId: getState().game.state.me
   }
-  dispatch(forSocket.queueAction({action}));
-  return next(action);
+  dispatch(forSocket.queueAction({tempId: randomUniqueId(), data: actionIn}));
+  return next(actionOut);
 });
 
-const slowSocketMiddleware = makeMiddleware("slowsocket", (actionIn, {dispatch, next}) => {
-  const action = {
-    ...actionIn,
-    uniqueId: randomUniqueId()
-  }
-  next(forSocket.queueSlowAction({action}));
-  return action.uniqueId;
+const slowSocketMiddleware = makeMiddleware("slowsocket", (actionIn, {next}) => {
+  const tempId = randomUniqueId();
+  next(forSocket.queueSlowAction({tempId, data: actionIn}));
+  return tempId;
 })
 
 
