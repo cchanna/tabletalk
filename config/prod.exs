@@ -18,7 +18,6 @@ config :tabletalk, TabletalkWeb.Endpoint,
   url: [host: "tabletalk.zone", port: 80], # This is critical for ensuring web-sockets properly authorize.
   cache_static_manifest: "priv/static/manifest.json",
   server: true,
-  force_ssl: [hsts: true],
   secret_key_base: "{$SECRET_KEY_BASE}"
 
 # Do not print debug messages in production
