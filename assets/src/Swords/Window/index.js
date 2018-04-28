@@ -9,7 +9,7 @@ const {
 } = fromRouting;
 const {
   getAreColorsSet,
-  getTone,
+  getOvertone,
   getDice,
   getMe,
   getDiceHolder
@@ -19,7 +19,7 @@ const mapStateToProps = (state, {depth}) => ({
   depth,
   next: getNext(state, depth),
   areColorsSet: getAreColorsSet(state),
-  tone: getTone(state),
+  tone: getOvertone(state),
   amHoldingDice: !getDice(state) && (getDiceHolder(state) === getMe(state))
 })
 

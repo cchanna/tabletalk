@@ -6,7 +6,6 @@ defmodule Tabletalk.Monsterhearts.View do
   alias Tabletalk.Monsterhearts.MainCharacter
   alias Tabletalk.Games.Chat
   alias Tabletalk.Monsterhearts.String
-  alias Tabletalk.Monsterhearts.Definitions
 
   require Logger
   

@@ -57,22 +57,3 @@
     }
   }
 }
-
-@mixin columns($count) {
-  -webkit-columns: $count;
-  -moz-columns: $count;
-  columns: $count;
-}
-
-@mixin break-inside($value) {
-  -webkit-column-break-inside: $value;
-            page-break-inside: $value;
-                 break-inside: $value;
-}
-
-@mixin column-width($value) {
-  box-sizing: border-box;
-  -webkit-column-width: $value; /* Chrome, Safari, Opera */
-  -moz-column-width: $value; /* Firefox */
-  column-width: $value;
-}

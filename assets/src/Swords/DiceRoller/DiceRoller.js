@@ -11,7 +11,7 @@ rx`
 
 const Container = rx('div')`
   position: absolute;
-  z-index: 2;
+  z-index: 4;
   top: calc(100% - 160px);
   transition: 500ms top ease-in-out;
   &.mine {

@@ -23,7 +23,7 @@ defmodule TabletalkWeb.PlayChannel do
     nil
   end
 
-  defp data_for(result, action, player_id) do
+  defp data_for(result, action) do
     case result do
       {:ok} -> action
       {:ok, data} -> action |> Map.merge(data)
@@ -31,7 +31,7 @@ defmodule TabletalkWeb.PlayChannel do
     end
   end
 
-  defp trim_regex(kind, type) do
+  defp trim_regex(kind) do
     case kind do
       0 -> ~r/^monsterhearts_/
       1 -> ~r/^swords_/
@@ -48,9 +48,9 @@ defmodule TabletalkWeb.PlayChannel do
   end
 
   def handle_in("dispatch", event = %{"data" => %{"type" => type} = action}, socket = %{assigns: %{player_id: player_id, game_id: game_id, kind: kind}}) do
-    trimmed_type = type |> String.downcase() |> String.replace(trim_regex(kind, type), "")
+    trimmed_type = type |> String.downcase() |> String.replace(trim_regex(kind), "")
     data = dispatch(kind, trimmed_type, action, player_id, game_id)
-    |> data_for(action, player_id)
+    |> data_for(action)
     if data !== nil do
       chat = Games.create_chat!(%{
         "player_id" => player_id,

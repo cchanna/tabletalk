@@ -1,5 +1,5 @@
 defmodule Tabletalk.View do
-  defmacro __using__(opts) do
+  defmacro __using__(_opts) do
     quote do
       def unquote(:to_json)(nil) do
         nil

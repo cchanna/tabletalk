@@ -5,22 +5,20 @@ import { fromSwords, forSwords } from 'state';
 import { goTo } from 'Routing'
 
 const { 
-  getTone,
+  getOvertone,
   getMe,
-  getOverplayerId,
-  getRoguePlayerIds
+  getOverplayerId
 } = fromSwords;
 const {
-  flipTone
+  flipOvertone
 } = forSwords;
 
 const mapStateToProps = (state, {colorPicker, depth}) => ({
   colorPicker, depth,
-  tone: getTone(state),
-  roguePlayerIds: getRoguePlayerIds(state),
+  tone: getOvertone(state),
   amOverplayer: getMe(state) === getOverplayerId(state)
 })
 
-const mapDispatchToProps = {flipTone, goTo}
+const mapDispatchToProps = {flipOvertone, goTo}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

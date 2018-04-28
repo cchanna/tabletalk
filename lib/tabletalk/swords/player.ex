@@ -8,7 +8,6 @@ defmodule Tabletalk.Swords.Player do
   schema "swords_players" do
     belongs_to :player, Games.Player
     belongs_to :character, Character
-    field :tone, :boolean
 
     has_many :characters, Character
 
@@ -18,7 +17,7 @@ defmodule Tabletalk.Swords.Player do
   @doc false
   def changeset(%Player{} = model, attrs) do
     model
-    |> cast(attrs, [:player_id, :tone, :character_id])
+    |> cast(attrs, [:player_id, :character_id])
     |> cast_assoc(:character)
     |> validate_required([:player_id])
   end

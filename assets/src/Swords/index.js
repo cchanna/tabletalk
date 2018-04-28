@@ -12,7 +12,7 @@ const {
   getJovialColor,
   getGlumText,
   getJovialText,
-  getTone
+  getOvertone
 } = fromSwords;
 const {
   getIsConnected
@@ -29,7 +29,7 @@ const mapStateToProps = (state, {depth}) => ({
   jovialColor: getJovialColor(state),
   glumText: getGlumText(state),
   jovialText: getJovialText(state),
-  tone: getTone(state)
+  tone: getOvertone(state)
 });
 
 const mapDispatchToProps = {load, resolveRoll}

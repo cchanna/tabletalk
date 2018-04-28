@@ -1,7 +1,7 @@
 import { fromSwords, forSwords } from 'state';
 
 const { 
-  getTone,
+  getOvertone,
   getOverplayerId
 } = fromSwords;
 const { setTone } = forSwords;
@@ -16,7 +16,7 @@ const handleEvent = event => (dispatch, getState) => {
       }
       else {
         const overplayer = getOverplayerId(state);
-        const overtone = getTone(state);
+        const overtone = getOvertone(state);
         dispatch(setTone({playerId: overplayer, tone: !overtone}));
         if (overplayer !== playerId) {
           dispatch(setTone({playerId, tone: !overtone}));

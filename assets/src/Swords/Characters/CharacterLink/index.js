@@ -4,15 +4,16 @@ import CharacterLink from './CharacterLink';
 import { fromSwords } from 'state';
 
 const { 
-  getTone,
+  getOvertone,
+  getDiceTone,
   getCharacterName
 } = fromSwords;
 
 const mapStateToProps = (state, {id, depth}) => ({
   id, depth,
-  tone: getTone(state, id),
+  tone: getDiceTone(state),
   name: getCharacterName(state, id),
-  overtone: getTone(state)
+  overtone: getOvertone(state)
 })
 
 const mapDispatchToProps = {}

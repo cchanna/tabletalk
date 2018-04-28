@@ -4,26 +4,50 @@ defmodule Tabletalk.Swords.View do
   alias Tabletalk.Games
   alias Games.Chat
   alias Tabletalk.Swords.{
-    Game,
     Player,
-    Character
+    Character,
+    Motif,
+    Thread
   }
 
-  def to_json(%Game{} = game) do
+  def to_json(%Motif{} = motif) do
+    %{
+      items: [motif.item1, motif.item2, motif.item3],
+      reincorporatedBy: motif.reincorporated_by_id
+    }
+  end
+
+  def to_json(%Thread{} = thread) do
+    %{
+      id: thread.id,
+      text: thread.text,
+      reincorporatedBy: thread.reincorporated_by_id
+    }
   end
 
   def to_json(%Player{} = player) do
     %{
       id: player.player_id,
       name: player.player.name,
-      tone: player.tone,
       character: player.character_id
     }
   end
 
   def to_json(%Character{} = character) do
     %{
-      id: character.id
+      id: character.id,
+      playerId: character.player_id,
+      eidolon: character.eidolon,
+      eidolonIsImage: character.eidolon_is_image,
+      name: character.name,
+      allThatMatters: character.all_that_matters,
+      jovialFeat: character.jovial_feat,
+      jovialFeatUsed: character.jovial_feat_used,
+      glumFeat: character.glum_feat,
+      glumFeatUsed: character.glum_feat_used,
+      trick: character.trick,
+      trickUsed: character.trick_used,
+      notes: character.notes
     }
   end
 

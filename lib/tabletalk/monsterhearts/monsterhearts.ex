@@ -5,7 +5,6 @@ defmodule Tabletalk.Monsterhearts do
 
   alias Tabletalk.Monsterhearts.MainCharacter
   alias Tabletalk.Monsterhearts.PlayerSettings
-  alias Tabletalk.Monsterhearts.Game
   alias Tabletalk.Monsterhearts.Character
   alias Tabletalk.Monsterhearts.Move
   alias Tabletalk.Monsterhearts.Condition
@@ -70,7 +69,6 @@ defmodule Tabletalk.Monsterhearts do
     events = Games.list_chats!(game_id)
     characters = list_characters!(game_id)
     strings = list_strings!(game_id)
-    game = get_game!(game_id)
     %{
       charactersById: characters |> by_id,
       characters: characters |> ids,
@@ -95,17 +93,6 @@ defmodule Tabletalk.Monsterhearts do
     Character
     |> Repo.get!(id)
     |> Repo.preload([:conditions, :main_character, [main_character: [:moves, :advancements]]])
-  end
-
-  defp create_game!(attrs) do
-    %Game{}
-    |> Game.changeset(attrs)
-    |> Repo.insert!()
-  end
-
-  defp get_game!(game_id) do
-    Repo.get_by(Game, game_id: game_id) || 
-    create_game!(%{"game_id" => game_id})
   end
 
   def update_main_character!(%MainCharacter{} = main_character, attrs) do

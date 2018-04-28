@@ -127,6 +127,7 @@
           ]
         }
       ],
+      "no-constant-condition": "warn",
       "react/no-unescaped-entities": 0
     }
   }

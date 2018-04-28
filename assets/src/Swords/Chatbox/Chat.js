@@ -100,8 +100,16 @@ class Chat extends Component {
       default: {
         const unformatted = swordsMessages[data.type];
         if (unformatted) {
-          const formatted = unformatted
-            .replace(/{player:(.*?)}/g, (_m, p1) => playerNames[data[p1]]);
+          let formatted;
+          if (typeof(unformatted) === "function") {
+            formatted = unformatted(data);
+          }
+          else {
+            formatted = unformatted
+              .replace(/{player:(.*?)}/g, (_m, p1) => playerNames[data[p1]])
+              .replace(/{(.*?) \? (.*?) : (.*)}/g, (_m, key, t, f) => data[key] ? t : f)
+              .replace(/{(.+?)}/g, (_m, p1) => data[p1])
+          }
           return (
             <Log>
               {formatted}

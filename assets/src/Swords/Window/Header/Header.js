@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 import rx from 'resplendence'
-// import CharacterLink from './CharacterLink.js';
   
 rx`
 @import '~Swords/styles';
@@ -15,8 +14,9 @@ const Container = rx('div')`
   width: 100%;
   padding: 10px;
   box-sizing: border-box;
-  position: relative;
+  position: absolute;
   top: 0;
+  flex: 0 0 auto;
   height: 50px;
   transition-property: top, height, padding;
   transition-duration: 300ms;
@@ -121,9 +121,8 @@ class Header extends Component {
     hide: bool.isRequired,
     depth: number.isRequired,
     amOverplayer: bool.isRequired,
-    roguePlayerIds: arrayOf(number).isRequired,
     goTo: func.isRequired,
-    flipTone: func.isRequired
+    flipOvertone: func.isRequired
   }
 
   goToColors = () => {
@@ -132,17 +131,12 @@ class Header extends Component {
   }
   
   render() {
-    const { tone, hide, amOverplayer, /*roguePlayerIds, depth,*/ flipTone } = this.props; 
+    const { tone, hide, amOverplayer, flipOvertone } = this.props; 
     return (
       <Container rx={{hide}}>
         <Section>
-          {amOverplayer ? <SwitchTone rx={{glum: tone}} onClick={flipTone}/> : null}
+          {amOverplayer ? <SwitchTone rx={{glum: tone}} onClick={flipOvertone}/> : null}
         </Section>
-        {/* <Section>
-          {roguePlayerIds.map(id => (
-            <CharacterLink key={id} id={id} depth={depth}/>
-          ))}
-        </Section> */}
         <Colors onClick={this.goToColors}>b</Colors>
       </Container>
     );

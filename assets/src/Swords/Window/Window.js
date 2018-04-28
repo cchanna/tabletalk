@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 import rx from 'resplendence'
-import { Route } from 'Routing';
 
 import Colors from '../Colors';
 import DiceRoller from '../DiceRoller';
+import Characters from '../Characters';
+import Motifs from '../Motifs';
+import Threads from '../Threads';
 import Header from './Header';
 
 rx`
@@ -38,12 +40,17 @@ const Cover = rx('div')`
   }
 `
 
-const pages = [
-  {
-    path: "colors",
-    component: Colors
-  }
-]
+const Body = rx('div')`
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  padding: 50px 0 250px 0;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+`
+
+
 
 class Window extends Component {
   static propTypes = {
@@ -75,7 +82,15 @@ class Window extends Component {
         <Cover rx={{show: amHoldingDice}}/>
         <Header hide={isColors} depth={depth}/>
         {isColors ? null : <DiceRoller/>}
-        <Route depth={depth} pages={pages}/>
+        {isColors ? (
+          <Colors depth={depth + 1}/>
+        ) : (
+          <Body>
+            <Motifs />
+            <Threads/>
+            <Characters depth={depth}/>
+          </Body>
+        )}
       </Container>
     );
   }

@@ -5,7 +5,7 @@ import { fromSwords, forSwords } from 'state';
 
 const {
   getDice,
-  getTone,
+  getDiceTone,
   getDiceHolder,
   getPlayerIds,
   getMe,
@@ -27,7 +27,7 @@ const mapStateToProps = (state) => {
   return {
     playerNames,
     dice: getDice(state),
-    tone: getTone(state, diceHolder),
+    tone: getDiceTone(state),
     mine: me === diceHolder,
     amOverplayer: me === getOverplayerId(state),
     holder: playerNames[diceHolder],

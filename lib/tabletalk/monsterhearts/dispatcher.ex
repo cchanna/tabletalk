@@ -1,21 +1,11 @@
 defmodule Tabletalk.Monsterhearts.Dispatcher do
   alias Tabletalk.Monsterhearts
-  alias Tabletalk.Monsterhearts.Character
   alias Tabletalk.Monsterhearts.Definitions
-  alias Tabletalk.Games
 
   require Logger
   import Tabletalk.Monsterhearts.View 
 
-  defp bonus_string(value) do
-    if (value >= 0) do
-      "+" <> to_string(value)
-    else
-      "−" <> to_string(-value)
-    end
-  end
-
-  defp roll(bonus, player_id) do
+  defp roll(bonus) do
     %{
       "die1" => :rand.uniform(6),
       "die2" => :rand.uniform(6),
@@ -23,19 +13,19 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     }
   end
 
-  defp talk(text, player_id) do
+  defp talk(text) do
     %{
       "text" => text
     }
   end
 
-  defp make_chat(text, player_id) do
+  defp make_chat(text) do
     regex = ~r/^\s*\/(r|roll)\s*(?<symbol>\+|-|−)\s*(?<value>\d+)\s*$/ 
     case Regex.named_captures(regex, text) do
-      %{"symbol" => "+", "value" => value} -> roll(String.to_integer(value), player_id)
-      %{"symbol" => "-", "value" => value} -> roll(-String.to_integer(value), player_id)
-      %{"symbol" => "−", "value" => value} -> roll(-String.to_integer(value), player_id)
-      nil -> talk(text, player_id)
+      %{"symbol" => "+", "value" => value} -> roll(String.to_integer(value))
+      %{"symbol" => "-", "value" => value} -> roll(-String.to_integer(value))
+      %{"symbol" => "−", "value" => value} -> roll(-String.to_integer(value))
+      nil -> talk(text)
     end
   end
 
@@ -55,7 +45,6 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
 
   def dispatch("character_name_set", %{"id" => id, "value" => name}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
-    old_name = character.name
     Monsterhearts.update_character!(character, %{"name" => name})
     {:ok}
   end
@@ -80,7 +69,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
 
   def dispatch("character_stats_set", args = %{"id" => id}, _player_id, _game_id) do
     character = Monsterhearts.get_character!(id)
-    main = Monsterhearts.update_main_character!(character.main_character, Map.take(args, ["hot", "cold", "volatile", "dark"]))
+    Monsterhearts.update_main_character!(character.main_character, Map.take(args, ["hot", "cold", "volatile", "dark"]))
     {:ok}
   end
 
@@ -105,8 +94,6 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
   end
   
   def dispatch("string_create", %{"from" => from, "to" => to}, _player_id, _game_id) do
-    c_from = Monsterhearts.get_character!(from)
-    c_to = Monsterhearts.get_character!(to)
     string = Monsterhearts.create_string!(%{
       "from_id" => from,
       "to_id" => to,
@@ -120,8 +107,6 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     Monsterhearts.update_string!(string, %{
       count: string.count + 1
     })
-    c_from = Monsterhearts.get_character!(string.from_id)
-    c_to = Monsterhearts.get_character!(string.to_id)
     {:ok}
   end
 
@@ -131,8 +116,6 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
       Monsterhearts.update_string!(string, %{
         count: string.count - 1
       })
-      c_from = Monsterhearts.get_character!(string.from_id)
-      c_to = Monsterhearts.get_character!(string.to_id)
       {:ok}
     else
       {:error, "You can't spend a string you don't have."}
@@ -154,7 +137,6 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
   end
 
   def dispatch("character_condition_create", %{"id" => id, "condition" => name}, _player_id, _game_id) do
-    character = Monsterhearts.get_character!(id)
     Monsterhearts.create_condition!(%{"character_id" => id, "name" => name})
     {:ok}
   end
@@ -278,8 +260,6 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
         Monsterhearts.update_main_character!(main_character, %{"is_retired" => true})
       "rrds" -> 
         Monsterhearts.update_main_character!(main_character, %{"darkest_self" => Definitions.playbooks_by_name()[main_character.playbook].darkestSelf})
-      _ ->
-        text = Definitions.advancements_by_id[name].text |> String.replace("{playbook}", main_character.playbook)
     end
     {:ok}
   end
@@ -292,8 +272,6 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     |> Monsterhearts.delete_advancement!()
     if name === "rtire" do
       Monsterhearts.update_main_character!(main_character, %{"is_retired" => false})
-    else
-      text = Definitions.advancements_by_id[name].text |> String.replace("{playbook}", main_character.playbook)
     end
     {:ok}
   end
@@ -312,8 +290,8 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     end
   end
 
-  def dispatch("chat", %{"text" => text}, player_id, _game_id) do
-    {:ok, make_chat(text, player_id)}
+  def dispatch("chat", %{"text" => text}, _player_id, _game_id) do
+    {:ok, make_chat(text)}
   end
   
   

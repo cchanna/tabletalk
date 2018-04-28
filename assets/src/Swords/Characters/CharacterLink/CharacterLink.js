@@ -9,28 +9,23 @@ rx`
 
 const Container = rx(Link)`
   @include link;
-  @include button-style;
   font-family: $interact;
-  font-size: 16px;
+  font-size: 14px;
   margin: 10px;
-  color: var(--text);
+  flex: 1 0 0;
   transition-property: opacity, box-shadow, background, color;
   transition-duration: 300ms;
-  opacity: 1;
   position: relative;
-  --text: var(--text-glum);
-  &.active {
-    opacity: 0;
+  text-align: center;
+  color: var(--text-opposite);
+  &.active, &:hover, &:focus {
+    color: var(--color-single);
   }
-  &.jovial {
-    --text: var(--text-jovial);
+  &:active {
+    opacity: .5;
   }
-  &:after {
-    z-index: 4;
-  }
-
 `
-const Background = rx(Link)`
+const Background = rx('div')`
   position: absolute;
   left: -5px;
   top: -5px;
@@ -38,38 +33,10 @@ const Background = rx(Link)`
   height: calc(100% + 5px);
   transition-property: opacity;
   transition-duration: 300ms;
-  opacity: 0;
-  &:before, &:after {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    box-shadow: -1px 1px 1px 1px rgba(0, 0, 0, .5) inset;
-  }
-  &.show {
-    opacity: 1;
-  }
-  &:before {
-    z-index: 1;
-    background: var(--color-glum);
-  }
-  &:after {
-    z-index: 2;
-    background: var(--color-jovial);
-    opacity: 0;
-    transition-property: opacity;
-    transition-duration: 300ms;
-  }
-  &.jovial:after {
-    opacity: 1;
-  }
 `
 
 const Text = rx('span')`
   position: relative;
-  z-index: 3;
 `
 
 class CharacterLink extends Component {

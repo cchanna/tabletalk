@@ -45,6 +45,21 @@ $interact: "League Spartan";
   }
 }
 
+@mixin input-style {
+  @include input;
+  margin: 5px 0;
+  padding: 5px;
+  font-family: $body;
+  resize: none;
+  border-left: 3px solid black;
+  transition-property: background-color, border-color;
+  transition-duration: 150ms;
+  &:focus {
+    background: #F5F5F5;
+    border-left-color: var(--color-single);
+  }
+}
+
 @mixin mood-background {
   color: var(--text-glum);
   &:before, &:after {

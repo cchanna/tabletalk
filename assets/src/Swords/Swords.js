@@ -86,6 +86,7 @@ class Swords extends Component {
         "--text": text,
         "--text-opposite": text === textLight ? textDark : textLight,
         "--color": tone ? (gradient(jovialColor) || "white") : (gradient(glumColor) || "black"),
+        "--color-single": tone ? (jovialColor ? jovialColor[0] : "white") : (glumColor ? glumColor[0] : "black"),
         "--text-dark": textDark,
         "--text-light": textLight,
         "--text-jovial": jovialText,

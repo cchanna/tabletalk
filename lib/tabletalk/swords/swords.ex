@@ -5,14 +5,39 @@ defmodule Tabletalk.Swords do
   require Logger
 
   alias Tabletalk.Games
-  alias Swords.{Player, Game, Character}
+  alias Swords.{
+    Player, Game, Character,
+    Thread, Motif
+  }
   alias Tabletalk.Repo
 
   import Swords.View
 
+  defp get_preloaded_game!(game_id) do
+    query = from g in Game,
+      join: gg in Games.Game, on: gg.id == g.game_id,
+      join: gp in Games.Player, on: gg.id == gp.game_id,
+      left_join: p in Player, on: gp.id == p.player_id,
+      left_join: c in Character, on: gp.id == c.player_id,
+      left_join: t in Thread, on: gg.id == t.game_id,
+      left_join: m1 in Motif, on: g.motif1_id == m1.id,
+      left_join: m2 in Motif, on: g.motif2_id == m2.id,
+      left_join: m3 in Motif, on: g.motif3_id == m3.id,
+      where: gg.id == ^game_id,
+      preload: [
+        players: {p, player: gp}, 
+        characters: c,
+        threads: t,
+        motif1: m1,
+        motif2: m2,
+        motif3: m3
+      ]
+    Repo.one(query)
+  end
+
   def load(game_id, player_id) do
     events = Games.list_chats!(game_id)
-    game = get_or_create_game!(game_id, player_id)
+    game = get_preloaded_game!(game_id)
 
     %{
       diceHolder: game.dice_holder_id,
@@ -21,9 +46,11 @@ defmodule Tabletalk.Swords do
       isGlumTextDark: game.glum_text_is_dark,
       jovialColors: game.jovial_colors,
       isJovialTextDark: game.jovial_text_is_dark,
+      overtone: game.overtone,
       dice: if(game.glum_die === nil, do: nil, else: %{
         glum: game.glum_die,
-        jovial: game.jovial_die
+        jovial: game.jovial_die,
+        tone: game.dice_tone
       }),
       playerIds: game.players |> Enum.map(fn x -> x.player_id end),
       playersById: game.players |> Enum.map(fn x -> {x.player_id, x |> to_json} end) |> Map.new,
@@ -31,18 +58,22 @@ defmodule Tabletalk.Swords do
       charactersById: game.characters |> by_id,
       eventsById: events |> by_id,
       eventIds: events |> ids,
-      me: player_id
+      me: player_id,
+      motifs: [game.motif1, game.motif2, game.motif3] |> Enum.map(&to_json/1),
+      threadsById: game.threads |> by_id,
+      threadIds: game.threads |> ids
     }
   end
 
-  def handle_join(game_id, player_id) do
+  def handle_join(_game_id, player_id) do
     player = create_player!(%{
       "player_id" => player_id
     })
     |> Repo.preload([:player])
-    character = create_character!(%{
-      "player_id" => player.id
-    })
+    character_id = create_character!(%{
+      "player_id" => player_id
+    }).id
+    character = get_character!(character_id)
     player = update_player!(player, %{
       "character_id" => character.id
     })
@@ -57,39 +88,35 @@ defmodule Tabletalk.Swords do
     {:ok, event |> to_json}
   end
 
-  defp get_preloaded_game(game_id) do
-    query = from g in Game,
-      join: gg in Games.Game, on: gg.id == g.game_id,
-      join: gp in Games.Player, on: gg.id == gp.game_id,
-      left_join: p in Player, on: gp.id == p.player_id,
-      left_join: c in Character, on: p.id == c.player_id,
-      where: gg.id == ^game_id,
-      preload: [players: {p, player: gp}, characters: c]
-    Repo.one(query)
+  def handle_create(game_id, player_id) do
+    create_game!(%{
+      "game_id" => game_id,
+      "dice_holder_id" => player_id,
+      "overplayer_id" => player_id,
+      "motif1" => %{},
+      "motif2" => %{},
+      "motif3" => %{}
+    })
+    create_player!(%{
+      "player_id" => player_id
+    })
   end
 
-  defp get_or_create_game!(game_id, player_id) do
-    game = get_preloaded_game(game_id)
-    if game === nil do
-      game = create_game!(%{
-        "game_id" => game_id,
-        "dice_holder_id" => player_id,
-        "overplayer_id" => player_id,
-      })
-      player = create_player!(%{
-        "player_id" => player_id,
-        "tone" => true
-      })
-      get_preloaded_game(game_id)
-    else
-      game
-    end
+  def get_character!(id) do
+    Character
+    |> Repo.get!(id)
   end
 
   defp create_character!(attrs) do
     %Character{}
     |> Character.changeset(attrs)
     |> Repo.insert!()
+  end
+
+  def update_character!(%Character{} = character, attrs) do
+    character
+    |> Character.changeset(attrs)
+    |> Repo.update!()
   end
 
   defp create_game!(attrs) do
@@ -126,14 +153,36 @@ defmodule Tabletalk.Swords do
     |> Repo.update!()
   end
 
-  def set_overtone(game_id, tone) do
-    tone_value = if tone, do: 1, else: 0
-    from(p in Player,
-      join: gp in Games.Player, on: gp.id == p.player_id,
-      where: gp.game_id == ^game_id,
-      update: [set: [tone: fragment("(CASE WHEN ? IS NULL THEN (CASE WHEN ? = 0 THEN FALSE ELSE TRUE END) ELSE NULL END)", p.character_id, ^tone_value)]])
-    |> Repo.update_all([])
+  def get_thread!(id) do
+    Thread
+    |> Repo.get!(id)
   end
 
+  def create_thread!(attrs) do
+    %Thread{}
+    |> Thread.changeset(attrs)
+    |> Repo.insert!()
+  end
 
+  def update_thread!(%Thread{} = thread, attrs) do
+    thread
+    |> Thread.changeset(attrs)
+    |> Repo.update!()
+  end
+
+  def delete_thread!(%Thread{} = thread) do
+    thread
+    |> Repo.delete!()
+  end
+
+  def get_motif!(id) do
+    Motif
+    |> Repo.get!(id)
+  end
+
+  def update_motif!(%Motif{} = motif, attrs) do
+    motif
+    |> Motif.changeset(attrs)
+    |> Repo.update!()
+  end
 end
