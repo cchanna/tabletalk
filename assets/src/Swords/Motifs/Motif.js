@@ -84,6 +84,18 @@ class Motif extends Component {
       editMotif({index, item, value});
     }
   }
+
+  componentDidUpdate(prevProps) {
+    for (let i=0; i < 3; i++) {
+      if (this.props.items[i] !== prevProps.items[i]) {
+        this.setState(state => update(state, {
+          items: {
+            [i]: {$set: this.props.items[i]}
+          }
+        }))
+      }
+    }
+  }
   
   render() {
     const { index, show } = this.props;
