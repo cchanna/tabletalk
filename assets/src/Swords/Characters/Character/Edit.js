@@ -121,7 +121,8 @@ class Edit extends Component {
     if (prevProps.allThatMatters.length !== this.props.allThatMatters.length) {
       this.setState(state => update(state, {
         values: {
-          allThatMatters: {$set: this.props.allThatMatters}
+          allThatMatters: {$set: this.props.allThatMatters},
+          newNamedItem: {$set: ""}
         }
       }))
     }
@@ -160,11 +161,6 @@ class Edit extends Component {
     const { newNamedItem } = this.state.values;
     if (newNamedItem) {
       addNamed({id, name: newNamedItem});
-      this.setState(state => update(state, {
-        values: {
-          newNamedItem: {$set: ""}
-        }
-      }));
     }
   }
 
@@ -302,14 +298,27 @@ class Edit extends Component {
             onBlur={this.handleBlurWhatMatters}
             onKeyDown={this.handleKeyDownWhatMatters}
           />
-        ))}
-        <Input
-          name="newNamedItem" type="text" value={newNamedItem}
-          onChange={this.handleChange}
-          onBlur={this.handleBlurNewNamedItem}
-          onKeyDown={this.handleKeyDownNewNamedItem}
-          placeholder={allThatMatters.length ? "name another thing" : "name all that matters to your rogue"}
-        />
+        )).concat([
+          (
+            <Input
+              key={allThatMatters.length}
+              name="newNamedItem" type="text" value={newNamedItem}
+              onChange={this.handleChange}
+              onBlur={this.handleBlurNewNamedItem}
+              onKeyDown={this.handleKeyDownNewNamedItem}
+              placeholder={allThatMatters.length ? "name another thing" : "name all that matters to your rogue"}
+            />
+          ),
+          newNamedItem ? (
+            <Input
+              key={allThatMatters.length + 1}
+              name="newNamedItem" type="text" value=""
+              onChange={this.handleChange}
+              onBlur={this.handleBlurNewNamedItem}
+              onKeyDown={this.handleKeyDownNewNamedItem}
+              placeholder="name another thing"/>
+          ) : null
+        ])}
         <EditStep>
           <EditStepNumber rx={{done: this.props.jovialFeat && this.props.glumFeat}}>
             3
