@@ -65,6 +65,8 @@ export const types = {
   LOAD,
 }
 
+const numberWords = ["first", "second", "third"]
+
 export const messages = {
   [DICE_PICK_UP]: "Picked up the dice.",
   [DICE_GIVE]: "Gave the dice to {player:id}.", 
@@ -76,6 +78,9 @@ export const messages = {
   [THREAD_CREATE]: ({thread}) => `Recorded a new thread: "${thread.text}"`,
   [THREAD_DELETE]: "Deleted a thread.",
   [THREAD_UPDATE]: `Updated a thread. It now reads: "{text}"`,
+  [MOTIF_REINCORPORATE]: ({index}) => `Reincorporated the ${numberWords[index]} motif.`,
+  [THREAD_REINCORPORATE]: 'Reincorporated the thread "{thread:thread}"',
+  [REINCORPORATION_DELETE]: "Returned their reincorporated thread.",
   ...prefixedMessages("COLOR", colors.messages),
   ...prefixedMessages("CHARACTER", characters.messages)
 }
