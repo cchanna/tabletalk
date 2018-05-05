@@ -57,10 +57,14 @@ const Or = rx('div')`
   margin-left: 50px;
 `
 const Image = rx('img')`
+  max-height: 300px;
+  max-width: 100%;
+  object-fit: cover;
 `
 const ImageContainer = rx('div')`
   width: 100%;
   max-height: 300px;
+  overflow: hidden;
 `
 const DoneButtonContainer = 'div';
 const DoneButton = rx('button')`
@@ -275,7 +279,7 @@ class Edit extends Component {
         />
         {eidolonIsImage ? (
           <ImageContainer>
-            <Image src={eidolon} height="300px"/>
+            <Image src={eidolon}/>
           </ImageContainer>
         ) : null}
         <EditStep>

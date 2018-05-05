@@ -40,6 +40,7 @@ const Switcher = rx('div')`
   display: flex;
   flex-flow: row nowrap;
   transition: 300ms left ease-in-out;
+  width: 100%;
 `
 
 

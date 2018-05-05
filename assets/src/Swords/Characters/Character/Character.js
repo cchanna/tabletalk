@@ -17,6 +17,8 @@ const Container = rx('div')`
   flex: 1 0 0;
   font-family: $body;
   color: black;
+  width: 100%;
+  box-sizing: border-box;
 `
 
 const EditButton = rx('button')`
@@ -40,10 +42,15 @@ const SectionHeader = rx('h2')`
 const WhatMatters = rx('div')`
   margin: 5px 0;
 `
-const Image = 'img';
+const Image = rx('img')`
+  max-height: 300px;
+  max-width: 100%;
+  object-fit: cover;
+`
 const ImageContainer = rx('div')`
   width: 100%;
   max-height: 300px;
+  overflow: hidden;
 `
 const Section = 'div';
 
@@ -130,7 +137,7 @@ class Character extends Component {
           <Name>{displayName}</Name>
           {eidolonIsImage ? (
             <ImageContainer>
-              <Image src={eidolon} height="300px"/>
+              <Image src={eidolon}/>
             </ImageContainer>
           ) : (
             <Markdown text={eidolon}/>
