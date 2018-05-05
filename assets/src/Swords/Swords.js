@@ -81,12 +81,15 @@ class Swords extends Component {
     const text = tone ? jovialText : glumText;
     const textDark = "rgba(0, 0, 0, .75)";
     const textLight = "white";
+    const singleColor = tone => tone ? (jovialColor ? jovialColor[0] : "white") : (glumColor ? glumColor[0] : "black");
     return (
       <Container style={{
         "--text": text,
         "--text-opposite": text === textLight ? textDark : textLight,
+        "--text-for-opposite": tone ? glumText : jovialText,
         "--color": tone ? (gradient(jovialColor) || "white") : (gradient(glumColor) || "black"),
-        "--color-single": tone ? (jovialColor ? jovialColor[0] : "white") : (glumColor ? glumColor[0] : "black"),
+        "--color-single": singleColor(tone),
+        "--color-single-opposite": singleColor(!tone),
         "--text-dark": textDark,
         "--text-light": textLight,
         "--text-jovial": jovialText,

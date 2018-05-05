@@ -7,7 +7,7 @@ defmodule Tabletalk.Swords do
   alias Tabletalk.Games
   alias Swords.{
     Player, Game, Character,
-    Thread, Motif
+    Thread, Motif, Reincorporation
   }
   alias Tabletalk.Repo
 
@@ -107,6 +107,11 @@ defmodule Tabletalk.Swords do
     |> Repo.get!(id)
   end
 
+  def get_character_for_player!(id) do
+    Character
+    |> Repo.get_by(player_id: id)
+  end
+
   defp create_character!(attrs) do
     %Character{}
     |> Character.changeset(attrs)
@@ -184,5 +189,27 @@ defmodule Tabletalk.Swords do
     motif
     |> Motif.changeset(attrs)
     |> Repo.update!()
+  end
+
+  def create_reincorporation!() do
+    %Reincorporation{}
+    |> Reincorporation.changeset(%{})
+    |> Repo.insert!()
+  end
+
+  def clear_reincorporation!(player_id) do
+    reincorpoartion = from(r in Reincorporation,
+      join: c in Character, on: c.reincorporation_id == r.id,
+      where: c.player_id == ^player_id,
+      select: r
+    )
+    |> Repo.one!()
+
+    if reincorpoartion do
+      Repo.delete!(reincorpoartion)
+      reincorpoartion.id
+    else
+      nil
+    end
   end
 end

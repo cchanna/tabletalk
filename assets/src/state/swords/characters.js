@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import { socketActions } from '../socketActions';
 import update from 'immutability-helper';
+import mapObject from 'utils/mapObject';
 
 const EIDOLON_SET = "EIDOLON_SET";
 const NAME_SET = "NAME_SET";
@@ -39,11 +40,11 @@ export const messages = {
   [NAMED_REMOVE]: "Unnamed something.",
   [NAMED_UPDATE]: 'Changed the name for "{name}".',
   [FEAT_JOVIAL_SET]: 'Set their jovial feat heroic to "{value}".',
-  [FEAT_JOVIAL_USED_SET]: '{value ? Used their jovial feat. : Un-used their jovial feat.}',
+  [FEAT_JOVIAL_USED_SET]: '{value ? Used their jovial feat. : Didn\'t actually use their jovial feat.}',
   [FEAT_GLUM_SET]: 'Set their glum feat heroic to "{value}".',
-  [FEAT_GLUM_USED_SET]: '{value ? Used their glum feat. : Un-used their glum feat.}',
+  [FEAT_GLUM_USED_SET]: '{value ? Used their glum feat. : Didn\'t actually use their glum feat.}',
   [TRICK_SET]: 'Updated their trick to "{value}".',
-  [TRICK_USED_SET]: '{value ? Used their trick. : Un-used their trick.}',
+  [TRICK_USED_SET]: '{value ? Used their trick. : Didn\'t actually use their trick.}',
   [NOTES_SET]: "Updated their notes."
 }
 
@@ -69,6 +70,16 @@ export const reducer = combineReducers({
           ...state,
           [action.character.id]: action.character
         }
+      case "THREAD_REINCORPORATE":
+      case "MOTIF_REINCORPORATE":
+        return mapObject(state, character => character.playerId === action.playerId ? {
+          ...character,
+          reincorporation: action.id
+        } : character)
+      case "REINCORPORATION_DELETE":
+        return mapObject(state, character => update(character, {
+          reincorporation: id => id === action.id ? null : id
+        }))
       case EIDOLON_SET:
         return update(state, {
           [action.id]: {
@@ -151,7 +162,15 @@ export const reducer = combineReducers({
 });
 
 const getCharacter = (state, id) => state.byId[id];
+const getCharacterByReincorporation = (state, reincorporation) => state.ids
+  .map(id => getCharacter(state, id))
+  .find(character => character.reincorporation === reincorporation);
+const getCharacterByPlayer = (state, player) => state.ids
+  .map(id => getCharacter(state, id))
+  .find(character => character.playerId === player)
 
 export const selectors = {
-  getCharacter
+  getCharacter,
+  getCharacterByPlayer,
+  getCharacterByReincorporation
 };

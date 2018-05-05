@@ -13,7 +13,7 @@ defmodule Tabletalk.Swords.View do
   def to_json(%Motif{} = motif) do
     %{
       items: [motif.item1, motif.item2, motif.item3],
-      reincorporatedBy: motif.reincorporated_by_id
+      reincorporation: motif.reincorporation_id
     }
   end
 
@@ -21,7 +21,7 @@ defmodule Tabletalk.Swords.View do
     %{
       id: thread.id,
       text: thread.text,
-      reincorporatedBy: thread.reincorporated_by_id
+      reincorporation: thread.reincorporation_id
     }
   end
 
@@ -47,7 +47,8 @@ defmodule Tabletalk.Swords.View do
       glumFeatUsed: character.glum_feat_used,
       trick: character.trick,
       trickUsed: character.trick_used,
-      notes: character.notes
+      notes: character.notes,
+      reincorporation: character.reincorporation_id
     }
   end
 

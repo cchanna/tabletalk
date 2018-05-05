@@ -2,7 +2,7 @@ defmodule Tabletalk.Swords.Character do
   use Ecto.Schema
   import Ecto.Changeset
   
-  alias Tabletalk.Swords.Character
+  alias Tabletalk.Swords.{Character, Reincorporation}
   alias Tabletalk.Games.Player
 
 
@@ -19,6 +19,7 @@ defmodule Tabletalk.Swords.Character do
     field :trick, :string
     field :trick_used, :boolean
     field :notes, :string
+    belongs_to :reincorporation, Reincorporation
 
     timestamps()
   end
@@ -29,7 +30,7 @@ defmodule Tabletalk.Swords.Character do
     |> cast(attrs, [
       :player_id, :eidolon, :eidolon_is_image, :name, :all_that_matters, 
       :jovial_feat, :jovial_feat_used, :glum_feat, :glum_feat_used,
-      :trick, :trick_used, :notes
+      :trick, :trick_used, :notes, :reincorporation_id
       ])
     |> validate_required([:player_id])
   end

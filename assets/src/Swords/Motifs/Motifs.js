@@ -28,9 +28,14 @@ class Motifs extends Component {
   static propTypes = {
     motifs: arrayOf(shape({
       items: arrayOf(string),
-      reincorporatedBy: string
+      reincorporatedBy: string,
+      mine: bool.isRequired
     })),
-    editMotif: func.isRequired
+    canReincorporate: bool.isRequired,
+    slowActionsById: object.isRequired,
+    editMotif: func.isRequired,
+    reincorporateMotif: func.isRequired,
+    undoReincorporation: func.isRequired,
   }
 
   state = {
@@ -40,7 +45,10 @@ class Motifs extends Component {
   toggleMotifsShown = () => this.setState(({show}) => ({show: !show}));
   
   render() {
-    const { motifs, editMotif } = this.props;
+    const { 
+      motifs, canReincorporate, slowActionsById, 
+      editMotif, reincorporateMotif, undoReincorporation 
+    } = this.props;
     const { show } = this.state;
     let shown;
     for (shown=0; shown < motifs.length - 1; shown++) {
@@ -51,12 +59,15 @@ class Motifs extends Component {
     }
     return (
       <Container>
-        {motifs.map(({items, reincorporatedBy}, i) => 
+        {motifs.map((motif, i) => 
           <Motif 
             show={show || shown >= i}
-            key={i} index={i} items={items} 
-            reincorporatedBy={reincorporatedBy}
-            editMotif={editMotif}
+            key={i} index={i}
+            {...{
+              ...motif, canReincorporate,
+              editMotif, reincorporateMotif, undoReincorporation,
+              slowActionsById
+            }} 
             setMotifsShown={this.setMotifsShown}/>
         )}
         {shown < 2 ? (

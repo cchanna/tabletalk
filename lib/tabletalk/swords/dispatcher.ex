@@ -213,6 +213,30 @@ defmodule Tabletalk.Swords.Dispatcher do
     }) 
     {:ok}
   end
+
+  def dispatch("motif_reincorporate", %{"index" => index}, player_id, game_id) do
+    character = get_character_for_player!(player_id)
+    reincorporation = create_reincorporation!()
+    character |> update_character!(%{
+      "reincorporation_id" => reincorporation.id
+    })
+    game = get_game!(game_id)
+    case index do
+      0 -> game.motif1_id
+      1 -> game.motif2_id
+      2 -> game.motif3_id
+    end
+    |> get_motif!()
+    |> update_motif!(%{
+      "reincorporation_id" => reincorporation.id
+    }) 
+    {:ok, %{index: index, id: reincorporation.id}}
+  end
+
+  def dispatch("reincorporation_delete", %{}, player_id, _game_id) do
+    id = clear_reincorporation!(player_id)
+    {:ok, %{id: id}}
+  end
   
   def dispatch(bad_id, action, _player_id, _game_id) do
     Logger.error("Failed to dispatch action #{bad_id}")

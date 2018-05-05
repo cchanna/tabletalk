@@ -20,9 +20,12 @@ const DICE_TAKE = "DICE_TAKE";
 const OVERTONE_FLIP = "OVERTONE_FLIP";
 const PLAYER_JOIN = "PLAYER_JOIN";
 const MOTIF_EDIT = "MOTIF_EDIT";
+const MOTIF_REINCORPORATE = "MOTIF_REINCORPORATE";
 const THREAD_CREATE = "THREAD_CREATE";
 const THREAD_DELETE = "THREAD_DELETE";
 const THREAD_UPDATE = "THREAD_UPDATE";
+const THREAD_REINCORPORATE = "THREAD_REINCORPORATE";
+const REINCORPORATION_DELETE = "REINCORPORATION_DELETE";
 
 export const actions = {
   load: [
@@ -43,12 +46,15 @@ export const actions = {
     takeDice: DICE_TAKE,
     editMotif: [MOTIF_EDIT, "index", "item", "value"],
     updateThread: [THREAD_UPDATE, "id", "text"],
-    deleteThread: [THREAD_DELETE, "id"]
+    deleteThread: [THREAD_DELETE, "id"],
   }),
   ...slowSocketActions({
     chat: [CHAT, "text"],
     roll: DICE_ROLL,
-    createThread: [THREAD_CREATE, "text"]
+    createThread: [THREAD_CREATE, "text"],
+    reincorporateThread: [THREAD_REINCORPORATE, "character", "thread"],
+    reincorporateMotif: [MOTIF_REINCORPORATE, "index"],
+    undoReincorporation: REINCORPORATION_DELETE
   }),
   ...prefixedActions("CHATBOX", chatbox.actions),
   ...prefixedActions("COLOR", colors.actions),
@@ -79,7 +85,9 @@ export const messages = {
 export const reducer = combineReducers({
   chatbox: prefixedReducer("CHATBOX", chatbox.reducer),
   colors: prefixedReducer("COLOR", colors.reducer, [LOAD]),
-  characters: prefixedReducer("CHARACTER", characters.reducer, [LOAD, PLAYER_JOIN]),
+  characters: prefixedReducer("CHARACTER", characters.reducer, [
+    LOAD, PLAYER_JOIN, MOTIF_REINCORPORATE, THREAD_REINCORPORATE, REINCORPORATION_DELETE
+  ]),
   dice: (state = {glum: 0, jovial: 0}, action) => {
     switch(action.type) {
       case LOAD:
@@ -191,7 +199,17 @@ export const reducer = combineReducers({
               [action.item]: {$set: action.value}
             }
           }
-        })
+        });
+      case MOTIF_REINCORPORATE:
+        return update(state, {
+          [action.index]: {
+            reincorporation: {$set: action.id}
+          }
+        });
+      case REINCORPORATION_DELETE:
+        return state.map(motif => update(motif, {
+          reincorporation: id => id === action.id ? null : id
+        }));
       default: 
         return state;
     } 
@@ -226,7 +244,17 @@ export const reducer = combineReducers({
           [action.id]: {
             text: {$set: action.text}
           }
-        })
+        });
+      case THREAD_REINCORPORATE:
+        return update(state, {
+          [action.thread]: {
+            reincorporation: {$set: action.id}
+          }
+        });
+      case REINCORPORATION_DELETE:
+        return mapObject(state, thread => update(thread, {
+          reincorporation: id => id === action.id ? null : id
+        }))
       default: 
         return state;
     }
@@ -247,6 +275,7 @@ const getPlayerNames = state => mapObject(state.playersById, p => p.name);
 const getDice = state => state.dice;
 const getDiceHolder = state => state.diceHolder;
 const getOverplayerId = state => state.overplayer.id;
+const getAmOverplayer = state => getOverplayerId(state) === getMe(state);
 const getPlayer = (state, id) => state.playersById[id];
 const getPlayerIds = state => state.playerIds;
 const getRoguePlayerIds = state => state
@@ -270,17 +299,35 @@ const getCharacterName = (state, id) => {
   return `${player.name}'s Rogue`;
 }
 
-const getMotifs = state => state.motifs.map(({items, reincorporatedBy}) => ({
-  items,
-  reincorporatedBy: reincorporatedBy && getCharacterName(reincorporatedBy)
-}));
+const getMotifs = state => state.motifs.map(({items, reincorporation}) => {
+  const reincorporatedBy = reincorporation && fromCharacters.getCharacterByReincorporation(state, reincorporation);
+  return {
+    items,
+    reincorporatedBy: reincorporatedBy && getCharacterName(state, reincorporatedBy.id),
+    mine: reincorporatedBy ? reincorporatedBy.playerId === getMe(state) : false
+  }
+});
+
 const getThreads = state => state.threadIds.map(id => {
-  const { text, reincorporatedBy } = state.threadsById[id];
+  const { text, reincorporation } = state.threadsById[id];
+  const reincorporatedBy = reincorporation && fromCharacters.getCharacterByReincorporation(state, reincorporation);
   return {
     text, id,
-    reincorporatedBy: reincorporatedBy && getCharacterName(reincorporatedBy)
+    reincorporatedBy: reincorporatedBy && getCharacterName(state, reincorporatedBy.id),
+    mine: reincorporatedBy ? reincorporatedBy.playerId === getMe(state) : false
   }
 })
+
+const getMyCharacter = state => fromCharacters.getCharacterByPlayer(state, getMe(state));
+
+const motifCompleteReducer = (isComplete, item) => isComplete && item !== "";
+const endgameReducer = (isEndgame, motif) => isEndgame && motif.items.reduce(motifCompleteReducer, true) 
+const getIsEndgame = state => state.motifs.reduce(endgameReducer, true);
+const getCanReincorporate = state => (
+  getIsEndgame(state) && 
+  !getAmOverplayer(state) && 
+  !getMyCharacter(state).reincorporation
+)
 
 export const selectors = {
   getActiveCharacterIds,
@@ -297,6 +344,7 @@ export const selectors = {
   getThreads,
   getOvertone,
   getDiceTone,
+  getCanReincorporate,
   ...prefixedSelectors("colors", colors.selectors),
   ...prefixedSelectors("chatbox", chatbox.selectors),
   ...fromCharacters
