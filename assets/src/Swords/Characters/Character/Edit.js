@@ -151,7 +151,7 @@ class Edit extends Component {
     const { id, setName } = this.props;
     const { name } = this.state.values;
     if (this.props.name !== name) {
-      setName({id, name});
+      setName({id, name: name || ""});
     }
   }
 
@@ -189,7 +189,7 @@ class Edit extends Component {
   handleBlurWhatMatters = e => {
     const index = parseInt(e.target.name, 10);
     const { id, updateNamed, removeNamed, allThatMatters } = this.props;
-    const name = this.state.values.allThatMatters[index];
+    const name = this.state.values.allThatMatters[index] || "";
     if (name) {
       if (allThatMatters[index] !== name) {
         updateNamed({id, index, name});
@@ -202,7 +202,7 @@ class Edit extends Component {
 
   handleKeyDownWhatMatters = e => {
     const index = parseInt(e.target.name, 10);
-    const name = this.state.values.allThatMatters[index];
+    const name = this.state.values.allThatMatters[index] || "";
     if (!name && e.which === 8) {
       const { id, removeNamed } = this.props;
       removeNamed({id, index});
@@ -211,7 +211,7 @@ class Edit extends Component {
 
   handleBlurJovialFeat = () => {
     const { id, setJovialFeat, jovialFeat } = this.props;
-    const value = this.state.values.jovialFeat;
+    const value = this.state.values.jovialFeat || "";
     if (jovialFeat !== value) {
       setJovialFeat({id, value});
     }
@@ -219,7 +219,7 @@ class Edit extends Component {
 
   handleBlurGlumFeat = () => {
     const { id, setGlumFeat, glumFeat } = this.props;
-    const value = this.state.values.glumFeat;
+    const value = this.state.values.glumFeat || "";
     if (glumFeat !== value) {
       setGlumFeat({id, value});
     }
@@ -227,7 +227,7 @@ class Edit extends Component {
 
   handleBlurTrick = () => {
     const { id, setTrick, trick } = this.props;
-    const value = this.state.values.trick;
+    const value = this.state.values.trick || "";
     if (trick !== value) {
       setTrick({id, value});
     }
@@ -235,7 +235,7 @@ class Edit extends Component {
 
   handleBlurNotes = () => {
     const { id, setNotes, notes } = this.props;
-    const value = this.state.values.notes;
+    const value = this.state.values.notes || "";
     if (notes !== value) {
       setNotes({id, value});
     }

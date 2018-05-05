@@ -8,17 +8,17 @@ defmodule Tabletalk.Swords.Character do
 
   schema "swords_characters" do
     belongs_to :player, Player
-    field :eidolon, :string
-    field :eidolon_is_image, :boolean
-    field :name, :string
+    field :eidolon, :string, default: ""
+    field :eidolon_is_image, :boolean, default: false
+    field :name, :string, default: ""
     field :all_that_matters, {:array, :string}
-    field :jovial_feat, :string
-    field :jovial_feat_used, :boolean
-    field :glum_feat, :string
-    field :glum_feat_used, :boolean
-    field :trick, :string
-    field :trick_used, :boolean
-    field :notes, :string
+    field :jovial_feat, :string, default: ""
+    field :jovial_feat_used, :boolean, default: false
+    field :glum_feat, :string, default: ""
+    field :glum_feat_used, :boolean, default: false
+    field :trick, :string, default: ""
+    field :trick_used, :boolean, default: false
+    field :notes, :string, default: ""
     belongs_to :reincorporation, Reincorporation
 
     timestamps()

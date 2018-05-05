@@ -23,7 +23,7 @@ defmodule Tabletalk.Swords.Dispatcher do
   defp update_character_value(key, %{"id" => id, "value" => value}) do
     get_character!(id)
     |> update_character!(%{
-      key => value
+      key => value || ""
     })
     {:ok}
   end

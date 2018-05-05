@@ -32,6 +32,7 @@ const TabBar = rx('div')`
   bottom: 0;
   height: 4px;
   transition-property: left, right, background;
+  transition-timing-function: ease-in-out;
   background: var(--color-single);
 `
 
@@ -54,12 +55,12 @@ class Characters extends Component {
 
   previousIndex = -1;
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.selectedCharacter !== this.props.selectedCharacter) {
-      this.previousIndex = prevProps.selectedCharacter;
+  componentWillUpdate(nextProps) {
+    if (nextProps.selectedCharacter !== this.props.selectedCharacter) {
+      this.previousIndex = this.props.characterIds.indexOf(this.props.selectedCharacter);
     }
   }
-  
+
   render() {
     const { depth, selectedCharacter, characterIds } = this.props;
     const index = characterIds.indexOf(selectedCharacter);
@@ -72,7 +73,7 @@ class Characters extends Component {
           <TabBar style={{
             left: `${100 * index / characterIds.length}%`,
             right: `${100 * (characterIds.length - index - 1) / characterIds.length}%`,
-            transitionDuration: this.previousIndex < index ? "300ms, 150ms, 150ms" : "150ms, 300ms, 150ms"
+            transitionDuration: this.previousIndex < index ? "600ms, 150ms, 150ms" : "150ms, 600ms, 150ms"
           }}/>
         </Header>
         <Content>
