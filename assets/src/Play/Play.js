@@ -95,9 +95,10 @@ class Play extends Component {
         Component = componentsForKind[game.kind]
       }
       else {
-        Component = this.state.component;
+        Component = this.state.Component;
       }
     }
+    console.log(Component);
     if (Component) {
       if (Component) content = <Component depth={depth + 1}/>
       else {
