@@ -407,15 +407,17 @@ const getOtherPlayerIds = createSelector(
 
 const getCharacterIdsByPlayerId = createSelector(
   getPlayersById,
-  playersById => mapObject(player => player.character)
+  playersById => mapObject(playersById, player => player.character)
 )
 
 const getOtherCharacterIds = createDeepSelector(
   getOtherPlayerIds,
   getCharacterIdsByPlayerId,
-  (otherPlayerIds, characterIdsByPlayerId) => otherPlayerIds
-    .map(id => characterIdsByPlayerId[id])
-    .filter(id => !!id)
+  (otherPlayerIds, characterIdsByPlayerId) => {
+    return otherPlayerIds
+      .map(id => characterIdsByPlayerId[id])
+      .filter(id => !!id)
+  }
 )
 
 const getSettingsByName = state => state.settingsByName;
