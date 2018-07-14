@@ -92,6 +92,14 @@ class Window extends Component {
 
   onClickBack = () => this.props.goTo([], this.props.depth);
   
+
+  componentDidUpdate(prevProps) {
+    console.log("WINDOW UPDATE")
+    Object.keys(prevProps).forEach(key => {
+      console.log(key, prevProps[key] === this.props[key])
+    })
+  }
+
   render() {
     const { myCharacterId, otherCharacterIds, mySettings, roleNames, settingNames, depth, here } = this.props;
     const tabs = [
@@ -115,7 +123,6 @@ class Window extends Component {
           </Tab>
         ))
     ]
-
     return (
       <Container >
         <Sidebar depth={depth} />

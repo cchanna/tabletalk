@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
   
 import {
-  Header, List, Item
+  Header, List, Item, DoneButton, TopButton
 } from "../../Layout";
 import ShortOptions from "../../ShortOptions";
 
@@ -128,7 +128,7 @@ class EditCharacter extends Component {
             </div>
           )
         })}
-        <Header>Choose 2 Key Relationships</Header>
+        <Header>Choose 1-2 Key Relationships</Header>
         <ShortOptions name="keyRelationships" value={myRelationships} options={keyRelationships} onChange={this.handleChange} count={2} />
         <Header>Choose 1 to Ask Left</Header>
         <List>{askLeft.map(q => <Item key={q}>{q}</Item>)}</List>

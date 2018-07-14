@@ -4,20 +4,34 @@ import Play from './Play';
 
 import { getGame } from 'Games';
 import { fromGames } from 'state';
-import { replace, getPath } from 'Routing';
+import { replace, makeGetNext } from 'Routing';
+import { createSelector } from 'reselect';
 
-const mapStateToProps = (state, {depth}) => {
-  const { next: slug } = getPath(state, depth);
-  const game = fromGames.getGame(state, slug);
-  return {
-    depth,
-    slug,
-    game: !game ? null : {
-      kind: game.kind,
-      me: game.me
-    }
-  }
-}
+const { getGamesBySlug } = fromGames;
+
+
+const mapStateToProps = () => {
+  const getNext = makeGetNext();
+  const getSlug = (state, {depth}) => getNext(state, depth);
+  const getGame = createSelector(
+    getSlug,
+    getGamesBySlug,
+    (slug, gamesBySlug) => gamesBySlug[slug]
+  )
+  return createSelector(
+    (_state, {depth}) => depth,
+    getSlug,
+    getGame,
+    (depth, slug, game) => ({
+      depth,
+      slug,
+      game: game ? {
+        kind: game.kind,
+        me: game.me
+      } : null
+    })
+  )
+} 
 
 const mapDispatchToProps = {replace, getGame};
 

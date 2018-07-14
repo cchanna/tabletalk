@@ -26,10 +26,10 @@ export const reducer = combineReducers({
     }
   },
 
-  gamesBySlug: (state = null, action) => {
+  gamesBySlug: (state = {}, action) => {
     switch(action.type) {
       case START_LOADING:
-        return null;
+        return {};
       case ADD:
         return {...state, ...action.gamesBySlug}
       default:
@@ -90,7 +90,6 @@ const getGame = (state, slug) => {
     ...rest
   } 
 }
-
 const getGames = state => {
   if (!state.list) return null;
   return state.list.map(slug => ({
@@ -107,6 +106,7 @@ const getLastLoaded = state => state.lastLoaded;
 
 export const selectors = {
   getGame,
+  getGamesBySlug,
   getGames,
   getIsGameLoaded,
   getIsFailed,

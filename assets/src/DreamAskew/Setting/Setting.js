@@ -83,7 +83,13 @@ class Setting extends Component {
         {divider ? <Divider /> : null}
         <Top>
           <Name>The {name}</Name>
-          {mine && done ? <EditButton onClick={this.toggleEdit} rx={{selected: editing}}>P</EditButton> : null}
+          {mine && done ? (
+            editing ? (
+              <TopButton onClick={this.toggleEdit}>Done</TopButton>
+            ) : (
+              <EditButton onClick={this.toggleEdit}>P</EditButton> 
+            )
+          ) : null}
           {mine ? (
             <TopButton onClick={this.putDown}>Give Away</TopButton>
           ) : (

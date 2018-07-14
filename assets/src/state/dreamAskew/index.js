@@ -3,9 +3,10 @@ import * as chatbox from '../chatbox';
 import { prefixedActions, prefixedReducer, prefixedSelectors } from 'redux-state-tools';
 import { slowSocketActions, socketActions } from '../socketActions';
 import mapObject from 'utils/mapObject';
-import { createSelector } from 'reselect';
+import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect';
 import update from 'immutability-helper';
 import pronounSets from 'common/pronouns.json';
+import isEqual from 'lodash.isequal';
 
 const LOAD = "LOAD";
 const CHAT = "CHAT";
@@ -356,11 +357,15 @@ export const reducer = combineReducers({
   }
 });
 
+const createDeepSelector = createSelectorCreator(
+  defaultMemoize,
+  isEqual
+)
+
 const getIsLoaded = state => state.loaded;
 const getMe = state => state.me;
 const getPlayerNames = state => mapObject(state.playersById, p => p.name);
 const getPlayer = (state, id) => state.playersById[id];
-const getMyPlayer = state => getPlayer(state, getMe(state));
 const getPlayerIds = state => state.playerIds;
 const getPlayersById = state => state.playersById;
 
@@ -375,6 +380,7 @@ const getMinorCharacter = (state, id) => state.minorCharactersById[id];
 
 const fromDefinitions = prefixedSelectors("definitions", {
   getRole: (state, name) => state.rolesByName[name],
+  getRolesByName: state => state.rolesByName,
   getRoleNames: state => state.roleNames,
   getSettingNames: state => state.settingNames,
   getSettingDef: (state, name) => state.settingsByName[name],
@@ -383,24 +389,47 @@ const fromDefinitions = prefixedSelectors("definitions", {
   getAllConflicts: state => state.conflicts
 })
 
-const getMyCharacterId = state => getPlayer(state, getMe(state)).character;
+const getMyPlayer = createSelector(
+  getPlayersById, 
+  getMe, 
+  (playersById, me) => playersById[me]
+)
+const getMyCharacterId = createSelector(
+  getMyPlayer,
+  player => player.character
+)
 
-const getOtherCharacterIds = createSelector(
-  [getMe, getPlayerIds, getPlayersById],
-  (me, playerIds, playersById) => playerIds
-    .filter(id => id !== me)
-    .map(id => playersById[id].character)
+const getOtherPlayerIds = createSelector(
+  getMe,
+  getPlayerIds,
+  (me, playerIds) => playerIds.filter(id => id !== me)
+)
+
+const getCharacterIdsByPlayerId = createSelector(
+  getPlayersById,
+  playersById => mapObject(player => player.character)
+)
+
+const getOtherCharacterIds = createDeepSelector(
+  getOtherPlayerIds,
+  getCharacterIdsByPlayerId,
+  (otherPlayerIds, characterIdsByPlayerId) => otherPlayerIds
+    .map(id => characterIdsByPlayerId[id])
     .filter(id => !!id)
 )
 
-const getMySettings = state => {
-  const me = getMe(state);
-  return fromDefinitions.getSettingNames(state)
+const getSettingsByName = state => state.settingsByName;
+
+const getMySettings = createSelector(
+  getMe,
+  fromDefinitions.getSettingNames,
+  getSettingsByName,
+  (me, settingNames, settingsByName) => settingNames
     .filter(name => {
-      const setting = getSetting(state, name);
+      const setting = settingsByName[name];
       return setting && setting.player && setting.player === me;
     })
-}
+)
 
 const getCharacterSummaries = state => {
   const me = getMe(state);
@@ -416,6 +445,7 @@ const getCharacterSummaries = state => {
       return {
         id: character.id,
         name: name,
+        tokens: player.tokens,
         lure: role.theirLure
           .replace("{name}", name)
           .replace(/{(.+)}/g, (_match, pronoun) => (pronounSet && pronounSet[pronoun]) || pronoun),
@@ -456,24 +486,27 @@ const getSettingSummaries = state =>
     })
     .filter(setting => setting !== null);
 
-const getCharacterSheet = (state, id) => {
-  const character = getCharacter(state, id);
-  const definition = fromDefinitions.getRole(state, character.role);
-  return {
-    ...character,
-    choices1: {
-      choices: character.choices1,
-      statement: definition.choice1.statement,
-      complete: character.choices1.length >= definition.choice1.count
-    },
-    choices2: {
-      choices: character.choices2,
-      statement: definition.choice2.statement,
-      complete: character.choices2.length >= definition.choice2.count
-    },
-    definition
+const getCharacterSheet = createSelector(
+  getCharacter,
+  fromDefinitions.getRolesByName,
+  (character, rolesByName) => {
+    const definition = rolesByName[character.role];
+    return {
+      ...character,
+      choices1: {
+        choices: character.choices1,
+        statement: definition.choice1.statement,
+        complete: character.choices1.length >= definition.choice1.count
+      },
+      choices2: {
+        choices: character.choices2,
+        statement: definition.choice2.statement,
+        complete: character.choices2.length >= definition.choice2.count
+      },
+      definition
+    }
   }
-}
+)
 
 const getSettingSheet = (state, name) => {
   const setting = getSetting(state, name);

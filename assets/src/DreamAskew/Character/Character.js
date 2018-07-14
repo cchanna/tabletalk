@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 import rx from 'resplendence'
 import {
-  Container, Name, Description, Paragraph, Choice, Header, 
+  Container, Name, Description, Paragraph, Choice, Header,  TopButton,
   Question, List, Item, Columns, Block, Top, EditButton, NotesBlock
 } from "../Layout";
 import Moves from "../Moves";
@@ -129,6 +129,7 @@ class Character extends Component {
     const { id, setNotes } = this.props;
     setNotes({id, value});
   }
+
   
   render() {
     const { 
@@ -178,7 +179,7 @@ class Character extends Component {
           {mine ? (
             editing ? (
               done ? (
-                <EditButton onClick={this.finishEdit} selected>P</EditButton>
+                <EditButton onClick={this.finishEdit} rx={{selected: true}}>P</EditButton>
               ) : null
             ) : (
               <EditButton onClick={this.edit}>P</EditButton>
@@ -189,11 +190,14 @@ class Character extends Component {
           <Notes value={notes} onEdit={this.setNotes} readOnly={!mine} />
         </NotesBlock>
         <Columns>
-          <Block>
-            {name && !editing ? <Role>The {role}</Role> : null}
-            {mine && editing ? (
+          {editing ? (
+            <Block>
               <EditCharacter id={id} />
-            ) : (
+              <TopButton onClick={this.finishEdit} disabled={!done}>Done</TopButton>
+            </Block>
+          ) : (
+            <Block>
+              {name ? <Role>The {role}</Role> : null}
               <Description>
                 {look1 && look2 ? (
                   <Choices>
@@ -226,10 +230,10 @@ class Character extends Component {
                   </Choices>
                 ) : null}
               </Description>
-            )}
-            {editing ? null : loreBlock}
-            {editing ? null : otherInfo}
-          </Block>
+              {loreBlock}
+              {otherInfo}
+            </Block>
+          )}
           <Block>
             {editing ? loreBlock : null}
             {editing ? otherInfo : null}

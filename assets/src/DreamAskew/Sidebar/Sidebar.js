@@ -3,6 +3,7 @@ import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
 import rx from 'resplendence'
 import { Link } from "Routing";
 import { listWithAnd } from "../Layout";  
+import MyTokens from "./MyTokens";
 
 rx`
 @import '~DreamAskew/styles';
@@ -82,6 +83,12 @@ const Token = rx('div')`
   &.hovering {
     background: $accent2;
   }
+  &.dark {
+    box-shadow: none;
+    background: fade-out($foreground, .5);
+    width: 15px;
+    height: 15px;
+  }
 `
 const Pool = rx('button')`
   cursor: pointer;
@@ -109,6 +116,12 @@ const TokenDivider = rx('div')`
   width: 0px;
   border-right: 2px solid fade-out($foreground, .7);
 `
+const TheirTokens = rx('div')`
+  position: relative;
+  width: 100%;
+  transition-property: height;
+  transition-duration: 150ms;
+`
 
 class Sidebar extends Component {
   static propTypes = {
@@ -125,36 +138,12 @@ class Sidebar extends Component {
       name: string.isRequired,
       pickUpWhen: string.isRequired
     })),
-    tokens: number.isRequired,
     visuals: arrayOf(string).isRequired,
     depth: number.isRequired,
     here: arrayOf(string).isRequired,
     goTo: func.isRequired,
     replace: func.isRequired,
-    gainToken: func.isRequired,
-    spendToken: func.isRequired
   }
-
-  state = {
-    pool: Array.from(Array(100)).map(() => {
-      const tau = Math.PI * 2;
-      const t = tau * Math.random();
-      const u = Math.random() + Math.random();
-      const r = u > 1 ? 2 - u : u;
-
-      return {
-        x: r * Math.cos(t),
-        y: r * Math.sin(t)
-      }
-    }),
-    hoveringPool: false,
-    hoveringMine: false
-  }
-
-  handleMouseOverPool = () => this.setState({hoveringPool: true});
-  handleMouseLeavePool = () => this.setState({hoveringPool: false});
-  handleMouseOverMine = () => this.setState({hoveringMine: true});
-  handleMouseLeaveMine = () => this.setState({hoveringMine: false});
 
   route() {
     const { here, characterSummaries, unpickedRoles, settingSummaries, depth, replace } = this.props;
@@ -195,9 +184,8 @@ class Sidebar extends Component {
   render() {
     const { 
       characterSummaries, unpickedRoles, settingSummaries, visuals, 
-      depth, tokens, gainToken, spendToken 
+      depth 
     } = this.props;
-    const { pool, hoveringPool, hoveringMine } = this.state;
     return (
       <Container>
         <Body>
@@ -209,10 +197,18 @@ class Sidebar extends Component {
               </Lure>
             </Character>
             {characterSummaries.length || unpickedRoles.length ? <Divider /> : null}
-            {characterSummaries.map(({id, name, lure}) => (
+            {characterSummaries.map(({id, name, tokens, lure}) => (
               <Character key={id} depth={depth} to={["character", id.toString()]}>
                 <Name>{name}</Name>
                 <Lure>{lure}</Lure>
+                <TheirTokens style={{height: (15 + 20 * Math.floor((tokens - 1) / 12)) + "px"}}>
+                  {Array(tokens + 1).fill(0).map((_, i) => (
+                    <Token rx={{dark: true}} key={i} style={{
+                      left: (i === tokens ? -30 : ((i % 12) * 20)) + "px",
+                      top: (i === tokens ? -30 : Math.floor(i / 12) * 20) + "px"
+                    }} />
+                  ))}
+                </TheirTokens>
               </Character>
             ))}
             {characterSummaries.length && unpickedRoles.length ? <Divider /> : null}
@@ -231,22 +227,7 @@ class Sidebar extends Component {
             ))}
           </Scrolling>
           <Divider />
-          <Tokens>
-            <Name>Tokens</Name>
-            <TokenDivider />
-            {pool.map(({x, y}, i) => {
-              const mine = tokens + i >= 100; 
-              const hovering = (i === 100 - tokens && hoveringMine && tokens > 0) || (i === 99 - tokens && hoveringPool)
-              return ( 
-                <Token key={i} rx={{hovering}} style={{
-                  left: (mine ? 190 - ((99 - i) * 170 / ((tokens - 1) || 1)) + 60 : 20 * x + 20 ).toString() + "px",
-                  top: (mine ? 60 : 20 * y + 60).toString() + "px",
-                }}/>
-              )
-            })}
-            <Pool onMouseOver={this.handleMouseOverPool} onMouseLeave={this.handleMouseLeavePool} onClick={gainToken}/>
-            <Mine onMouseOver={this.handleMouseOverMine} onMouseLeave={this.handleMouseLeaveMine} onClick={spendToken}/>
-          </Tokens>
+          <MyTokens />
         </Body>
       </Container>
     );

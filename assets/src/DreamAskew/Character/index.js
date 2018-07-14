@@ -8,9 +8,7 @@ const {
 } = fromDreamAskew;
 const { setCharacterNotes } = forDreamAskew;
 
-const mapStateToProps = (state, {id}) => ({
-  ...getCharacterSheet(state, id)
-});
+const mapStateToProps = (state, {id}) => getCharacterSheet(state, id);
 
 const mapDispatchToProps = { setNotes: setCharacterNotes }
 

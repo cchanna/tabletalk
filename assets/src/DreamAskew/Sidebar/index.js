@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import Sidebar from './Sidebar';
-import { fromDreamAskew, forDreamAskew } from 'state';
+import { fromDreamAskew } from 'state';
 import { goTo, replace, makeGetHere } from 'Routing';
 
 const {
@@ -11,7 +11,6 @@ const {
   getVisuals,
   getMyPlayer
 } = fromDreamAskew;
-const { gainToken, spendToken } = forDreamAskew;
 
 const mapStateToProps = () => {
   const getHere = makeGetHere();
@@ -21,11 +20,10 @@ const mapStateToProps = () => {
     settingSummaries: getSettingSummaries(state),
     visuals: getVisuals(state),
     depth,
-    tokens: getMyPlayer(state).tokens,
     here: getHere(state, depth)
   })
 }
 
-const mapDispatchToProps = {goTo, replace, gainToken, spendToken}
+const mapDispatchToProps = {goTo, replace}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);
