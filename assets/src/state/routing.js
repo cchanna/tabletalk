@@ -13,11 +13,13 @@ export const reducer = (state = [], action) => {
   }
 };
 
+const getFullPath = state => state;
 const getPath = (state, depth = 0) => state.slice(depth);
 const getHere = (state, depth = 0) => state.slice(0, depth);
 const getNext = (state, depth = 0) => state[depth] || null;
 
 export const selectors = {
+  getFullPath,
   getPath,
   getHere,
   getNext

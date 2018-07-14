@@ -13,7 +13,7 @@ defmodule Tabletalk.Games.Game do
     field :me, :boolean, virtual: true
     field :slug, :string
 
-    has_many :players, Tabletalk.Games.Player, on_delete: :delete_all
+    has_many :players, Tabletalk.Games.Player
 
     timestamps()
   end

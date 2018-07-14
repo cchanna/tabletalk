@@ -4,7 +4,8 @@ defmodule TabletalkWeb.PlayChannel do
   alias Tabletalk.{
     Games,
     Monsterhearts,
-    Swords
+    Swords,
+    DreamAskew
   }
 
   require Logger
@@ -35,6 +36,7 @@ defmodule TabletalkWeb.PlayChannel do
     case kind do
       0 -> ~r/^monsterhearts_/
       1 -> ~r/^swords_/
+      2 -> ~r/^dream_askew_/
       _ -> ~r//
     end
   end
@@ -43,6 +45,7 @@ defmodule TabletalkWeb.PlayChannel do
     case kind do
       0 -> Monsterhearts.Dispatcher.dispatch(type, action, player_id, game_id)
       1 -> Swords.Dispatcher.dispatch(type, action, player_id, game_id)
+      2 -> DreamAskew.Dispatcher.dispatch(type, action, player_id, game_id)
       _ -> nil
     end
   end

@@ -22,7 +22,8 @@ class Threads extends Component {
     })),
     createThread: func.isRequired,
     updateThread: func.isRequired,
-    deleteThread: func.isRequired
+    deleteThread: func.isRequired,
+    reincorporateThread: func.isRequired
   }
 
   handleChange = ({id, text}) => {
@@ -36,12 +37,16 @@ class Threads extends Component {
   }
   
   render() {
-    const { threads, createThread } = this.props;
+    const { threads, createThread, reincorporateThread } = this.props;
 
     return (
       <Container>
         {threads.map(thread => (
-          <Thread {...thread} key={thread.id} onChange={this.handleChange}/>
+          <Thread 
+            {...thread} 
+            key={thread.id} 
+            onChange={this.handleChange} 
+            reincorporateThread={reincorporateThread}/>
         ))}
         <Thread onChange={createThread}/>
       </Container>

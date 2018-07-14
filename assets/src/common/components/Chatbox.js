@@ -224,7 +224,7 @@ class Chatbox extends Component {
     const { overlay, collapsed, chats, me, playerNames, Chat, diceRoller, className, ...rest } = this.props;
     let toggle = null;
     if (overlay) toggle = (
-      <Toggle rx={{collapsed}} onClick={this.handleToggle}>
+      <Toggle className="toggle" rx={{collapsed}} onClick={this.handleToggle}>
         {collapsed ? '%' : '^'}
       </Toggle>
     )

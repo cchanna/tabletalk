@@ -1,9 +1,10 @@
 export const kindsById = [
   "Monsterhearts",
-  "Swords Without Master"
+  "Swords Without Master",
+  "Dream Askew"
 ]
 
-export const kindsOrder = [0, 1];
+export const kindsOrder = [2, 0, 1];
 
 export const toClassName = kind => kind.toLowerCase().replace(/\s/g, "-");
 

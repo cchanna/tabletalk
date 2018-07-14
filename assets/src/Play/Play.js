@@ -4,6 +4,7 @@ import rx from 'resplendence'
 
 import Monsterhearts from 'Monsterhearts';
 import Swords from 'Swords';
+import DreamAskew from 'DreamAskew';
 
 rx`
 @import '~common/styles';
@@ -15,7 +16,7 @@ const Container = rx('div')`
  width: 100%;
 `
 
-const componentsForKind = [Monsterhearts, Swords];
+const componentsForKind = [Monsterhearts, Swords, DreamAskew];
 
 class Play extends Component {
   static propTypes = {

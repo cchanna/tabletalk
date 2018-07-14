@@ -197,6 +197,16 @@ defmodule Tabletalk.Swords do
     |> Repo.insert!()
   end
 
+  def get_reincorporation!(id) do
+    Reincorporation
+    |> Repo.get!(id)
+  end
+
+  def delete_reincorporation!(%Reincorporation{} = reincorpoartion) do
+    reincorpoartion
+    |> Repo.delete!()
+  end
+
   def clear_reincorporation!(player_id) do
     reincorpoartion = from(r in Reincorporation,
       join: c in Character, on: c.reincorporation_id == r.id,

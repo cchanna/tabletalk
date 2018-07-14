@@ -31,11 +31,8 @@ class Motifs extends Component {
       reincorporatedBy: string,
       mine: bool.isRequired
     })),
-    canReincorporate: bool.isRequired,
-    slowActionsById: object.isRequired,
     editMotif: func.isRequired,
     reincorporateMotif: func.isRequired,
-    undoReincorporation: func.isRequired,
   }
 
   state = {
@@ -45,10 +42,7 @@ class Motifs extends Component {
   toggleMotifsShown = () => this.setState(({show}) => ({show: !show}));
   
   render() {
-    const { 
-      motifs, canReincorporate, slowActionsById, 
-      editMotif, reincorporateMotif, undoReincorporation 
-    } = this.props;
+    const { motifs, editMotif, reincorporateMotif } = this.props;
     const { show } = this.state;
     let shown;
     for (shown=0; shown < motifs.length - 1; shown++) {
@@ -63,11 +57,9 @@ class Motifs extends Component {
           <Motif 
             show={show || shown >= i}
             key={i} index={i}
-            {...{
-              ...motif, canReincorporate,
-              editMotif, reincorporateMotif, undoReincorporation,
-              slowActionsById
-            }} 
+            {...motif}
+            editMotif={editMotif}
+            reincorporateMotif={reincorporateMotif}
             setMotifsShown={this.setMotifsShown}/>
         )}
         {shown < 2 ? (

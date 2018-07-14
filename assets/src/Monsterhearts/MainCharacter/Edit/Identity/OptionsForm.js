@@ -97,6 +97,7 @@ class OptionsForm extends Component {
     this.state = {
       value: props.value ? props.value : ""
     }
+    this.handleRadioChange = this.handleRadioChange.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -105,7 +106,7 @@ class OptionsForm extends Component {
     }
   }
 
-  handleRadioChange = e => {
+  handleRadioChange(e) {
     const { onSubmit, id } = this.props
     onSubmit({
       id,

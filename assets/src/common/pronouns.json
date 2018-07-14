@@ -1,0 +1,22 @@
+{
+  "she/her": {
+    "they": "she",
+    "they are": "she is",
+    "their": "her",
+    "theirs": "hers",
+    "them": "her",
+    "they're": "she's",
+    "themself": "herself",
+    "they have": "she has"
+  },
+  "he/him": {
+    "they": "he",
+    "they are": "he is",
+    "their": "his",
+    "theirs": "his",
+    "them": "him",
+    "they're": "he's",
+    "themself": "himself",
+    "they have": "he has"
+  }
+}

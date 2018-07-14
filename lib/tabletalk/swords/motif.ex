@@ -2,7 +2,7 @@ defmodule Tabletalk.Swords.Motif do
   use Ecto.Schema
   import Ecto.Changeset
   
-  alias Tabletalk.Swords.{Motif, Reincorporation, Game}
+  alias Tabletalk.Swords.{Motif, Reincorporation}
 
   schema "swords_motifs" do
     field :item1, :string, default: ""

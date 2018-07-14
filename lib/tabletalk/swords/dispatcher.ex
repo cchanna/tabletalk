@@ -38,7 +38,6 @@ defmodule Tabletalk.Swords.Dispatcher do
       "jovial_die" => jovial,
       "dice_tone" => dice_tone
     })
-    player = get_player!(player_id)
     if player_id === game.overplayer_id or glum === jovial do
       overtone = if dice_tone == nil, do: !game.overtone, else: dice_tone
       update_game!(game, %{"overtone" => overtone})
@@ -195,8 +194,12 @@ defmodule Tabletalk.Swords.Dispatcher do
   end
 
   def dispatch("thread_delete", %{"id" => id}, _player_id, _game_id) do
-    get_thread!(id)
-    |> delete_thread!()
+    thread = get_thread!(id)
+    if thread.reincorporation_id do
+      get_reincorporation!(thread.reincorporation_id)
+      |> delete_reincorporation!()
+    end
+    delete_thread!(thread)
     {:ok}
   end
 
@@ -231,6 +234,19 @@ defmodule Tabletalk.Swords.Dispatcher do
       "reincorporation_id" => reincorporation.id
     }) 
     {:ok, %{index: index, id: reincorporation.id}}
+  end
+
+  def dispatch("thread_reincorporate", %{"thread" => thread}, player_id, _game_id) do
+    character = get_character_for_player!(player_id)
+    reincorporation = create_reincorporation!()
+    character |> update_character!(%{
+      "reincorporation_id" => reincorporation.id
+    })
+    get_thread!(thread)
+    |> update_thread!(%{
+      "reincorporation_id" => reincorporation.id
+    })
+    {:ok, %{thread: thread, id: reincorporation.id}}
   end
 
   def dispatch("reincorporation_delete", %{}, player_id, _game_id) do

@@ -6,6 +6,7 @@ import * as socket from './socket';
 import * as status from './status';
 import * as monsterhearts from './monsterhearts';
 import * as swords from './swords';
+import * as dreamAskew from "./dreamAskew";
 import { 
   prefixedReducer, 
   prefixedSelectors, 
@@ -36,6 +37,10 @@ export const monsterheartsMessages = prefixedMessages("MONSTERHEARTS", monsterhe
 export const forMonsterhearts = prefixedActionCreators("MONSTERHEARTS", monsterhearts.actions);
 export const fromMonsterhearts = pagedSelectors("game", monsterheartsTypes.LOAD, monsterhearts.selectors);
 
+export const dreamAskewMessages = prefixedMessages("DREAM_ASKEW", dreamAskew.messages);
+export const forDreamAskew = prefixedActionCreators("DREAM_ASKEW", dreamAskew.actions);
+export const fromDreamAskew = pagedSelectors("game", "DREAM_ASKEW_LOAD", dreamAskew.selectors);
+
 export const swordsMessages = prefixedMessages("SWORDS", swords.messages);
 export const forSwords = prefixedActionCreators("SWORDS", swords.actions);
 export const fromSwords = pagedSelectors("game", "SWORDS_LOAD", swords.selectors);
@@ -48,6 +53,7 @@ export const reducer = combineReducers({
   status: prefixedReducer("STATUS", status.reducer), 
   game: pagedReducer({
     [monsterheartsTypes.LOAD]: prefixedReducer("MONSTERHEARTS", monsterhearts.reducer, ["SOCKET_DISCONNECT"]),
-    "SWORDS_LOAD": prefixedReducer("SWORDS", swords.reducer)
+    "SWORDS_LOAD": prefixedReducer("SWORDS", swords.reducer),
+    "DREAM_ASKEW_LOAD": prefixedReducer("DREAM_ASKEW", dreamAskew.reducer)
   }),
 });

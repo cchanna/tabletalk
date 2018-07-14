@@ -1,17 +1,14 @@
 import { connect } from 'react-redux'
 import Motifs from './Motifs';
-import { fromSwords, forSwords, fromSocket } from "state";
+import { fromSwords, forSwords } from "state";
 
-const { getMotifs, getCanReincorporate } = fromSwords;
-const { editMotif, reincorporateMotif, undoReincorporation } = forSwords;
-const { getSlowActionsById } = fromSocket;
+const { getMotifs } = fromSwords;
+const { editMotif, reincorporateMotif } = forSwords;
 
 const mapStateToProps = state => ({
   motifs: getMotifs(state),
-  canReincorporate: getCanReincorporate(state),
-  slowActionsById: getSlowActionsById(state)
 })
 
-const mapDispatchToProps = {editMotif, reincorporateMotif, undoReincorporation}
+const mapDispatchToProps = {editMotif, reincorporateMotif}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Motifs);

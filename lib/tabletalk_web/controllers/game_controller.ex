@@ -4,6 +4,7 @@ defmodule TabletalkWeb.GameController do
   alias Tabletalk.Games
   alias Tabletalk.Monsterhearts
   alias Tabletalk.Swords
+  alias Tabletalk.DreamAskew
 
   require Logger
 
@@ -25,15 +26,20 @@ defmodule TabletalkWeb.GameController do
     user_id = Tabletalk.Guardian.Plug.current_resource(conn)
     {:ok, game} = Games.new_game(user_id, params["body"])
     case game.kind do
+      0 -> nil
       1 -> Swords.handle_create(game.id, game.me)
+      2 -> DreamAskew.handle_create(game.id, game.me)
     end
     conn
     |> put_status(:created)
     |> render("show.json", game: game)
   end
 
+  def handle_join({:ok}, _slug) do
+    nil
+  end
+
   def handle_join({:ok, data}, slug) do
-    Logger.debug inspect(data)
     TabletalkWeb.Endpoint.broadcast("play:" <> slug, "dispatch", data)
   end
 
@@ -45,7 +51,9 @@ defmodule TabletalkWeb.GameController do
     user_id = Tabletalk.Guardian.Plug.current_resource(conn)
     {:ok, game, player} = Games.join(user_id, player_name, slug)
     case game.kind do
+      0 -> {:ok}
       1 -> Swords.handle_join(game.id, player.id)
+      2 -> DreamAskew.handle_join(game.id, player.id)
       _ -> {:error, :none}
     end
     |> handle_join(slug)
@@ -60,6 +68,10 @@ defmodule TabletalkWeb.GameController do
 
   defp load_game(1, game_id, player_id) do
     Swords.load(game_id, player_id)
+  end
+
+  defp load_game(2, game_id, player_id) do
+    DreamAskew.load(game_id, player_id)
   end
 
   def load(conn, %{"slug" => slug}) do
