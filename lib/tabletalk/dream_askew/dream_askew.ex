@@ -56,7 +56,7 @@ defmodule Tabletalk.DreamAskew do
         player: player |> to_json
       }
     })
-    {:ok, event}
+    {:ok, event |> to_json}
   end
 
   def handle_create(game_id, player_id) do

@@ -98,20 +98,23 @@ class Character extends Component {
     setNotes: func.isRequired
   }
 
-  done = () => {
+  done = (props = this.props) => {
     const { 
       name, look1, look2,
       gender, pronouns,
       styles,
       choices1, choices2,
-      keyRelationships
-    } = this.props;
+      keyRelationships,
+    } = props;
     return name && look1 && look2 && gender && pronouns && 
     styles.length >= 2 && choices1.complete && choices2.complete && keyRelationships.length
   }
 
-  state = {
-    editing: !this.done()
+  constructor(props) {
+    super(props);
+    this.state = {
+      editing: props.mine && !this.done(props)
+    }
   }
 
   edit = () => {
@@ -145,7 +148,7 @@ class Character extends Component {
       look1Plural, look2Plural,
     } = definition;
     const done = this.done();
-    const editing = this.state.editing || !done;
+    const editing = mine && (this.state.editing || !done);
     const loreBlock = (
       <Lore>
         <Paragraph>{lore}</Paragraph>
@@ -188,7 +191,7 @@ class Character extends Component {
         <Columns>
           <Block>
             {name && !editing ? <Role>The {role}</Role> : null}
-            {editing ? (
+            {mine && editing ? (
               <EditCharacter id={id} />
             ) : (
               <Description>

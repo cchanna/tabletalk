@@ -46,7 +46,7 @@ class Setting extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editing: props.desires && props.desires.length < 2
+      editing: props.mine && props.desires && props.desires.length < 2
     }
   }
 
@@ -76,7 +76,7 @@ class Setting extends Component {
   
   render() {
     const { name, mine, lore, allDesires, tips, pickUpWhen, giveAwayWhen, moves, divider, desires, notes } = this.props;
-    const { editing } = this.state;
+    const editing = this.state.editing && mine;
     const done = desires && desires.length == 2;
     return (
       <Container>
