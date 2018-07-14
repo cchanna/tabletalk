@@ -2,25 +2,9 @@ import React, { Component } from 'react'
 import { string, number, func, shape, arrayOf } from 'prop-types'
 import rx from 'resplendence'
 
-// import Monsterhearts from 'Monsterhearts';
-// import Swords from 'Swords';
-// import DreamAskew from 'DreamAskew';
-
-let componentsForKind;
-if (module.hot) {
-  componentsForKind = [
-    require('Monsterhearts').default,
-    require('Swords').default,
-    require('DreamAskew').default
-  ]
-} 
-else {
-  componentsForKind = [
-    () => import(/* webpackChunkName: "monsterhearts" */ 'Monsterhearts'), 
-    () => import(/* webpackChunkName: "swords" */ 'Swords'), 
-    () => import(/* webpackChunkName: "dream_askew" */ 'DreamAskew'), 
-  ];
-}
+import Monsterhearts from 'Monsterhearts';
+import Swords from 'Swords';
+import DreamAskew from 'DreamAskew';
 
 rx`
 @import '~common/styles';
@@ -31,6 +15,8 @@ const Container = rx('div')`
  height: 100%;
  width: 100%;
 `
+
+const componentsForKind = [Monsterhearts, Swords, DreamAskew];
 
 class Play extends Component {
   static propTypes = {
@@ -57,7 +43,7 @@ class Play extends Component {
     }
   }
   componentDidMount = this.route;
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (this.props.slug !== prevProps.slug) {
       this.route();
     }
@@ -65,40 +51,13 @@ class Play extends Component {
       const { replace, slug } = this.props;
       replace(["games", slug]);
     }
-    const { game } = this.props;
-    console.log("update?")
-    if (!module.hot && (prevProps.game && prevProps.game.me) !== (game && game.me)) {
-      if (game && game.me) {
-        componentsForKind[game.kind]().then(({ default: Component }) => {
-          this.setState({Component});
-        })
-      }
-      else {
-        this.setState({Component: null});
-      }
-    }
   }
-
-  state = {
-    Component: null
-  }
-
-
-
 
   render() {
     const { game, depth } = this.props;
     let content = null;
-    let Component = null;
     if (game && game.me) {
-      if (module.hot) {
-        Component = componentsForKind[game.kind]
-      }
-      else {
-        Component = this.state.component;
-      }
-    }
-    if (Component) {
+      const Component = componentsForKind[game.kind];
       if (Component) content = <Component depth={depth + 1}/>
       else {
         console.error("invalid component!");
