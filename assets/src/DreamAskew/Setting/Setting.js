@@ -99,7 +99,7 @@ class Setting extends Component {
         <Lore>
           <Markdown text={lore} />
         </Lore>
-        {notes === null || notes === undefined ? null : (
+        {!mine && (notes === null || notes === undefined) ? null : (
           <NotesBlock>
             <Notes value={notes || ""} onEdit={this.handleChangeNotes} readOnly={!mine}/>
           </NotesBlock>
