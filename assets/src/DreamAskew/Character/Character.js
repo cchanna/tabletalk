@@ -172,7 +172,6 @@ class Character extends Component {
         <Paragraph>{myLure}</Paragraph>
       </div>
     )
-    console.log(notes)
     return (
       <Container>
         <Top>
