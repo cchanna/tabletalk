@@ -45,7 +45,8 @@ defmodule Tabletalk.DreamAskew.View do
       styles: to_array(character.style_1, character.style_2),
       choices1: character.choices_1,
       choices2: character.choices_2,
-      keyRelationships: to_array(character.key_relationship_1, character.key_relationship_2)
+      keyRelationships: to_array(character.key_relationship_1, character.key_relationship_2),
+      notes: character.notes
     }
   end
 

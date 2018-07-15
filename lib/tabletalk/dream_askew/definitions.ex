@@ -1,3 +1,6 @@
+# / ([a-z][a-zA-Z é\-?“”.’+]+?)(,|\n|,\n)/ "$1"$2/
+
+
 defmodule Tabletalk.DreamAskew.Definitions do
   def roles_by_name do
     %{

@@ -105,7 +105,7 @@ export const messages = {
   [ENCLAVE_CONFLICTS_SET]: "Updated the enclave's conflicts.",
   [ENCLAVE_VISUALS_SET]: "Updated the enclave's visuals.",
   [MINOR_CHARACTER_CREATE]: "Created a new minor character, {minorCharacter.name}",
-  [MINOR_CHARACTER_NAME_SET]: "Renamed a minor character to {name}",
+  [MINOR_CHARACTER_NAME_SET]: "Renamed a minor character to {value}",
   [MINOR_CHARACTER_NOTES_SET]: "Updated a minor character's notes"
 }
 
@@ -517,8 +517,9 @@ const getSettingSheet = (state, name) => {
     name,
     mine: !!setting && setting.player === getMe(state),
     desires: setting && setting.desires,
+    notes: setting && setting.notes,
     allDesires: desires,
-    lore, tips, pickUpWhen, giveAwayWhen, moves
+    lore, tips, pickUpWhen, giveAwayWhen, moves,
   }
 }
 

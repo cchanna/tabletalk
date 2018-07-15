@@ -68,7 +68,7 @@ class Setting extends Component {
     const { name, setSettingDesires } = this.props;
     setSettingDesires({name, value});
   }
-  handleChangeNotes = value => {
+  handleChangeNotes = ({value}) => {
     const { name, setSettingNotes } = this.props;
     setSettingNotes({name, value});
   }
@@ -99,9 +99,11 @@ class Setting extends Component {
         <Lore>
           <Markdown text={lore} />
         </Lore>
-        <NotesBlock>
-          <Notes value={notes || ""} onEdit={this.handleChangeNotes} readOnly={!mine}/>
-        </NotesBlock>
+        {notes === null || notes === undefined ? null : (
+          <NotesBlock>
+            <Notes value={notes || ""} onEdit={this.handleChangeNotes} readOnly={!mine}/>
+          </NotesBlock>
+        )}
         <Columns>
           <Block>
             {!editing && desires && desires.length === 2 ? (
