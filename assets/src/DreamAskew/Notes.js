@@ -81,7 +81,9 @@ class Notes extends Component {
     const { value } = this.state;
     const { disabled, onEdit } = this.props;
     if (!disabled) {
-      onEdit({value});
+      if (value !== this.props.value) {
+        onEdit({value});
+      }
       this.setState({editing: false});
     }
   }
