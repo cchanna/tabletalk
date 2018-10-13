@@ -7,11 +7,11 @@ import AutoSizeTextArea from 'react-autosize-textarea';
 import Markdown from './Markdown';
 
 rx`
-@import '~DreamAskew/styles';
+@import '~Monsterhearts/styles';
 `
 
 const Container = rx('div')`
-  width: 0%;
+  width: 100%;
 `
 const TextArea = rx(AutoSizeTextArea)`
   @include input-style;
