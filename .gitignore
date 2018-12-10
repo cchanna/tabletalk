@@ -27,3 +27,4 @@ npm-debug.log
 /config/*.secret.exs
 /api
 /lib/tabletalk_web/templates/page/index.html.eex
+node_modules
