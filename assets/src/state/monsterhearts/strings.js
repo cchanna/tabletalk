@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
-import { LOAD } from './actions';
-import { socketActions, slowSocketActions } from '../socketActions';
+import { LOAD } from "./actions";
+import { socketActions, slowSocketActions } from "../socketActions";
 
 const ADD = "ADD";
 const SPEND = "SPEND";
@@ -11,25 +11,33 @@ export const actions = {
   ...socketActions({
     addString: [ADD, "id"],
     spendString: [SPEND, "id"],
-    deleteString: [DELETE, "id"],
+    deleteString: [DELETE, "id"]
   }),
   ...slowSocketActions({
-    createString: [CREATE, "to", "from"],
-  }),
-}
+    createString: [CREATE, "to", "from"]
+  })
+};
+
+export const messages = {
+  [ADD]: "{string:from:id} gained a string on {string:to:id}",
+  [CREATE]: "{character:from} gained a string on {character:to}",
+  [SPEND]: "{string:from:id} spent a string on {string:to:id}",
+  [DELETE]: "{string:from:id} spent a strong on {string:to:id}"
+};
 
 export const reducer = combineReducers({
   ids: (state = null, action) => {
-    switch(action.type) {
+    switch (action.type) {
       case LOAD:
         return action.strings;
       case CREATE:
         return [...state, action.id];
-      default: return state;
+      default:
+        return state;
     }
   },
   byId: (state = null, action) => {
-    switch(action.type) {
+    switch (action.type) {
       case LOAD:
         return action.stringsById;
       case ADD: {
@@ -40,7 +48,7 @@ export const reducer = combineReducers({
             ...string,
             value: string.value + 1
           }
-        }
+        };
       }
       case SPEND: {
         const string = state[action.id];
@@ -50,7 +58,7 @@ export const reducer = combineReducers({
             ...string,
             value: string.value - 1
           }
-        }
+        };
       }
       case CREATE:
         return {
@@ -60,8 +68,9 @@ export const reducer = combineReducers({
             from: action.from,
             value: action.value
           }
-        }
-      default: return state;
+        };
+      default:
+        return state;
     }
   }
 });
@@ -74,4 +83,4 @@ export const selectors = {
   get,
   getIds,
   getById
-}
+};

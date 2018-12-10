@@ -1,14 +1,15 @@
-import React, { Component } from 'react'
-import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
-import rx from 'resplendence'
-import { monsterheartsMessages } from 'state';
-  
+import React, { Component } from "react";
+import { string, number, bool, func, shape, object, arrayOf } from "prop-types";
+import rx from "resplendence";
+import { monsterheartsMessages } from "state";
+import bonusString from "common/bonusString";
+
 rx`
 @import '~common/styles';
 @import '~common/colors';
-`
+`;
 
-const Talk = rx('div')`
+const Talk = rx("div")`
   flex: 0 0 auto;
   background: hsl(240, 10%, 92%);
   padding: 10px;
@@ -21,46 +22,46 @@ const Talk = rx('div')`
     background: hsl(339, 50%, 52%);
     color: white;
   }
-`
+`;
 
-const Log = rx('div')`
+const Log = rx("div")`
   flex: 0 0 auto;
   color: hsl(240, 10%, 50%);
   margin: 5px 0;
-`
+`;
 
-const P = rx('p')`
+const P = rx("p")`
   &:first-child {
     margin-top: 0;
   }
   &:last-child {
     margin-bottom: 0;
   }
-`
+`;
 
-const Roll = rx('div')`
+const Roll = rx("div")`
   flex: 0 0 auto;
   align-self: center;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
   color: hsl(240, 10%, 70%);
-`
-const RollInfo = rx('div')`
+`;
+const RollInfo = rx("div")`
   font-size: 30px;
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
   padding: 5px;
-`
-const Dice = rx('div')`
+`;
+const Dice = rx("div")`
   font-family: "icomoon";
   margin-right: 5px;
-`
-const Bonus = rx('div')`
+`;
+const Bonus = rx("div")`
   font-size: 20px;
-`
-const RollResult = rx('div')`
+`;
+const RollResult = rx("div")`
   font-family: "League Spartan";
   font-size: 60px;
   transition: 120s color;
@@ -75,18 +76,18 @@ const RollResult = rx('div')`
       color: hsl(240, 10%, 83%);
     }
   }
-`
+`;
 
 const makeBonusString = bonus => {
-  if (bonus >= 0) return "+ " + bonus; 
-  else return "− " + (-bonus);
-}
+  if (bonus >= 0) return "+ " + bonus;
+  else return "− " + -bonus;
+};
 
 export const chatProperties = {
   insertedAt: string.isRequired,
   data: object.isRequired,
-  playerId: number.isRequired,
-}
+  playerId: number.isRequired
+};
 
 class Chat extends Component {
   static propTypes = {
@@ -95,10 +96,11 @@ class Chat extends Component {
     mine: bool.isRequired,
     playerNames: object,
     characterNames: object,
-  }
-  
+    stringsById: object
+  };
+
   render() {
-    const { data, mine, newest, characterNames } = this.props;
+    const { data, mine, newest, characterNames, stringsById } = this.props;
 
     if (data.type === "MONSTERHEARTS_CHAT") {
       if (data.die1) {
@@ -107,41 +109,69 @@ class Chat extends Component {
         return (
           <Roll>
             <RollInfo>
-              <Dice>{data.die1}{data.die2}</Dice>
+              <Dice>
+                {data.die1}
+                {data.die2}
+              </Dice>
               <Bonus>{bonusString}</Bonus>
             </RollInfo>
-            <RollResult rx={{newest, strong: result >= 10, weak: (result >= 7 && result <= 9), miss: result <= 6}}>
+            <RollResult
+              rx={{
+                newest,
+                strong: result >= 10,
+                weak: result >= 7 && result <= 9,
+                miss: result <= 6
+              }}
+            >
               {result}
             </RollResult>
           </Roll>
         );
-      }
-      else if (data.text) {
+      } else if (data.text) {
         if (data.isLog) {
-          return (
-            <Log rx={{mine}}>{data.text}</Log>
-          )
-        }
-        else {
+          return <Log rx={{ mine }}>{data.text}</Log>;
+        } else {
           const paragraphs = data.text
             .trim()
             .split("\n")
             .map((paragraph, i) => <P key={i}>{paragraph}</P>);
-          return (
-            <Talk rx={{mine}}>{paragraphs}</Talk>
-          )
+          return <Talk rx={{ mine }}>{paragraphs}</Talk>;
         }
-      }
-      else {
+      } else {
         return null;
       }
-    }
-    else {
+    } else {
       const unformatted = monsterheartsMessages[data.type];
       if (unformatted) {
         const formatted = unformatted
-          .replace(/{character:(.*?)}/g, (_m, p1) => characterNames[data[p1]]);
-        return <Log rx={{mine}}>{formatted}</Log>
+          .replace(
+            /{string:(.*?):(.*?)}/g,
+            (_m, p1, p2) => characterNames[stringsById[data[p2]][p1]]
+          )
+          .replace(/{character:(.*?)}/g, (_m, p1) => characterNames[data[p1]])
+          .replace(/{bonus:(.*?)}/g, (_m, p1) => bonusString(data[p1]))
+          .replace(/{advancement}/g, () => {
+            switch (data.advancementId) {
+              case "grow":
+                return data.moves.length === 1
+                  ? `chose the growing up move "${data.moves[0]}"`
+                  : `chose the growing up moves "${data.moves[0]}" and "${
+                      data.moves[1]
+                    }"`;
+              case "+stat":
+                return `added one to their ${data.stat}`;
+              case "any":
+              case "self":
+                return `gained the move "${data.move}"`;
+              case "rtire":
+                return `was retired`;
+              default:
+                return "did something unusual";
+            }
+          })
+          .replace(/{(.*?)\.(.*?)}/g, (_m, p1, p2) => data[p1][p2])
+          .replace(/{(.*?)}/g, (_m, p1) => data[p1]);
+        return <Log rx={{ mine }}>{formatted}</Log>;
       }
     }
     return null;

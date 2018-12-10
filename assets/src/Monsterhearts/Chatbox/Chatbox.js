@@ -1,15 +1,15 @@
-import React, { Component } from 'react'
-import { bool, func, arrayOf, string, object, number, shape } from 'prop-types'
-import rx from 'resplendence'
+import React, { Component } from "react";
+import { bool, func, arrayOf, string, object, number, shape } from "prop-types";
+import rx from "resplendence";
 
-import Chat, { chatProperties } from './Chat';  
-import BaseChatbox from 'common/components/Chatbox';
-import DiceRoller from './DiceRoller';
+import Chat, { chatProperties } from "./Chat";
+import BaseChatbox from "common/components/Chatbox";
+import DiceRoller from "./DiceRoller";
 
 rx`
 @import '~Monsterhearts/fonts';
 @import '~Monsterhearts/colors';
-`
+`;
 
 const Styling = rx(BaseChatbox)`--1
 font-family: $body;
@@ -33,8 +33,7 @@ font-family: $body;
       background: darken($foreground, 40%);
     }
   }
-`
-
+`;
 
 class Chatbox extends Component {
   static propTypes = {
@@ -44,21 +43,23 @@ class Chatbox extends Component {
     playerNames: object.isRequired,
     characterNames: object.isRequired,
     me: number.isRequired,
+    stringsById: object.isRequired,
     setChatboxCollapsed: func.isRequired,
     chat: func.isRequired
-  }
+  };
 
-  handleChat = ({text}) => {
+  handleChat = ({ text }) => {
     const { chat } = this.props;
-    chat({text});
-  }
+    chat({ text });
+  };
 
   render() {
     const { overlay, collapsed } = this.props;
     return (
-      <Styling {...this.props}
+      <Styling
+        {...this.props}
         diceRoller={
-          <DiceRoller onChat={this.handleChat} {...{overlay, collapsed}}/>
+          <DiceRoller onChat={this.handleChat} {...{ overlay, collapsed }} />
         }
         Chat={Chat}
       />
