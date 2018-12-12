@@ -11,6 +11,7 @@ defmodule Tabletalk.Monsterhearts do
   alias Tabletalk.Monsterhearts.String
   alias Tabletalk.Monsterhearts.Advancement
   alias Tabletalk.Monsterhearts.Definitions
+  alias Tabletalk.Monsterhearts.CustomMove
   alias Tabletalk.Games
 
   defp create_player_settings!(attrs) do
@@ -79,6 +80,14 @@ defmodule Tabletalk.Monsterhearts do
       eventIds: events |> ids,
       strings: strings |> ids,
       stringsById: strings |> by_id,
+      custom: %{
+        movesByName: %{
+          "Transference" => %{
+            text: "hi",
+            notes: true
+          }
+        }
+      },
       definitions: %{
         movesByName: Definitions.moves_by_name,
         advancementsById: Definitions.advancements_by_id,
@@ -173,5 +182,27 @@ defmodule Tabletalk.Monsterhearts do
     string
     |> String.changeset(attrs)
     |> Repo.update!()
+  end
+
+  def get_custom_move(name, game_id) do
+    CustomMove
+    |> Repo.get_by(%{"name" => name, "game_id" => game_id})
+  end
+
+  def create_custom_move!(attrs \\ %{}) do
+    %CustomMove{}
+    |> CustomMove.changeset(attrs)
+    |> Repo.insert!()
+  end
+
+  def update_custom_move!(%CustomMove{} = custom_move, attrs) do
+    custom_move
+    |> CustomMove.changeset(attrs)
+    |> Repo.update!()
+  end
+
+  def delete_custom_move!(%CustomMove{} = custom_move) do
+    custom_move
+    |> Repo.delete!()
   end
 end

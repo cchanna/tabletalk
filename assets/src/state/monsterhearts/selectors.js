@@ -2,6 +2,7 @@ import { selectors as characterSelectors } from "./characters";
 import { selectors as stringSelectors } from "./strings";
 import { selectors as chatboxSelectors } from "../chatbox";
 import { prefixedSelectors } from "redux-state-tools";
+import { createSelector } from "reselect";
 import mapObject from "utils/mapObject";
 
 const fromCharacters = prefixedSelectors("characters", characterSelectors);
@@ -68,13 +69,25 @@ export const getReadOnly = (state, id = null) => {
   return !mainCharacter || mainCharacter.playerId !== me;
 };
 
+const getCustom = state => state.custom;
+const getCustomMovesByName = state => getCustom(state).movesByName;
+
+const getMoveDefinitionsByName = state => getDefinitions(state).movesByName;
+const getMovesByName = createSelector(
+  getMoveDefinitionsByName,
+  getCustomMovesByName,
+  (defs, custom) => ({
+    ...defs,
+    ...custom
+  })
+);
+
 export const getDefinitions = state => state.definitions;
 export const getPlaybooks = state => getDefinitions(state).playbooks;
 export const getPlaybookDefinition = (state, playbook) =>
   getDefinitions(state).playbooksByName[playbook];
 export const getCharacterPlaybookDefinition = (state, id) =>
   getPlaybookDefinition(state, getCharacter(state, id).mainCharacter.playbook);
-const getMovesByName = state => getDefinitions(state).movesByName;
 const getAdvancementsById = state => getDefinitions(state).advancementsById;
 export const getGrowingUpMoves = state => getDefinitions(state).growingUpMoves;
 export const getCharacterGrowingUpMoves = (state, id) => {
@@ -194,6 +207,7 @@ export const getChats = state => {
     ...chatsById[id]
   }));
 };
+
 export const getMove = (state, name, characterId = null) => {
   const def = getMovesByName(state)[name];
   if (!def) {

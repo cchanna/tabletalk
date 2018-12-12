@@ -290,6 +290,33 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     end
   end
 
+  def dispatch("custom_move_edit", %{"name" => name, "text" => text, "notes" => notes}, _player_id, game_id) do
+    move = Monsterhearts.get_custom_move("name", game_id)
+    if move != nil do
+      Monsterhearts.update_custom_move!(move, %{
+        "text" => text,
+        "notes" => notes
+      })
+    else
+      Monsterhearts.create_custom_move!(%{
+        "name" => name,
+        "text" => text,
+        "notes" => notes
+      })
+    end
+    {:ok}
+  end
+
+  def dispatch("custom_move_delete", %{"name" => name}, _player_id, game_id) do
+    move = Monsterhearts.get_custom_move("name", game_id)
+    if move != nil do
+      Monsterhearts.delete_custom_move!(move)
+      {:ok}
+    else
+      {:error, "That custom move doesn't exist."}
+    end
+  end
+
   def dispatch("chat", %{"text" => text}, _player_id, _game_id) do
     {:ok, make_chat(text)}
   end

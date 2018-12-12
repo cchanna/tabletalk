@@ -1,21 +1,26 @@
-import * as api from './baseApi';
-import getStatus from 'common/getStatus';
+import * as api from "./baseApi";
+import getStatus from "common/getStatus";
 
 const catchStatus = error => dispatch => {
   if (error.response.status === 503) {
     dispatch(getStatus());
-  }
-  else {
+  } else {
     throw error;
   }
-}
+};
 
-export const get = (url, {queries, baseUrl = "api"} = {}) => dispatch => {
-  return dispatch(api.get(`${baseUrl}/${url}`, {queries}))
-    .catch(err => dispatch(catchStatus(err)));
-}
+export const get = (url, { queries, baseUrl = "api" } = {}) => dispatch => {
+  return dispatch(api.get(`${baseUrl}/${url}`, { queries })).catch(err =>
+    dispatch(catchStatus(err))
+  );
+};
 
-export const post = (url, body, {queries, baseUrl = "api"} = {}) => dispatch => {
-  return dispatch(api.post(`${baseUrl}/${url}`, {queries, body}))
-    .catch(err => dispatch(catchStatus(err)));
-}
+export const post = (
+  url,
+  body,
+  { queries, baseUrl = "api" } = {}
+) => dispatch => {
+  return dispatch(api.post(`${baseUrl}/${url}`, { queries, body })).catch(err =>
+    dispatch(catchStatus(err))
+  );
+};

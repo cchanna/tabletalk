@@ -1,28 +1,30 @@
-import React, { Component } from 'react';
-import { bool, arrayOf, string, func } from 'prop-types';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import rx from 'resplendence';
+import React, { Component, useEffect } from "react";
+import { bool, arrayOf, string, func } from "prop-types";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { useStore } from "store";
+import { setGoogleJWT } from "Auth";
 
-import Games from 'Games';
-import Play from 'Play';
-import Auth from 'Auth';
+import rx from "resplendence";
 
-import { fromAuth, fromStatus } from 'state';
-import getStatus from 'common/getStatus';
-import { login, loginReady, signout } from 'Auth';
-import { replace, Route, getPath } from 'Routing';
+import Games from "Games";
+import Play from "Play";
+import Auth from "Auth";
 
-import Spinner from 'common/components/Spinner';
+import { fromAuth, fromStatus } from "state";
+import getStatus from "common/getStatus";
+import { login, loginReady, signout } from "Auth";
+import { replace, Route, getPath } from "Routing";
+
+import Spinner from "common/components/Spinner";
 import "./index.scss";
 
 rx`
 @import "~common/styles";
 @import "~common/colors";
-`
+`;
 
-
-const Container = rx('div')`
+const Container = rx("div")`
   display: flex;
   flex-flow: column;
   align-items: center;
@@ -30,18 +32,18 @@ const Container = rx('div')`
   height: 100vh;
   user-select: none;
   overflow: hidden;
-`
+`;
 
-const DownMessage = rx('div')`
+const DownMessage = rx("div")`
   color: white;
   font-family: "League Spartan";
   max-width: 900px;
   font-size: 50px;
   text-shadow: -1px 1px 1px hsla(0, 0%, 0%, .1);
   text-align: center;
-`
+`;
 
-const SignoutButton = rx('button')`
+const SignoutButton = rx("button")`
   @include button;
   font-family: "League Spartan";
   color: fade-out($color-light, 0.6);
@@ -60,9 +62,9 @@ const SignoutButton = rx('button')`
     top: 2px;
     right: 3px;
   }
-`
+`;
 
-const FloatAbove = rx('div')`
+const FloatAbove = rx("div")`
   width: 100%;
   height: 100%;
   position: absolute;
@@ -72,10 +74,35 @@ const FloatAbove = rx('div')`
   &.show {
     display: block;
   }
-`
+`;
+
+const onSignIn = args => {
+  const jwt = args.Zi.id_token;
+  window.googleJwt = args.Zi.id_token;
+};
+
+window.onSignIn = onSignIn;
+
+const GoogleApi = () => {
+  const [_state, dispatch] = useStore();
+  useEffect(() => {
+    if (window.googleJwt) {
+      dispatch(setGoogleJWT({ jwt: window.googleJwt }));
+      window.googleJwt = null;
+    } else {
+      window.onSignIn = args => {
+        dispatch(setGoogleJWT({ jwt: args.Zi.id_token }));
+      };
+    }
+    return () => {
+      window.onSignIn = onSignIn;
+    };
+  });
+  return null;
+};
 
 class App extends Component {
-static propTypes = {
+  static propTypes = {
     up: bool,
     loggedInWithGoogle: bool.isRequired,
     next: string,
@@ -87,8 +114,8 @@ static propTypes = {
     getStatus: func.isRequired,
     login: func.isRequired,
     replace: func.isRequired,
-    signout: func.isRequired,
-  }
+    signout: func.isRequired
+  };
 
   componentDidMount() {
     const { getStatus } = this.props;
@@ -98,9 +125,12 @@ static propTypes = {
     {
       const { up, loggedInWithGoogle, login } = this.props;
 
-      const canLogIn = (up && loggedInWithGoogle);
-      const couldLogIn = (prevProps.up && prevProps.loggedInWithGoogle);
-      if (canLogIn && (!couldLogIn || loggedInWithGoogle !== prevProps.loggedInWithGoogle)) {
+      const canLogIn = up && loggedInWithGoogle;
+      const couldLogIn = prevProps.up && prevProps.loggedInWithGoogle;
+      if (
+        canLogIn &&
+        (!couldLogIn || loggedInWithGoogle !== prevProps.loggedInWithGoogle)
+      ) {
         login();
       }
     }
@@ -127,26 +157,28 @@ static propTypes = {
       path: "play",
       component: Play
     }
-  ]
+  ];
 
   render() {
     const { up, downMessage, loggedIn, loggingIn, ready, signout } = this.props;
 
-    let content
+    let content;
     if (up === false) {
       content = <DownMessage>{downMessage}</DownMessage>;
-    }
-    else if (!ready) content = <Spinner/>;
+    } else if (!ready) content = <Spinner />;
     else if (loggedIn) {
-      content = <Route pages={this.pages}/>
+      content = <Route pages={this.pages} />;
     }
 
-    const signoutButton = loggedIn ? <SignoutButton onClick={signout}>signout</SignoutButton> : null;
+    const signoutButton = loggedIn ? (
+      <SignoutButton onClick={signout}>signout</SignoutButton>
+    ) : null;
 
     return (
       <Container>
-        <FloatAbove rx={{show: (ready && !loggedIn && !loggingIn)}}>
-          <Auth/>
+        <GoogleApi />
+        <FloatAbove rx={{ show: ready && !loggedIn && !loggingIn }}>
+          <Auth />
         </FloatAbove>
         {signoutButton}
         {content}
@@ -155,7 +187,7 @@ static propTypes = {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const { next } = getPath(state);
   return {
     up: fromStatus.getIsUp(state),
@@ -165,12 +197,15 @@ const mapStateToProps = (state) => {
     loggedIn: fromAuth.getIsLoggedIn(state),
     loggingIn: fromAuth.getIsLoggingIn(state),
     next
-  }
-}
+  };
+};
 
 const mapDispatchToProps = { getStatus, login, loginReady, replace, signout };
 
 const enhance = compose(
-  connect(mapStateToProps, mapDispatchToProps)
-)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )
+);
 export default enhance(App);
