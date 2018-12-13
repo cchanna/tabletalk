@@ -11,7 +11,7 @@ config :tabletalk,
 
 # Configures the endpoint
 config :tabletalk, TabletalkWeb.Endpoint,
-  url: [host: "192.168.0.104"],
+  url: [host: "192.168.0.101"],
   secret_key_base: "03I0GC+5Pc084wIF3LMUV+hF1Z8Ts+KGa/Bh1/tpjx9iAaZqrp+tVSv2YRzzL8nC",
   render_errors: [view: TabletalkWeb.ErrorView, accepts: ~w(json), format: "json"],
   pubsub: [name: Tabletalk.PubSub,

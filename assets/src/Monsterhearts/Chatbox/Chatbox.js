@@ -11,7 +11,7 @@ rx`
 @import '~Monsterhearts/colors';
 `;
 
-const Styling = rx(BaseChatbox)`--1
+const Styling = rx(BaseChatbox)`
 font-family: $body;
   color: hsl(240, 10%, 95%);
   background: hsl(240, 10%, 21%);

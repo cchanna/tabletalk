@@ -1,9 +1,4 @@
-import React, { Component, useEffect } from "react";
-import { bool, arrayOf, string, func } from "prop-types";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { useStore } from "store";
-import { setGoogleJWT } from "Auth";
+import React, { useEffect, useState } from "react";
 
 import rx from "resplendence";
 
@@ -11,13 +6,13 @@ import Games from "Games";
 import Play from "Play";
 import Auth from "Auth";
 
-import { fromAuth, fromStatus } from "state";
-import getStatus from "common/getStatus";
-import { login, loginReady, signout } from "Auth";
-import { replace, Route, getPath } from "Routing";
-
 import Spinner from "common/components/Spinner";
 import "./index.scss";
+
+import { Route, useNavigator } from "Routing";
+import { useAuth } from "store";
+import { useApiEffect } from "common/useApi";
+import { hot } from "react-hot-loader";
 
 rx`
 @import "~common/styles";
@@ -76,136 +71,162 @@ const FloatAbove = rx("div")`
   }
 `;
 
-const onSignIn = args => {
-  const jwt = args.Zi.id_token;
-  window.googleJwt = args.Zi.id_token;
-};
-
+const onSignIn = args => (window.googleJwt = args.Zi.id_token);
 window.onSignIn = onSignIn;
 
-const GoogleApi = () => {
-  const [_state, dispatch] = useStore();
+const useGoogleJwt = () => {
+  const [jwt, setJwt] = useState(null);
   useEffect(() => {
     if (window.googleJwt) {
-      dispatch(setGoogleJWT({ jwt: window.googleJwt }));
+      setJwt(window.googleJwt);
       window.googleJwt = null;
     } else {
       window.onSignIn = args => {
-        dispatch(setGoogleJWT({ jwt: args.Zi.id_token }));
+        setJwt(args.Zi.id_token);
       };
     }
     return () => {
       window.onSignIn = onSignIn;
     };
   });
-  return null;
+
+  return jwt;
 };
 
-class App extends Component {
-  static propTypes = {
-    up: bool,
-    loggedInWithGoogle: bool.isRequired,
-    next: string,
-    loggedIn: bool.isRequired,
-    downMessage: string,
-    loggingIn: bool.isRequired,
-    ready: bool.isRequired,
-    loginReady: func.isRequired,
-    getStatus: func.isRequired,
-    login: func.isRequired,
-    replace: func.isRequired,
-    signout: func.isRequired
+const STATUS_ERROR_DEFAULT = "Tabletalk is down right now. Sorry!";
+const STATUS_UP = "up";
+
+const useStatus = () => {
+  const [status, setStatusBase] = useState(null);
+  const [{ isStatusUnknown }, { setStatusUnknown }] = useAuth();
+  const setStatus = status => {
+    setStatusUnknown({ value: false });
+    setStatusBase(status);
   };
 
-  componentDidMount() {
-    const { getStatus } = this.props;
-    getStatus();
-  }
-  componentDidUpdate(prevProps) {
-    {
-      const { up, loggedInWithGoogle, login } = this.props;
+  useApiEffect(
+    "status",
+    () => setStatus(STATUS_UP),
+    error => {
+      if (error.response && error.response.status === 503) {
+        error.response
+          .json()
+          .then(({ reason }) => setStatus(reason))
+          .catch(() => setStatus(STATUS_ERROR_DEFAULT));
+      } else {
+        setStatus(STATUS_ERROR_DEFAULT);
+      }
+    },
+    { baseUrl: "", onlyWhen: isStatusUnknown }
+  );
 
-      const canLogIn = up && loggedInWithGoogle;
-      const couldLogIn = prevProps.up && prevProps.loggedInWithGoogle;
-      if (
-        canLogIn &&
-        (!couldLogIn || loggedInWithGoogle !== prevProps.loggedInWithGoogle)
-      ) {
-        login();
-      }
-    }
-    {
-      const { up, loginReady } = this.props;
-      if (!prevProps.up && up) {
-        setTimeout(loginReady, 500);
-      }
-    }
-    {
-      const { next, loggedIn, replace } = this.props;
-      if (loggedIn && !next) {
-        replace(["games"]);
-      }
-    }
-  }
+  return status;
+};
 
-  pages = [
-    {
-      path: "games",
-      component: Games
+const useLoginReady = isUp => {
+  const [isReady, setIsReady] = useState(false);
+  useEffect(
+    () => {
+      let timeout;
+      if (isUp) {
+        timeout = setTimeout(() => setIsReady(true), 500);
+      }
+      return () => clearTimeout(timeout);
+    },
+    [isUp]
+  );
+  return isReady;
+};
+
+const pages = [
+  {
+    path: "games",
+    component: Games
+  },
+  {
+    path: "play",
+    component: Play
+  }
+];
+
+const useLogin = (googleJwt, isUp) => {
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState(null);
+  const [{ isLoggedIn }, { setJWT }] = useAuth();
+
+  useApiEffect(
+    `login?provider=google&jwt=${googleJwt}`,
+    ({ jwt }) => {
+      setJWT({ jwt });
+      setPending(false);
+    },
+    error => {
+      setError(error);
+      setPending(false);
     },
     {
-      path: "play",
-      component: Play
+      baseUrl: "auth",
+      onlyWhen: isUp && googleJwt && !isLoggedIn,
+      onStart: () => {
+        setPending(true);
+      }
     }
-  ];
+  );
 
-  render() {
-    const { up, downMessage, loggedIn, loggingIn, ready, signout } = this.props;
-
-    let content;
-    if (up === false) {
-      content = <DownMessage>{downMessage}</DownMessage>;
-    } else if (!ready) content = <Spinner />;
-    else if (loggedIn) {
-      content = <Route pages={this.pages} />;
-    }
-
-    const signoutButton = loggedIn ? (
-      <SignoutButton onClick={signout}>signout</SignoutButton>
-    ) : null;
-
-    return (
-      <Container>
-        <GoogleApi />
-        <FloatAbove rx={{ show: ready && !loggedIn && !loggingIn }}>
-          <Auth />
-        </FloatAbove>
-        {signoutButton}
-        {content}
-      </Container>
-    );
-  }
-}
-
-const mapStateToProps = state => {
-  const { next } = getPath(state);
-  return {
-    up: fromStatus.getIsUp(state),
-    downMessage: fromStatus.getMessage(state),
-    ready: fromAuth.getIsReady(state),
-    loggedInWithGoogle: fromAuth.getIsLoggedInWithGoogle(state),
-    loggedIn: fromAuth.getIsLoggedIn(state),
-    loggingIn: fromAuth.getIsLoggingIn(state),
-    next
-  };
+  return [isLoggedIn, pending, !!error];
 };
 
-const mapDispatchToProps = { getStatus, login, loginReady, replace, signout };
+const App = () => {
+  const { next, replace } = useNavigator();
+  const [_getAuth, { logout }] = useAuth();
 
-const enhance = compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
-);
-export default enhance(App);
+  const status = useStatus();
+  const isUp = status === STATUS_UP;
+  const isReady = useLoginReady(isUp);
+  const googleJwt = useGoogleJwt();
+  const [isLoggedIn, isLoggingIn, failedLoggingIn] = useLogin(googleJwt, isUp);
+
+  const signout = () => {
+    logout();
+    if (googleJwt && window.gapi) {
+      window.gapi.auth2.getAuthInstance().signOut();
+    }
+  };
+
+  // console.log(
+  //   status,
+  //   isUp,
+  //   isReady,
+  //   googleJwt,
+  //   isLoggedIn,
+  //   isLoggingIn,
+  //   failedLoggingIn
+  // );
+
+  useEffect(
+    () => {
+      if (isLoggedIn && !next) replace("games");
+    },
+    [isLoggedIn, next]
+  );
+
+  return (
+    <Container>
+      <FloatAbove rx={{ show: isReady && !isLoggedIn && !isLoggingIn }}>
+        <Auth isLoggingIn={isLoggingIn} isFailed={failedLoggingIn} />
+      </FloatAbove>
+      {isLoggedIn ? (
+        <SignoutButton onClick={signout}>signout</SignoutButton>
+      ) : null}
+      {!isUp ? (
+        <DownMessage>{status}</DownMessage>
+      ) : !isReady ? (
+        <Spinner />
+      ) : isLoggedIn ? (
+        <Route pages={pages} />
+      ) : null}
+    </Container>
+  );
+};
+
+export default hot(module)(App);

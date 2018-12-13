@@ -18,7 +18,7 @@ const RouteForPage = ({ page, depth, ...rest }) => {
 };
 const pageShape = shape({
   component: oneOfType([func, instanceOf(React.Component)]).isRequired,
-  path: string.isRequired,
+  path: string,
   properties: object
 });
 RouteForPage.propTypes = {

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useRouting } from "store";
 
-const useNavigator = depth => {
+const useNavigator = (depth = 0) => {
   const [{ fullPath }] = useRouting();
 
   const path = fullPath.slice(0, depth);

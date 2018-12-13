@@ -55,7 +55,7 @@ const Monsterhearts = ({ depth }) => {
   const { fullPath, next, goTo } = useNavigator(depth);
 
   useApiEffect(
-    `api/games/${fullPath[1]}/load`,
+    `games/${fullPath[1]}/load`,
     data => {
       resolveLoad(data);
       loadEvents({ ids: data.eventIds, byId: data.eventsById });
@@ -63,9 +63,10 @@ const Monsterhearts = ({ depth }) => {
     console.error
   );
 
+  const test = 31;
+
   useEffect(() => {
     if (isLoaded && isConnected) {
-      console.log(next);
       if (
         !next ||
         (next !== "side" &&

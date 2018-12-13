@@ -1,9 +1,9 @@
 import * as api from "./baseApi";
-import getStatus from "common/getStatus";
+import { forAuth } from "state";
 
 const catchStatus = error => dispatch => {
   if (error.response.status === 503) {
-    dispatch(getStatus());
+    dispatch(forAuth.setStatusUnknown({ value: true }));
   } else {
     throw error;
   }

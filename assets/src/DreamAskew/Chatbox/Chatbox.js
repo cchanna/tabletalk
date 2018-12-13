@@ -1,15 +1,15 @@
-import React, { Component } from 'react'
-import { bool, func, arrayOf, string, object, number, shape } from 'prop-types'
-import rx from 'resplendence'
+import React, { Component } from "react";
+import { bool, func, arrayOf, string, object, number, shape } from "prop-types";
+import rx from "resplendence";
 
-import Chat, { chatProperties } from './Chat';  
-import BaseChatbox from 'common/components/Chatbox';
+import Chat, { chatProperties } from "./Chat";
+import BaseChatbox from "common/components/Chatbox";
 
 rx`
 @import '~DreamAskew/styles';
-`
+`;
 
-const Styling = rx(BaseChatbox)`--1
+const Styling = rx(BaseChatbox)`
   font-family: $body;
   color: $background;
   background: $foreground;
@@ -55,7 +55,7 @@ const Styling = rx(BaseChatbox)`--1
       background: rgba(0, 0, 0, .25);
     }
   }
-`
+`;
 
 class Chatbox extends Component {
   static propTypes = {
@@ -64,19 +64,15 @@ class Chatbox extends Component {
     chats: arrayOf(shape(chatProperties)).isRequired,
     setChatboxCollapsed: func.isRequired,
     chat: func.isRequired
-  }
+  };
 
-  handleChat = ({text}) => {
+  handleChat = ({ text }) => {
     const { chat } = this.props;
-    chat({text});
-  }
+    chat({ text });
+  };
 
   render() {
-    return (
-      <Styling {...this.props}
-        Chat={Chat}
-      />
-    );
+    return <Styling {...this.props} Chat={Chat} />;
   }
 }
 

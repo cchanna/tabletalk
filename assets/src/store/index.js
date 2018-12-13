@@ -6,14 +6,11 @@ import React, {
   useMemo,
   createContext
 } from "react";
-import { node } from "prop-types";
-import configureStore from "../configureStore";
+import { node, any } from "prop-types";
 import { Provider } from "react-redux";
 import * as state from "state";
 import { fromMonsterhearts } from "../state";
 import mapObject from "utils/mapObject";
-
-const store = configureStore();
 
 export const StoreContext = createContext();
 
@@ -40,21 +37,27 @@ Redux.propTypes = {
   children: node.isRequired
 };
 
-export const StoreProvider = ({ children }) => (
+export const StoreProvider = ({ children, store }) => (
   <StoreContext.Provider value={store}>
     <Redux>{children}</Redux>
   </StoreContext.Provider>
 );
 StoreProvider.propTypes = {
-  children: node
+  children: node.isRequired,
+  store: any.isRequired
 };
 
 const makeStoreHook = (whereFrom, whereFor) => {
   return () => {
     const [state, dispatch] = useStore();
     const fromProxy = new Proxy(whereFrom, {
-      get: (target, prop) =>
-        target["get" + prop[0].toUpperCase() + prop.slice(1)](state)
+      get: (target, prop) => {
+        const getter = "get" + prop[0].toUpperCase() + prop.slice(1);
+        if (!target[getter]) {
+          throw new Error(`Selector ${getter} does not exist.`);
+        }
+        return target[getter](state);
+      }
     });
     const forProxy = new Proxy(whereFor, {
       get: (target, prop) => (...args) => dispatch(target[prop](...args))

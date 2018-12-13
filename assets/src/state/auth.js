@@ -1,57 +1,19 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
 
-const START = "START";
 const SUCCESS = "SUCCESS";
-const FAIL = "FAIL";
-const GOOGLE = "GOOGLE";
-const READY = "READY";
 const LOGOUT = "LOGOUT";
+const STATUS_UNKNOWN_SET = "STATUS_UNKNOWN_SET";
 
 export const actions = {
-  startLogin: START,
   setJWT: [SUCCESS, "jwt"],
-  failLogin: FAIL,
   logout: LOGOUT,
-  loginReady: READY,
-  setGoogleJWT: [GOOGLE, "jwt"]
+  setStatusUnknown: [STATUS_UNKNOWN_SET, "value"]
 };
 
 export const reducer = combineReducers({
-  ready: (state = false, action) => {
-    switch(action.type) {
-      case READY:
-        return true;
-      default: 
-        return state;
-    }
-  },
-
-  pending: (state = false, action) => {
-    switch(action.type) {
-      case START: 
-        return true;
-      case SUCCESS:
-      case FAIL: 
-        return false;
-      default:
-        return state;
-    }
-  },
-
-  googleJwt: (state = null, action) => {
-    switch(action.type) {
-      case GOOGLE:
-        return action.jwt;
-      case LOGOUT:
-        return null;
-      default:
-        return state;
-    }
-  },
-
   jwt: (state = null, action) => {
-    switch(action.type) {
-      case SUCCESS: 
+    switch (action.type) {
+      case SUCCESS:
         return action.jwt;
       case LOGOUT:
         return null;
@@ -60,33 +22,22 @@ export const reducer = combineReducers({
     }
   },
 
-  error: (state = false, action) => {
-    switch(action.type) {
-      case START:
-        return false;
-      case FAIL:
-        return true;
+  statusUnknown: (state = true, action) => {
+    switch (action.type) {
+      case STATUS_UNKNOWN_SET:
+        return action.value;
       default:
         return state;
     }
   }
 });
 
-
 const getJwt = state => state.jwt;
-const getIsLoggingIn = state => state.pending;
-const getIsFailed = state => state.error;
-const getGoogleJwt = state => state.googleJwt;
-const getIsLoggedInWithGoogle = state => !!getGoogleJwt(state);
 const getIsLoggedIn = state => !!state.jwt;
-const getIsReady = state => state.ready; 
+const getIsStatusUnknown = state => state.statusUnknown;
 
 export const selectors = {
   getJwt,
-  getIsFailed,
-  getIsLoggingIn,
-  getGoogleJwt,
-  getIsLoggedInWithGoogle,
   getIsLoggedIn,
-  getIsReady
+  getIsStatusUnknown
 };

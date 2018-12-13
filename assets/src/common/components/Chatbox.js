@@ -1,9 +1,18 @@
-import React, { Component } from 'react'
-import { string, number, bool, func, shape, object, arrayOf, node } from 'prop-types'
-import rx from 'resplendence'
-import AutosizeTextarea from 'react-textarea-autosize';
-  
-const Container = rx('div')`
+import React, { Component } from "react";
+import {
+  string,
+  number,
+  bool,
+  func,
+  shape,
+  object,
+  arrayOf,
+  node
+} from "prop-types";
+import rx from "resplendence";
+import AutosizeTextarea from "react-textarea-autosize";
+
+const Container = rx("div")`
   width: 320px;
   height: 100%;
   background: white;
@@ -34,9 +43,9 @@ const Container = rx('div')`
       height: 36px;
     }
   }
-`
+`;
 
-const Toggle = rx('div')`
+const Toggle = rx("div")`
   transition-property: color, background-color;
   transition-duration: 0.5s;
   text-shadow: -1px 1px 1px fade-out(black, .7);
@@ -60,9 +69,9 @@ const Toggle = rx('div')`
     background-color: black;
     color: white;
   }
-`
+`;
 
-const Body = rx('div')`
+const Body = rx("div")`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -77,9 +86,9 @@ const Body = rx('div')`
       height: 0;
     }
   }
-`
+`;
 
-const Conversation = rx('div')`
+const Conversation = rx("div")`
   -webkit-overflow-scrolling: touch;
   box-sizing: border-box;
   width: 100%;
@@ -89,9 +98,9 @@ const Conversation = rx('div')`
   padding: 1em;
   margin-right: 6px;
   
-`
+`;
 
-const Header = rx('div')`
+const Header = rx("div")`
   font-size: 1em;
   position: relative;
   font-weight: bold;
@@ -100,22 +109,22 @@ const Header = rx('div')`
   &.mine {
     align-self: flex-end;
   }
-`
+`;
 
-const Divider = rx('div')`
+const Divider = rx("div")`
   height: 0px;
   border: 1px solid black;
   flex: none;
   width: 90%;
   border-radius: 1em;
-`
+`;
 
-const ChatList = rx('div')`
+const ChatList = rx("div")`
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
   justify-content: flex-end;
-`
+`;
 const Textarea = rx(AutosizeTextarea)`
   flex: none;
   width: 100%;
@@ -129,37 +138,39 @@ const Textarea = rx(AutosizeTextarea)`
   &:focus {
     outline: none;
   }
-`
+`;
 
 class Input extends React.Component {
   static propTypes = {
     onChat: func.isRequired
-  }
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       value: ""
-    }
+    };
   }
   handleKeyDown(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      this.props.onChat({text: this.state.value});
-      this.setState({value: ""});
+    if (e.key === "Enter" && !e.shiftKey) {
+      this.props.onChat({ text: this.state.value });
+      this.setState({ value: "" });
       e.preventDefault();
     }
   }
   handleChange(e) {
-    this.setState({value: e.target.value});
+    this.setState({ value: e.target.value });
   }
   render() {
     const { onChat, ...rest } = this.props;
     return (
-      <Textarea placeholder='Say something'
-                onKeyDown={this.handleKeyDown.bind(this)}
-                onChange={this.handleChange.bind(this)}
-                value={this.state.value}
-                {...rest}/>
+      <Textarea
+        placeholder="Say something"
+        onKeyDown={this.handleKeyDown.bind(this)}
+        onChange={this.handleChange.bind(this)}
+        value={this.state.value}
+        {...rest}
+      />
     );
   }
 }
@@ -169,33 +180,35 @@ class Chatbox extends Component {
     overlay: bool.isRequired,
     collapsed: bool.isRequired,
     me: number.isRequired,
-    chats: arrayOf(shape({
-      id: number.isRequired,
-      playerId: number.isRequired
-    })).isRequired,
+    chats: arrayOf(
+      shape({
+        id: number.isRequired,
+        playerId: number.isRequired
+      })
+    ).isRequired,
     playerNames: object.isRequired,
     Chat: func.isRequired,
     diceRoller: node,
     className: string,
     setChatboxCollapsed: func.isRequired,
-    chat: func.isRequired,
-  }
+    chat: func.isRequired
+  };
 
   handleToggle = () => {
     const { collapsed, setChatboxCollapsed } = this.props;
-    setChatboxCollapsed({collapsed: !collapsed});
-  }
+    setChatboxCollapsed({ collapsed: !collapsed });
+  };
 
-  handleRef = e => this.conversation = e;
+  handleRef = e => (this.conversation = e);
 
   scrollToBottom = () => {
     if (this.conversation) {
       this.conversation.scrollTop = this.conversation.scrollHeight;
       this.atBottom = true;
     }
-  }
+  };
 
-  componentWillUpdate() {
+  UNSAFE_componentWillUpdate() {
     if (this.conversation) {
       const { scrollTop, offsetHeight, scrollHeight } = this.conversation;
       this.atBottom = scrollTop + offsetHeight === scrollHeight;
@@ -205,8 +218,7 @@ class Chatbox extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.collapsed && !this.props.collapsed) {
       setTimeout(this.scrollToBottom, 700);
-    }
-    else if (this.atBottom) {
+    } else if (this.atBottom) {
       setTimeout(this.scrollToBottom, 50);
     }
   }
@@ -215,51 +227,70 @@ class Chatbox extends Component {
     setTimeout(this.scrollToBottom, 700);
   }
 
-  handleChat = ({text}) => {
+  handleChat = ({ text }) => {
     const { chat } = this.props;
-    chat({text});
-  }
-  
+    chat({ text });
+  };
+
   render() {
-    const { overlay, collapsed, chats, me, playerNames, Chat, diceRoller, className, ...rest } = this.props;
+    const {
+      overlay,
+      collapsed,
+      chats,
+      me,
+      playerNames,
+      Chat,
+      diceRoller,
+      className,
+      ...rest
+    } = this.props;
     let toggle = null;
-    if (overlay) toggle = (
-      <Toggle className="toggle" rx={{collapsed}} onClick={this.handleToggle}>
-        {collapsed ? '%' : '^'}
-      </Toggle>
-    )
+    if (overlay)
+      toggle = (
+        <Toggle
+          className="toggle"
+          rx={{ collapsed }}
+          onClick={this.handleToggle}
+        >
+          {collapsed ? "%" : "^"}
+        </Toggle>
+      );
     const chatComponents = [];
     let prevPlayerId = null;
     chats.forEach((chat, index) => {
       const { id, playerId } = chat;
       const mine = me === playerId;
       const component = (
-        <Chat key={id} newest={index === chats.length - 1} {...{mine, playerNames}} {...chat} {...rest}/>
-      )
+        <Chat
+          key={id}
+          newest={index === chats.length - 1}
+          {...{ mine, playerNames }}
+          {...chat}
+          {...rest}
+        />
+      );
       if (component) {
         if (playerId !== prevPlayerId) {
           chatComponents.push(
-            <Header key={id + "-header"} className="header" rx={{mine}}>
+            <Header key={id + "-header"} className="header" rx={{ mine }}>
               {playerNames[playerId]}
             </Header>
-          )
+          );
         }
         prevPlayerId = playerId;
         chatComponents.push(component);
       }
-    })
+    });
     return (
-      <Container rx={{overlay, collapsed}} className={className}>
+      <Container rx={{ overlay, collapsed }} className={className}>
         {toggle}
         {diceRoller}
-        <Body rx={{overlay, collapsed}} className="body">
+        <Body rx={{ overlay, collapsed }} className="body">
           <Conversation innerRef={this.handleRef} className="conversation">
-            <ChatList className="chat-list">
-              {chatComponents}
-            </ChatList>
+            <ChatList className="chat-list">{chatComponents}</ChatList>
           </Conversation>
-          <Divider className="divider"/>
-          <Input onChat={this.handleChat} className="input"/>
+          <Divider className="divider" />
+          <Input onChat={this.handleChat} className="input" />
         </Body>
       </Container>
     );

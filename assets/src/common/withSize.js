@@ -89,8 +89,11 @@ export const useSize = breakpoints => {
 
   const resize = () => {
     if (ref.current) {
-      convertWidthToBreakpoint(ref.current.offsetWidth, breakpoints);
-      setSizes(sizes);
+      const newSizes = convertWidthToBreakpoint(
+        ref.current.offsetWidth,
+        breakpoints
+      );
+      setSizes(newSizes);
     }
   };
   useEffect(() => {
