@@ -12,7 +12,6 @@ export const useApiEffect = (
   useEffect(
     () => {
       if (onlyWhen) {
-        console.log("fetching " + url);
         let valid = true;
         apiHelper
           .get((baseUrl ? baseUrl + "/" : "") + url, { jwt })

@@ -2,7 +2,6 @@ import { combineReducers } from "redux";
 import { LOAD } from "./actions";
 import update from "immutability-helper";
 import { socketActions, slowSocketActions } from "../socketActions";
-import bonusString from "common/bonusString";
 
 const MAIN_CREATE = "MAIN_CREATE";
 const SIDE_CREATE = "SIDE_CREATE";

@@ -1,6 +1,6 @@
 import { useSize } from "common/withSize";
 
-import React, { Component, useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { string, number, func, bool, arrayOf } from "prop-types";
 import rx from "resplendence";
 import TabPicker from "./TabPicker";
@@ -8,7 +8,7 @@ import Chatbox from "./Chatbox";
 import Spinner from "common/components/Spinner";
 import SocketManager from "Socket";
 
-import { useMonsterhearts, useSocket, useAuth } from "store";
+import { useMonsterhearts, useSocket } from "store";
 import { useApiEffect } from "common/useApi";
 import { useNavigator } from "Routing";
 
@@ -62,8 +62,6 @@ const Monsterhearts = ({ depth }) => {
     },
     console.error
   );
-
-  const test = 31;
 
   useEffect(() => {
     if (isLoaded && isConnected) {

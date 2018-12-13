@@ -1,16 +1,7 @@
-import React, {
-  useContext,
-  useState,
-  useRef,
-  useEffect,
-  useMemo,
-  createContext
-} from "react";
+import React, { useContext, useState, useEffect, createContext } from "react";
 import { node, any } from "prop-types";
 import { Provider } from "react-redux";
 import * as state from "state";
-import { fromMonsterhearts } from "../state";
-import mapObject from "utils/mapObject";
 
 export const StoreContext = createContext();
 
