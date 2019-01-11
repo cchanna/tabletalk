@@ -12,7 +12,6 @@ import "./index.scss";
 import { Route, useNavigator } from "Routing";
 import { useAuth } from "store";
 import { useApiEffect } from "common/useApi";
-import { hot } from "react-hot-loader";
 
 rx`
 @import "~common/styles";
@@ -47,7 +46,7 @@ const SignoutButton = rx("button")`
   top: 5px;
   right: 5px;
   height: 20px;
-  transition-properties: top, right, color, font-size, text-shadow;
+  transition-property: top, right, color, font-size, text-shadow;
   transition-duration: .15s;
   z-index: 1;
   &:hover {
@@ -229,4 +228,4 @@ const App = () => {
   );
 };
 
-export default hot(module)(App);
+export default App;

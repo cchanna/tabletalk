@@ -89,11 +89,6 @@ export const messages = {
   [SIDE_CREATE]: 'Created the side character "{name}".'
 };
 
-export const selectors = {
-  getCharactersById: state => state.byId,
-  getCharacterIds: state => state.ids
-};
-
 export const reducer = combineReducers({
   ids: (state = null, action) => {
     switch (action.type) {
@@ -388,3 +383,8 @@ export const reducer = combineReducers({
     }
   }
 });
+
+export const selectors = {
+  getCharactersById: state => state.byId,
+  getCharacterIds: state => state.ids
+};

@@ -27,7 +27,7 @@ RouteForPage.propTypes = {
   extraProperties: object
 };
 
-const Route = ({ depth = 0, pages, extraProperties = {} }) => {
+const Route = ({ depth = 0, pages, extraProperties = {}, ...rest }) => {
   let fallback = null;
   const [{ path }] = useRouting();
   const next = path[depth];
@@ -35,12 +35,24 @@ const Route = ({ depth = 0, pages, extraProperties = {} }) => {
     if (page.path === "*") fallback = page;
     else if ((!next && !page.path) || next === page.path) {
       return (
-        <RouteForPage page={page} depth={depth + 1} {...extraProperties} />
+        <RouteForPage
+          page={page}
+          depth={depth + 1}
+          {...extraProperties}
+          {...rest}
+        />
       );
     }
   }
   if (fallback) {
-    return <RouteForPage page={fallback} depth={depth} {...extraProperties} />;
+    return (
+      <RouteForPage
+        page={fallback}
+        depth={depth + 1}
+        {...extraProperties}
+        {...rest}
+      />
+    );
   }
   return null;
 };

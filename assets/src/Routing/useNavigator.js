@@ -4,8 +4,8 @@ import { useRouting } from "store";
 const useNavigator = (depth = 0) => {
   const [{ fullPath }] = useRouting();
 
-  const path = fullPath.slice(0, depth);
-  const here = fullPath.slice(depth);
+  const here = fullPath.slice(0, depth);
+  const path = fullPath.slice(depth);
   const next = fullPath[depth] || null;
 
   return useMemo(
@@ -14,7 +14,7 @@ const useNavigator = (depth = 0) => {
       path,
       here,
       next,
-      goTo: (p, d = 0) => {
+      goTo: (p = [], d = 0) => {
         if (!Array.isArray(p)) p = [p];
         const newPath = [...fullPath.slice(0, depth + d), ...p];
         window.tabletalkHistory.push("/" + newPath.join("/"));
@@ -22,7 +22,7 @@ const useNavigator = (depth = 0) => {
       goBack: () => {
         window.tabletalkHistory.goBack();
       },
-      replace: (p, d = 0) => {
+      replace: (p = [], d = 0) => {
         if (!Array.isArray(p)) p = [p];
         const newPath = [...fullPath.slice(0, depth + d), ...p];
         window.tabletalkHistory.replace("/" + newPath.join("/"));

@@ -12,22 +12,22 @@ import SideCharacters from "Monsterhearts/SideCharacters";
 import RetiredCharacters from "./RetiredCharacters";
 
 import { Route } from "Routing";
+import Settings from "../Settings";
 
 rx`
 @import '~common/styles';
 @import '~Monsterhearts/colors';
 `;
 
-const Container = rx("div")`
-  width: 100%;
-  height: 100%;
+const TAB_PICKER = rx()`
   flex: 1 0 0;
+  width: 0;
   display: flex;
   flex-flow: column;
+  align-items: stretch;
 `;
-const Content = rx("div")`
+const CONTENT = rx()`
   flex: 1 0 0;
-  width: 100%;
   overflow: hidden;
 `;
 
@@ -46,6 +46,10 @@ const pages = [
     properties: { retired: true }
   },
   {
+    path: "settings",
+    component: Settings
+  },
+  {
     path: "*",
     component: MainCharacter
   },
@@ -59,16 +63,16 @@ const TabPicker = ({ depth }) => {
   const showRetired = false;
 
   return (
-    <Container>
+    <div className={TAB_PICKER}>
       <TabList {...{ tabs, depth, showRetired }} />
-      <Content>
+      <div className={CONTENT}>
         <Route
           depth={depth}
           pages={pages}
           extraProperties={{ tabs, showRetired }}
         />
-      </Content>
-    </Container>
+      </div>
+    </div>
   );
 };
 TabPicker.propTypes = {

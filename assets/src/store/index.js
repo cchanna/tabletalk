@@ -53,8 +53,11 @@ const makeStoreHook = (whereFrom, whereFor) => {
     const forProxy = new Proxy(whereFor, {
       get: (target, prop) => (...args) => dispatch(target[prop](...args))
     });
+    const getProxy = new Proxy(whereFrom, {
+      get: (target, prop) => (...args) => target[prop](state, ...args)
+    });
 
-    return [fromProxy, forProxy];
+    return [fromProxy, forProxy, getProxy];
   };
 };
 

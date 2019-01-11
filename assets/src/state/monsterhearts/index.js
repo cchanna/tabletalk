@@ -3,17 +3,15 @@ import { prefixedActions, prefixedReducer } from "redux-state-tools";
 import prefixedMessages from "utils/prefixedMessages";
 import * as characters from "./characters";
 import * as strings from "./strings";
-import * as mainSelectors from "./selectors";
+import mainSelectors from "./selectors";
+import * as custom from "./custom";
 import { LOAD } from "./actions";
-import { socketActions, slowSocketActions } from "../socketActions";
+import { slowSocketActions } from "../socketActions";
 import * as chatbox from "../chatbox";
-import update from "immutability-helper";
 
 export const name = "monsterhearts";
 
 const CHAT = "CHAT";
-const CUSTOM_MOVE_EDIT = "CUSTOM_MOVE_EDIT";
-const CUSTOM_MOVE_DELETE = "CUSTOM_MOVE_DELETE";
 
 export const actions = {
   resolveLoad: [
@@ -32,13 +30,10 @@ export const actions = {
     "custom"
   ],
   chat: [CHAT, "id", "insertedAt", "playerId", "data"],
-  ...socketActions({
-    deleteCustomMove: [CUSTOM_MOVE_DELETE, "name"],
-    editCustomMove: [CUSTOM_MOVE_EDIT, "name", "text", "notes"]
-  }),
   ...slowSocketActions({
     sendChat: [CHAT, "text"]
   }),
+  ...prefixedActions("CUSTOM", custom.actions),
   ...prefixedActions("CHATBOX", chatbox.actions),
   ...prefixedActions("STRING", strings.actions),
   ...prefixedActions("CHARACTER", characters.actions)
@@ -49,6 +44,7 @@ export const types = {
 };
 
 export const messages = {
+  ...prefixedMessages("CUSTOM", custom.messages),
   ...prefixedMessages("CHARACTER", characters.messages),
   ...prefixedMessages("STRING", strings.messages)
 };
@@ -57,6 +53,7 @@ export const reducer = combineReducers({
   characters: prefixedReducer("CHARACTER", characters.reducer, [LOAD]),
   strings: prefixedReducer("STRING", strings.reducer, [LOAD]),
   chatbox: prefixedReducer("CHATBOX", chatbox.reducer),
+  custom: prefixedReducer("CUSTOM", custom.reducer, [LOAD]),
   loaded: (state = false, action) => {
     switch (action.type) {
       case LOAD:
@@ -103,29 +100,6 @@ export const reducer = combineReducers({
         return state;
     }
   },
-  custom: combineReducers({
-    movesByName: (state = {}, action) => {
-      switch (action.type) {
-        case LOAD:
-          return action.custom.movesByName;
-        case CUSTOM_MOVE_EDIT:
-          return update(state, {
-            [action.name]: {
-              $set: {
-                text: action.text,
-                notes: action.notes
-              }
-            }
-          });
-        case CUSTOM_MOVE_DELETE:
-          return update(state, {
-            $unset: [action.name]
-          });
-        default:
-          return state;
-      }
-    }
-  }),
   definitions: (state = null, action) => {
     switch (action.type) {
       case LOAD:
@@ -136,6 +110,4 @@ export const reducer = combineReducers({
   }
 });
 
-export const selectors = {
-  ...mainSelectors
-};
+export { mainSelectors as selectors };

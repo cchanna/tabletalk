@@ -2,14 +2,25 @@ defmodule Tabletalk.Monsterhearts.View do
   use Tabletalk.View
 
   alias Tabletalk.Games.Player
-  alias Tabletalk.Monsterhearts.Character
-  alias Tabletalk.Monsterhearts.MainCharacter
+  alias Tabletalk.Monsterhearts.{
+    Character,
+    MainCharacter,
+    CustomMove,
+    CustomPlaybook,
+    String
+  }
   alias Tabletalk.Games.Chat
-  alias Tabletalk.Monsterhearts.String
 
   require Logger
-  
 
+  def to_json(cm = %CustomMove{}) do
+    %{
+      name: cm.name,
+      playbook: cm.playbook,
+      text: cm.text,
+      notes: cm.notes
+    }
+  end
 
   def to_json(player = %Player{}) do
     %{

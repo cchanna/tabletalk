@@ -40,6 +40,8 @@ const Content = rx("div")`
   flex-flow: row nowrap;
   box-sizing: border-box;
   z-index: 1;
+  overflow: hidden;
+  align-items: stretch;
   &.overlay {
     padding-top: 36px;
   }
