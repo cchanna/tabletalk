@@ -41,7 +41,7 @@ export const reducer = combineReducers({
       case "LOAD":
         return action.custom.moveNames;
       case MOVE_EDIT:
-        return state.includes(action.value) ? state : [...state, action.name];
+        return state.includes(action.name) ? state : [...state, action.name];
       case MOVE_DELETE:
         return state.filter(m => m !== action.name);
       default:
