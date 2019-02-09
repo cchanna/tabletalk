@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { func } from "prop-types";
 import { useMonsterhearts } from "store";
 import rx from "resplendence";
+import { Button } from "./button";
 
 rx`
 @import '~Monsterhearts/styles';
@@ -11,14 +12,11 @@ rx`
 
 const useFocus = (takeFocus = true) => {
   const ref = useRef(null);
-  useEffect(
-    () => {
-      if (ref.current && takeFocus) {
-        ref.current.focus();
-      }
-    },
-    [takeFocus]
-  );
+  useEffect(() => {
+    if (ref.current && takeFocus) {
+      ref.current.focus();
+    }
+  }, [takeFocus]);
   return ref;
 };
 
@@ -64,17 +62,13 @@ const capitalizeEveryWord = string =>
     .map(x => (x ? x[0].toUpperCase() + x.slice(1) : ""))
     .join(" ");
 
-const BUTTON = rx()`
-  @include button-style;
-`;
-
 const NEW_PLAYBOOK = rx()`
   font-size: 18px;
   height: 35px;
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
-  align-items: flex-end;
+  align-items: center;
 `;
 
 const NewPlaybookInput = ({ onClose }) => {
@@ -89,19 +83,17 @@ const NewPlaybookInput = ({ onClose }) => {
     onClose();
   };
   return (
-    <div>
+    <>
       The
       <input className={TEXT_FIELD} type="text" {...nameField} />
       {nameField.value ? (
-        <button className={BUTTON} onClick={save}>
+        <Button primary icon="okay" onClick={save}>
           Save
-        </button>
+        </Button>
       ) : (
-        <button className={BUTTON} onClick={onClose}>
-          Cancel
-        </button>
+        <Button icon="cancel" onClick={onClose} />
       )}
-    </div>
+    </>
   );
 };
 NewPlaybookInput.propTypes = {
@@ -115,9 +107,9 @@ const NewPlaybook = () => {
       {creating ? (
         <NewPlaybookInput onClose={toggleCreating} />
       ) : (
-        <button className={BUTTON} onClick={toggleCreating}>
+        <Button onClick={toggleCreating} primary icon="plus">
           New Playbook
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -129,6 +121,20 @@ const CUSTOM_PLAYBOOK = rx()`
   font-size: 18px;
 `;
 
+const X_BUTTON = rx()`
+  @include button-style-accent;
+  margin-left: 10px;
+  font-family: 'icomoon';
+`;
+
+const DELETE_WARNING = rx()`
+  font-size: 12px;
+`;
+
+const CONFIRM_BUTTON = rx()`
+  margin: 0 5px;
+`;
+
 const CustomPlaybook = ({ name }) => {
   const [deleting, setDeleting] = useState(false);
   const [_get, { deleteCustomPlaybook }] = useMonsterhearts();
@@ -136,34 +142,50 @@ const CustomPlaybook = ({ name }) => {
   return (
     <div className={CUSTOM_PLAYBOOK} key={name}>
       The {name}
-      <button onClick={() => setDeleting(true)} disabled={deleting}>
-        X
-      </button>
+      <Button
+        icon="delete"
+        onClick={() => setDeleting(true)}
+        disabled={deleting}
+      />
       {deleting ? (
-        <div>
-          <span>
-            This cannot be undone and will delete all custom moves attached to
-            this playbook as well. Really delete?
-          </span>
-          <button onClick={() => deleteCustomPlaybook({ name })} ref={ref}>
-            yes
-          </button>
-          <button onClick={() => setDeleting(false)}>no</button>
+        <div className={DELETE_WARNING}>
+          This cannot be undone and will delete all custom moves attached to
+          this playbook as well. Really delete?
+          <Button
+            primary
+            small
+            icon="delete"
+            className={CONFIRM_BUTTON}
+            onClick={() => deleteCustomPlaybook({ name })}
+            ref={ref}
+          >
+            Delete
+          </Button>
+          <Button
+            small
+            className={CONFIRM_BUTTON}
+            icon="cancel"
+            onClick={() => setDeleting(false)}
+          />
         </div>
       ) : null}
     </div>
   );
 };
 
+const CUSTOM_PLAYBOOKS = rx()`
+  margin-top: 10px;
+`;
+
 const CustomPlaybooks = () => {
   const [{ customPlaybookNames }] = useMonsterhearts();
   return (
-    <>
+    <div className={CUSTOM_PLAYBOOKS}>
       {customPlaybookNames.map(name => (
         <CustomPlaybook name={name} key={name} />
       ))}
       <NewPlaybook />
-    </>
+    </div>
   );
 };
 

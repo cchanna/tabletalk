@@ -95,9 +95,8 @@ defmodule Tabletalk.Monsterhearts do
       strings: strings |> ids,
       stringsById: strings |> by_id,
       custom: %{
-        playbookNames: custom_playbook_names ,
-        moveNamesByPlaybook: custom_moves 
-          |> Enum.group_by(fn x -> x.playbook end, fn x -> x.name end),
+        playbookNames: custom_playbook_names,
+        moveNames: custom_moves |> Enum.map(fn x -> x.name end),
         movesByName: custom_moves 
           |> Enum.map(fn x -> {x.name, x |> to_json} end)
           |> Map.new
@@ -196,6 +195,31 @@ defmodule Tabletalk.Monsterhearts do
     string
     |> String.changeset(attrs)
     |> Repo.update!()
+  end
+
+  def delete_moves_by_name(name, game_id) do
+    query = from m in Move,
+      join: mc in MainCharacter, on: mc.id == m.main_character_id,
+      join: c in Character, on: c.id == mc.character_id,
+      where: c.game_id == ^game_id,
+      where: m.name == ^name
+    Repo.delete_all(query)
+  end
+
+  def delete_custom_moves_by_playbook(playbook, game_id) do
+    query = from m in Move,
+      join: cm in CustomMove, on: cm.name == m.name,
+      join: mc in MainCharacter, on: mc.id == m.main_character_id,
+      join: c in Character, on: c.id == mc.character_id,
+      where: cm.game_id == ^game_id,
+      where: cm.playbook == ^playbook,
+      where: c.game_id == ^game_id
+    Repo.delete_all(query)
+
+    query = from cm in CustomMove,
+      where: cm.game_id == ^game_id,
+      where: cm.playbook == ^playbook
+    Repo.delete_all(query)
   end
 
   def get_custom_move(name, game_id) do

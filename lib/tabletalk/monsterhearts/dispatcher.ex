@@ -308,6 +308,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     if playbook == nil do
       {:error, "That custom playbook doesn't exist."}
     else
+      Monsterhearts.delete_custom_moves_by_playbook(name, game_id)
       Monsterhearts.delete_custom_playbook!(playbook)
       {:ok}
     end    
@@ -337,6 +338,7 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     move = Monsterhearts.get_custom_move(name, game_id)
     if move != nil do
       Monsterhearts.delete_custom_move!(move)
+      Monsterhearts.delete_moves_by_name(name, game_id)
       {:ok}
     else
       {:error, "That custom move doesn't exist."}

@@ -36,12 +36,14 @@ export const reducer = combineReducers({
         return state;
     }
   },
-  moveNamesByPlaybook: (state = {}, action) => {
+  moveNames: (state = [], action) => {
     switch (action.type) {
       case "LOAD":
-        return action.custom.moveNamesByPlaybook;
-      case "PLAYBOOK_DELETE":
-        return update(state, { $unset: [action.name] });
+        return action.custom.moveNames;
+      case MOVE_EDIT:
+        return state.includes(action.value) ? state : [...state, action.name];
+      case MOVE_DELETE:
+        return state.filter(m => m !== action.name);
       default:
         return state;
     }
@@ -54,14 +56,12 @@ export const reducer = combineReducers({
         return update(state, {
           [action.name]: {
             $set: {
+              name: action.name,
+              playbook: action.playbook,
               text: action.text,
               notes: action.notes
             }
           }
-        });
-      case MOVE_DELETE:
-        return update(state, {
-          $unset: [action.name]
         });
       default:
         return state;
@@ -70,7 +70,19 @@ export const reducer = combineReducers({
 });
 
 export const selectors = {
-  getCustomMoveNamesByPlaybook: state => state.moveNamesByPlaybook,
+  getCustomMoveNames: state => state.moveNames,
+  getCustomMoveNamesByPlaybook: state => {
+    const result = {};
+    for (const name of state.moveNames) {
+      const { playbook } = state.movesByName[name];
+      if (result[playbook]) {
+        result[playbook].push(name);
+      } else {
+        result[playbook] = [name];
+      }
+    }
+    return result;
+  },
   getCustomPlaybookNames: state => state.playbookNames,
   getCustomMovesByName: state => state.movesByName
 };
