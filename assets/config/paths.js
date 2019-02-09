@@ -69,7 +69,7 @@ const resolveModule = (resolveFn, filePath) => {
 module.exports = {
   dotenv: resolveApp(".env"),
   appPath: resolveApp("."),
-  appBuild: resolveApp("build"),
+  appBuild: resolveApp("../priv/static"),
   appBuildHtml: resolveApp(
     "../lib/tabletalk_web/templates/page/index.html.eex"
   ),
