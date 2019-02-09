@@ -3,7 +3,8 @@ import { prefixedActions, prefixedReducer } from "redux-state-tools";
 import prefixedMessages from "utils/prefixedMessages";
 import * as characters from "./characters";
 import * as strings from "./strings";
-import * as mainSelectors from "./selectors";
+import mainSelectors from "./selectors";
+import * as custom from "./custom";
 import { LOAD } from "./actions";
 import { slowSocketActions } from "../socketActions";
 import * as chatbox from "../chatbox";
@@ -25,12 +26,14 @@ export const actions = {
     "definitions",
     "stringsById",
     "strings",
-    "movesById"
+    "movesById",
+    "custom"
   ],
   chat: [CHAT, "id", "insertedAt", "playerId", "data"],
   ...slowSocketActions({
     sendChat: [CHAT, "text"]
   }),
+  ...prefixedActions("CUSTOM", custom.actions),
   ...prefixedActions("CHATBOX", chatbox.actions),
   ...prefixedActions("STRING", strings.actions),
   ...prefixedActions("CHARACTER", characters.actions)
@@ -41,6 +44,7 @@ export const types = {
 };
 
 export const messages = {
+  ...prefixedMessages("CUSTOM", custom.messages),
   ...prefixedMessages("CHARACTER", characters.messages),
   ...prefixedMessages("STRING", strings.messages)
 };
@@ -49,6 +53,7 @@ export const reducer = combineReducers({
   characters: prefixedReducer("CHARACTER", characters.reducer, [LOAD]),
   strings: prefixedReducer("STRING", strings.reducer, [LOAD]),
   chatbox: prefixedReducer("CHATBOX", chatbox.reducer),
+  custom: prefixedReducer("CUSTOM", custom.reducer, [LOAD]),
   loaded: (state = false, action) => {
     switch (action.type) {
       case LOAD:
@@ -105,6 +110,4 @@ export const reducer = combineReducers({
   }
 });
 
-export const selectors = {
-  ...mainSelectors
-};
+export { mainSelectors as selectors };

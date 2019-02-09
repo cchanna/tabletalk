@@ -290,6 +290,61 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     end
   end
 
+  def dispatch("custom_playbook_edit", %{"name" => name}, _player_id, game_id) do
+    proper_name = name |> capitalize_each_word()
+    playbook = Monsterhearts.get_custom_playbook(proper_name, game_id)
+    if playbook == nil do
+      Monsterhearts.create_custom_playbook!(%{
+        "game_id" => game_id,
+        "name" => proper_name
+      })
+    end
+    {:ok}
+  end
+
+  def dispatch("custom_playbook_delete", %{"name" => name}, _player_id, game_id) do
+    proper_name = name |> capitalize_each_word()
+    playbook = Monsterhearts.get_custom_playbook(proper_name, game_id)
+    if playbook == nil do
+      {:error, "That custom playbook doesn't exist."}
+    else
+      Monsterhearts.delete_custom_moves_by_playbook(name, game_id)
+      Monsterhearts.delete_custom_playbook!(playbook)
+      {:ok}
+    end    
+  end
+
+  def dispatch("custom_move_edit", %{"name" => name, "playbook" => playbook, "text" => text, "notes" => notes}, _player_id, game_id) do
+    move = Monsterhearts.get_custom_move(name, game_id)
+    if move != nil do
+      Monsterhearts.update_custom_move!(move, %{
+        "text" => text,
+        "notes" => notes,
+        "playbook" => playbook
+      })
+    else
+      Monsterhearts.create_custom_move!(%{
+        "game_id" => game_id,
+        "name" => name,
+        "text" => text,
+        "notes" => notes,
+        "playbook" => playbook
+      })
+    end
+    {:ok}
+  end
+
+  def dispatch("custom_move_delete", %{"name" => name}, _player_id, game_id) do
+    move = Monsterhearts.get_custom_move(name, game_id)
+    if move != nil do
+      Monsterhearts.delete_custom_move!(move)
+      Monsterhearts.delete_moves_by_name(name, game_id)
+      {:ok}
+    else
+      {:error, "That custom move doesn't exist."}
+    end
+  end
+
   def dispatch("chat", %{"text" => text}, _player_id, _game_id) do
     {:ok, make_chat(text)}
   end
@@ -299,5 +354,12 @@ defmodule Tabletalk.Monsterhearts.Dispatcher do
     Logger.error("Failed to dispatch action #{bad_id}")
     Logger.error inspect action
     {:error, "no relevant action"}
+  end
+
+  def capitalize_each_word string do
+    string
+    |> String.split() 
+    |> Enum.map(&String.capitalize/1) 
+    |> Enum.join(" ")
   end
 end

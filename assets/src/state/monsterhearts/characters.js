@@ -2,7 +2,6 @@ import { combineReducers } from "redux";
 import { LOAD } from "./actions";
 import update from "immutability-helper";
 import { socketActions, slowSocketActions } from "../socketActions";
-import bonusString from "common/bonusString";
 
 const MAIN_CREATE = "MAIN_CREATE";
 const SIDE_CREATE = "SIDE_CREATE";
@@ -88,11 +87,6 @@ export const messages = {
   [ADVANCEMENT_CREATE]: "{character:id} advanced and {advancement}.",
   [MAIN_CREATE]: "Created a new {mainCharacter.playbook}.",
   [SIDE_CREATE]: 'Created the side character "{name}".'
-};
-
-export const selectors = {
-  getCharactersById: state => state.byId,
-  getCharacterIds: state => state.ids
 };
 
 export const reducer = combineReducers({
@@ -389,3 +383,8 @@ export const reducer = combineReducers({
     }
   }
 });
+
+export const selectors = {
+  getCharactersById: state => state.byId,
+  getCharacterIds: state => state.ids
+};

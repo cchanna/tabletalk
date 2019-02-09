@@ -1,34 +1,33 @@
-import React, { Component } from 'react'
-import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
-import rx from 'resplendence'
-  
-import { Link } from 'Routing';
-import Skin from './Skin';
+import React, { Component } from "react";
+import { string, number, bool, func, shape, object, arrayOf } from "prop-types";
+import rx from "resplendence";
+
+import { Link } from "Routing";
+import Skin from "./Skin";
 
 rx`
 @import '~common/styles';
 @import '~Monsterhearts/colors';
-`
+`;
 
-
-const Container = rx('div')`
+const Container = rx("div")`
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
   justify-content: flex-start;
   height: 100%;
   width: 100%;
-`
+`;
 
-const Header = rx('div')`
+const Header = rx("div")`
   font-family: "Fontin";
   font-size: 20px;
   color: darken($foreground, 10%);
   margin: 0 0 20px 0;
   flex: 0 0 auto;
-`
+`;
 
-const Buffer = rx('div')`
+const Buffer = rx("div")`
   flex: 1 0 0;
   height: 50%;
   width: 100%;
@@ -37,15 +36,15 @@ const Buffer = rx('div')`
   &.collapsed {
     max-height: 0%;
   }
-`
+`;
 
-const SkinList = rx('div')`
+const SkinList = rx("div")`
   display: flex;
   flex: 0 0 auto;
   flex-flow: row wrap;
   justify-content: center;
   width: 100%;
-`
+`;
 const SkinLink = rx(Link)`
   @include link;
   font-family: "League Spartan";
@@ -63,9 +62,9 @@ const SkinLink = rx(Link)`
     color: darken($foreground, 20%);
   }
   margin: 0 10px;
-`
+`;
 
-const Content = rx('div')`
+const Content = rx("div")`
   flex: 0 1 auto;
   display: flex;
   flex-flow: column nowrap;
@@ -77,12 +76,12 @@ const Content = rx('div')`
     overflow-y: scroll;
     height: auto;
   }
-`
-const BigName = rx('span')`
+`;
+const BigName = rx("span")`
   font-size: 1.2em;
-`
+`;
 
-const Button = rx('button')`
+const Button = rx("button")`
   @include button;
   background: $accent;
   color: white;
@@ -102,81 +101,80 @@ const Button = rx('button')`
   flex: 0 0 auto;
   height: 43px;
   min-width: 220px;
-`
+`;
 
 class NewCharacter extends Component {
   static propTypes = {
-    slug: string, 
+    slug: string,
     depth: number.isRequired,
-    playbooks: arrayOf(string).isRequired, 
+    playbooks: arrayOf(string).isRequired,
     sizes: arrayOf(string).isRequired,
     myCharacters: arrayOf(number).isRequired,
-    playbook: string.isRequired,
+    playbook: string,
     createCharacter: func.isRequired,
     goTo: func.isRequired
-  }
+  };
 
   state = {
     creating: false
-  }
-  
+  };
+
   handleClickCreate = () => {
     const { playbook, createCharacter } = this.props;
     if (playbook) {
-      this.setState({creating: true});
-      createCharacter({playbook});
+      this.setState({ creating: true });
+      createCharacter({ playbook });
     }
-  }
+  };
 
   componentDidUpdate(prevProps) {
-    const {depth, goTo, myCharacters} = this.props;
+    const { depth, goTo, myCharacters } = this.props;
     if (myCharacters.length > prevProps.myCharacters.length) {
       myCharacters.forEach(id => {
         if (!prevProps.myCharacters.includes(id)) {
           goTo([id.toString(), "edit"], depth - 1);
           return;
         }
-      })
+      });
     }
   }
 
   render() {
-    const { 
-      depth, playbook, playbooks,
-      sizes
-    } = this.props;
+    const { depth, playbook, playbooks, sizes } = this.props;
     const { creating } = this.state;
-    const skins = playbooks
-      .map(name => {
-        return (
-          <SkinLink to={name.toLowerCase()} depth={depth} key={name} rx={{dull: !!playbook}}>
-            The <BigName>{name}</BigName>
-          </SkinLink>
-        ) 
-      })
-      
+    const skins = playbooks.map(name => {
+      return (
+        <SkinLink
+          to={name.toLowerCase()}
+          depth={depth}
+          key={name}
+          rx={{ dull: !!playbook }}
+        >
+          The <BigName>{name}</BigName>
+        </SkinLink>
+      );
+    });
+
     let skin = null;
     let createButton = null;
     if (playbook) {
-      skin = (
-        <Skin {...{playbook, sizes}}/>
-      )
+      skin = <Skin {...{ playbook, sizes }} />;
       createButton = (
         <Button onClick={this.handleClickCreate} disabled={creating}>
           Create the {playbook}
         </Button>
-      )
+      );
     }
     return (
       <Container>
-        <Buffer rx={{collapsed: (!!playbook)}}/>
+        <Buffer rx={{ collapsed: !!playbook }} />
         <Content rx={sizes}>
           <Header>Select a Skin</Header>
           <SkinList>{skins}</SkinList>
           {createButton}
           {skin}
         </Content>
-        <Buffer rx={{collapsed: (!!playbook)}}/>
+        <Buffer rx={{ collapsed: !!playbook }} />
       </Container>
     );
   }

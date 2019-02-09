@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useState, useRef, useEffect } from "react";
 
 const convertWidthToBreakpoint = (width, breakPoints) => {
   const result = [];
-  const breakValues = Object.keys(breakPoints).sort((a, b) => (a - b));
+  const breakValues = Object.keys(breakPoints).sort((a, b) => a - b);
   let i;
-  for (i=0; i < breakValues.length; i++) {
+  for (i = 0; i < breakValues.length; i++) {
     const breakValue = breakValues[i];
     const breakName = breakPoints[breakValue];
     if (width <= breakValue) {
@@ -20,49 +20,51 @@ const convertWidthToBreakpoint = (width, breakPoints) => {
   }
   if (width > breakValues[breakValues.length - 1]) {
     result.push("max");
-  }
-  else {
+  } else {
     result.push("under-max");
   }
   return result;
-}
+};
 
-
-export default (breakpoints, {fullWidth = true, fullHeight = true} = {}) => Node => {
-
+export default (
+  breakpoints,
+  { fullWidth = true, fullHeight = true } = {}
+) => Node => {
   class Breakpoint extends React.Component {
-
     state = {
       sizes: []
-    }
+    };
 
     timeout = null;
     ref = null;
 
     componentDidMount() {
-      window.addEventListener('resize', this.handleResize);
+      window.addEventListener("resize", this.handleResize);
     }
 
     componentWillUnmount() {
-      window.removeEventListener('resize', this.handleResize);
+      window.removeEventListener("resize", this.handleResize);
     }
 
     resize = () => {
       if (this.ref) {
-        const sizes = convertWidthToBreakpoint(this.ref.offsetWidth, breakpoints);
-        this.setState({sizes});
+        const sizes = convertWidthToBreakpoint(
+          this.ref.offsetWidth,
+          breakpoints
+        );
+        this.setState({ sizes });
       }
-    }
+    };
 
     handleResize = () => {
       window.clearTimeout(this.timeout);
       this.timeout = window.setTimeout(this.resize, 100);
-    }
+    };
 
     handleRef = e => {
       this.ref = e;
       this.resize();
-    }
+    };
 
     render() {
       const props = this.props;
@@ -72,10 +74,39 @@ export default (breakpoints, {fullWidth = true, fullHeight = true} = {}) => Node
       if (fullHeight) style.height = "100%";
       return (
         <div style={style} ref={this.handleRef}>
-          <Node {...props} sizes={sizes}/>
+          <Node {...props} sizes={sizes} />
         </div>
-      )
+      );
     }
   }
   return Breakpoint;
-}
+};
+
+export const useSize = breakpoints => {
+  const [sizes, setSizes] = useState([]);
+  const timeout = useRef(null);
+  const ref = useRef(null);
+
+  const resize = () => {
+    if (ref.current) {
+      const newSizes = convertWidthToBreakpoint(
+        ref.current.offsetWidth,
+        breakpoints
+      );
+      setSizes(newSizes);
+    }
+  };
+  useEffect(() => {
+    const handleResize = () => {
+      window.clearTimeout(timeout.current);
+      timeout.current = window.setTimeout(resize, 100);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  });
+  useEffect(resize, [ref]);
+
+  return [ref, sizes];
+};

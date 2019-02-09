@@ -3,14 +3,12 @@ defmodule Tabletalk.Monsterhearts do
   alias Tabletalk.Repo
   import Tabletalk.Monsterhearts.View
 
-  alias Tabletalk.Monsterhearts.MainCharacter
-  alias Tabletalk.Monsterhearts.PlayerSettings
-  alias Tabletalk.Monsterhearts.Character
-  alias Tabletalk.Monsterhearts.Move
-  alias Tabletalk.Monsterhearts.Condition
-  alias Tabletalk.Monsterhearts.String
-  alias Tabletalk.Monsterhearts.Advancement
-  alias Tabletalk.Monsterhearts.Definitions
+  alias Tabletalk.Monsterhearts.{
+    MainCharacter, PlayerSettings,
+    Character, Move, Condition,
+    String, Advancement, Definitions,
+    CustomPlaybook, CustomMove
+  }
   alias Tabletalk.Games
 
   defp create_player_settings!(attrs) do
@@ -63,12 +61,29 @@ defmodule Tabletalk.Monsterhearts do
     Repo.all(query)
   end
 
+  defp list_custom_playbooks(game_id) do
+    query = from cp in CustomPlaybook,
+      where: cp.game_id == ^game_id
+    Repo.all(query)
+  end
+
+  defp list_custom_moves(game_id) do
+    query = from cm in CustomMove,
+      where: cm.game_id == ^game_id
+    Repo.all(query)
+  end
+
+
 
   def load(game_id, player_id) do
     players = list_players!(game_id) |> make_player_if_nil()
     events = Games.list_chats!(game_id)
     characters = list_characters!(game_id)
     strings = list_strings!(game_id)
+    playbook_names = Definitions.playbooks
+    custom_playbooks = list_custom_playbooks game_id
+    custom_playbook_names = custom_playbooks |> Enum.map(fn cp -> cp.name end)
+    custom_moves = list_custom_moves game_id
     %{
       charactersById: characters |> by_id,
       characters: characters |> ids,
@@ -79,10 +94,17 @@ defmodule Tabletalk.Monsterhearts do
       eventIds: events |> ids,
       strings: strings |> ids,
       stringsById: strings |> by_id,
+      custom: %{
+        playbookNames: custom_playbook_names,
+        moveNames: custom_moves |> Enum.map(fn x -> x.name end),
+        movesByName: custom_moves 
+          |> Enum.map(fn x -> {x.name, x |> to_json} end)
+          |> Map.new
+      },
       definitions: %{
         movesByName: Definitions.moves_by_name,
         advancementsById: Definitions.advancements_by_id,
-        playbooks: Definitions.playbooks,
+        playbooks: playbook_names,
         playbooksByName: Definitions.playbooks_by_name,
         seasonAdvances: Definitions.season_advances,
         growingUpMoves: Definitions.growing_up_moves
@@ -173,5 +195,74 @@ defmodule Tabletalk.Monsterhearts do
     string
     |> String.changeset(attrs)
     |> Repo.update!()
+  end
+
+  def delete_moves_by_name(name, game_id) do
+    query = from m in Move,
+      join: mc in MainCharacter, on: mc.id == m.main_character_id,
+      join: c in Character, on: c.id == mc.character_id,
+      where: c.game_id == ^game_id,
+      where: m.name == ^name
+    Repo.delete_all(query)
+  end
+
+  def delete_custom_moves_by_playbook(playbook, game_id) do
+    query = from m in Move,
+      join: cm in CustomMove, on: cm.name == m.name,
+      join: mc in MainCharacter, on: mc.id == m.main_character_id,
+      join: c in Character, on: c.id == mc.character_id,
+      where: cm.game_id == ^game_id,
+      where: cm.playbook == ^playbook,
+      where: c.game_id == ^game_id
+    Repo.delete_all(query)
+
+    query = from cm in CustomMove,
+      where: cm.game_id == ^game_id,
+      where: cm.playbook == ^playbook
+    Repo.delete_all(query)
+  end
+
+  def get_custom_move(name, game_id) do
+    CustomMove
+    |> Repo.get_by(%{name: name, game_id: game_id})
+  end
+
+  def create_custom_move!(attrs \\ %{}) do
+    %CustomMove{}
+    |> CustomMove.changeset(attrs)
+    |> Repo.insert!()
+  end
+
+  def update_custom_move!(%CustomMove{} = custom_move, attrs) do
+    custom_move
+    |> CustomMove.changeset(attrs)
+    |> Repo.update!()
+  end
+
+  def delete_custom_move!(%CustomMove{} = custom_move) do
+    custom_move
+    |> Repo.delete!()
+  end
+
+  def get_custom_playbook(name, game_id) do
+    CustomPlaybook
+    |> Repo.get_by(%{name: name, game_id: game_id})
+  end
+
+  def create_custom_playbook!(attrs \\ %{}) do
+    %CustomPlaybook{}
+    |> CustomPlaybook.changeset(attrs)
+    |> Repo.insert!()
+  end
+
+  def update_custom_playbook!(%CustomPlaybook{} = custom_playbook, attrs) do
+    custom_playbook
+    |> CustomPlaybook.changeset(attrs)
+    |> Repo.update!()
+  end
+
+  def delete_custom_playbook!(%CustomPlaybook{} = custom_playbook) do
+    custom_playbook
+    |> Repo.delete!()
   end
 end

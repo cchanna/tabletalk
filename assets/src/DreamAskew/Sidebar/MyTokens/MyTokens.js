@@ -1,52 +1,22 @@
-import React, { Component } from 'react'
-import { string, number, bool, func, shape, object, arrayOf } from 'prop-types'
-import rx from 'resplendence'
-  
+import React, { Component } from "react";
+import { string, number, bool, func, shape, object, arrayOf } from "prop-types";
+import rx from "resplendence";
+
 rx`
 @import '~DreamAskew/styles';
-`
+`;
 
-const Container = rx('div')`
-  height: 100%;
-  flex: 0 0 300px;
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-`
-const Body = rx('div')`
-  align-self: stretch;
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: stretch;
-  padding: 10px;
-`
-const Scrolling = rx('div')`
-  flex: 1 0 0;
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: stretch;
-  overflow-y: auto;
-  justify-content: flex-start;
-`
-const Divider = rx('div')`
-  align-self: center;
-  width: calc(100% - 20px);
-  height: 0px;
-  margin: 10px 0;
-  border-bottom: 1px solid fade-out($foreground, .7);
-`
-const Name = rx('div')`
+const Name = rx("div")`
   font-family: $header;
   font-size: 17px;
   line-height: 1.1;
-`
-const Lure = 'div';
-const Tokens = rx('div')`
+`;
+const Tokens = rx("div")`
   padding: 10px;
   position: relative;
   height: 100px;
-`
-const Token = rx('div')`
+`;
+const Token = rx("div")`
   width: 20px;
   height: 20px;
   background: $accent1;
@@ -64,8 +34,8 @@ const Token = rx('div')`
     width: 15px;
     height: 15px;
   }
-`
-const Pool = rx('button')`
+`;
+const Pool = rx("button")`
   cursor: pointer;
   opacity: 0;
   position: absolute;
@@ -73,8 +43,8 @@ const Pool = rx('button')`
   height: 60px;
   top: 40px;
   left: 0px;
-`
-const Mine = rx('button')`
+`;
+const Mine = rx("button")`
   cursor: pointer;
   opacity: 0;
   position: absolute;
@@ -82,29 +52,22 @@ const Mine = rx('button')`
   height: 100px;
   top: 35px;
   left: 80px;
-`
-const TokenDivider = rx('div')`
+`;
+const TokenDivider = rx("div")`
   position: absolute;
   left: 65px;
   top: 40px;
   height: 60px;
   width: 0px;
   border-right: 2px solid fade-out($foreground, .7);
-`
-const TheirTokens = rx('div')`
-  position: relative;
-  width: 100%;
-  transition-property: height;
-  transition-duration: 150ms;
-`
-
+`;
 
 class MyTokens extends Component {
   static propTypes = {
     tokens: number.isRequired,
     gainToken: func.isRequired,
     spendToken: func.isRequired
-  }
+  };
 
   state = {
     pool: Array.from(Array(100)).map(() => {
@@ -116,17 +79,17 @@ class MyTokens extends Component {
       return {
         x: r * Math.cos(t),
         y: r * Math.sin(t)
-      }
+      };
     }),
     hoveringPool: false,
     hoveringMine: false
-  }
+  };
 
-  handleMouseOverPool = () => this.setState({hoveringPool: true});
-  handleMouseLeavePool = () => this.setState({hoveringPool: false});
-  handleMouseOverMine = () => this.setState({hoveringMine: true});
-  handleMouseLeaveMine = () => this.setState({hoveringMine: false});
-  
+  handleMouseOverPool = () => this.setState({ hoveringPool: true });
+  handleMouseLeavePool = () => this.setState({ hoveringPool: false });
+  handleMouseOverMine = () => this.setState({ hoveringMine: true });
+  handleMouseLeaveMine = () => this.setState({ hoveringMine: false });
+
   render() {
     const { tokens, gainToken, spendToken } = this.props;
     const { pool, hoveringPool, hoveringMine } = this.state;
@@ -134,18 +97,38 @@ class MyTokens extends Component {
       <Tokens>
         <Name>Tokens</Name>
         <TokenDivider />
-        {pool.map(({x, y}, i) => {
-          const mine = tokens + i >= 100; 
-          const hovering = (i === 100 - tokens && hoveringMine && tokens > 0) || (i === 99 - tokens && hoveringPool)
-          return ( 
-            <Token key={i} rx={{hovering}} style={{
-              left: (mine ? 80 + (((99 - i) % 7) * 25) : 20 * x + 20).toString() + "px",
-              top: (mine ? 35 + (Math.floor((99 - i) / 7) * 25) : 20 * y + 60).toString() + "px",
-            }}/>
-          )
+        {pool.map(({ x, y }, i) => {
+          const mine = tokens + i >= 100;
+          const hovering =
+            (i === 100 - tokens && hoveringMine && tokens > 0) ||
+            (i === 99 - tokens && hoveringPool);
+          return (
+            <Token
+              key={i}
+              rx={{ hovering }}
+              style={{
+                left:
+                  (mine ? 80 + ((99 - i) % 7) * 25 : 20 * x + 20).toString() +
+                  "px",
+                top:
+                  (mine
+                    ? 35 + Math.floor((99 - i) / 7) * 25
+                    : 20 * y + 60
+                  ).toString() + "px"
+              }}
+            />
+          );
         })}
-        <Pool onMouseOver={this.handleMouseOverPool} onMouseLeave={this.handleMouseLeavePool} onClick={gainToken}/>
-        <Mine onMouseOver={this.handleMouseOverMine} onMouseLeave={this.handleMouseLeaveMine} onClick={spendToken}/>
+        <Pool
+          onMouseOver={this.handleMouseOverPool}
+          onMouseLeave={this.handleMouseLeavePool}
+          onClick={gainToken}
+        />
+        <Mine
+          onMouseOver={this.handleMouseOverMine}
+          onMouseLeave={this.handleMouseLeaveMine}
+          onClick={spendToken}
+        />
       </Tokens>
     );
   }

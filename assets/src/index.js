@@ -1,35 +1,28 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import { Provider } from 'react-redux';
-import { setGoogleJWT } from 'Auth';
-import './fonts/fonts.scss';
-import configureStore from './configureStore';
-
-
+import "./rlhConfig";
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import "./fonts/fonts.scss";
+import { StoreProvider } from "./store";
+import configureStore from "./configureStore";
 
 const store = configureStore();
 
-window.onSignIn = (args) => {
-  const jwt = args.Zi.id_token;
-  store.dispatch(setGoogleJWT({jwt}));
-}
-
-ReactDOM.render((
-  <Provider store={store}>
+ReactDOM.render(
+  <StoreProvider store={store}>
     <App />
-  </Provider>
-  ), document.getElementById('root'));
-
-if (module.hot) {
-  module.hot.accept('./App', () => {
-    const NextApp = require('./App').default
-    ReactDOM.render(
-      <Provider store={store}>
-        <NextApp />
-      </Provider>,
-      document.getElementById('root')
-    )
-  })
-}
-
+  </StoreProvider>,
+  document.getElementById("root")
+);
+// ReactDOM.render(<TestApp />, document.getElementById("root"));
+// if (module.hot) {
+//   module.hot.accept("./App", () => {
+//     const NextApp = require("./App").default;
+//     ReactDOM.render(
+//       <StoreProvider store={store}>
+//         <NextApp />
+//       </StoreProvider>,
+//       document.getElementById("root")
+//     );
+//   });
+// }

@@ -1,50 +1,51 @@
 import { selectors as characterSelectors } from "./characters";
 import { selectors as stringSelectors } from "./strings";
 import { selectors as chatboxSelectors } from "../chatbox";
+import { selectors as customSelectors } from "./custom";
 import { prefixedSelectors } from "redux-state-tools";
+import { createSelector } from "reselect";
 import mapObject from "utils/mapObject";
 
+const fromCustom = prefixedSelectors("custom", customSelectors);
+
 const fromCharacters = prefixedSelectors("characters", characterSelectors);
-const { getCharactersById, getCharacterIds } = fromCharacters;
-export { getCharactersById, getCharacterIds };
 
 const fromStrings = prefixedSelectors("strings", stringSelectors);
 
-export const getStringsById = fromStrings.getById;
+const getStringsById = fromStrings.getById;
 
 const { getIsChatboxCollapsed } = prefixedSelectors(
   "chatbox",
   chatboxSelectors
 );
-export { getIsChatboxCollapsed };
 
-export const getMe = state => state.me;
-export const getPlayerNamesById = state =>
+const getMe = state => state.me;
+const getPlayerNamesById = state =>
   mapObject(state.playersById, player => player.name);
 const getPlayer = (state, id) => state.playersById[id];
 
 const characterName = character =>
   character.name || `The\u00A0${character.mainCharacter.playbook}`;
 
-export const getCharacter = (state, id) => getCharactersById(state)[id];
+const getCharacter = (state, id) => fromCharacters.getCharactersById(state)[id];
 
-export const getMyCharacters = state => {
+const getMyCharacters = state => {
   const me = getMe(state);
-  return getCharacterIds(state).filter(id => {
+  return fromCharacters.getCharacterIds(state).filter(id => {
     const { mainCharacter } = getCharacter(state, id);
     return mainCharacter && mainCharacter.playerId === me;
   });
 };
 
-export const getSideCharacterIds = state => {
-  const charactersById = getCharactersById(state);
-  const characterIds = getCharacterIds(state);
+const getSideCharacterIds = state => {
+  const charactersById = fromCharacters.getCharactersById(state);
+  const characterIds = fromCharacters.getCharacterIds(state);
   return characterIds.filter(id => !charactersById[id].mainCharacter);
 };
 
-export const getCharacterNames = state => {
+const getCharacterNames = state => {
   const result = {};
-  getCharacterIds(state).forEach(id => {
+  fromCharacters.getCharacterIds(state).forEach(id => {
     const { name, mainCharacter } = getCharacter(state, id);
     if (name) {
       result[id] = name;
@@ -55,12 +56,12 @@ export const getCharacterNames = state => {
   return result;
 };
 
-export const getAmIGM = state => {
+const getAmIGM = state => {
   const me = getMe(state);
   return getPlayer(state, me).isGM;
 };
 
-export const getReadOnly = (state, id = null) => {
+const getReadOnly = (state, id = null) => {
   if (getAmIGM(state)) return false;
   if (!id) return true;
   const me = getMe(state);
@@ -68,27 +69,63 @@ export const getReadOnly = (state, id = null) => {
   return !mainCharacter || mainCharacter.playerId !== me;
 };
 
-export const getDefinitions = state => state.definitions;
-export const getPlaybooks = state => getDefinitions(state).playbooks;
-export const getPlaybookDefinition = (state, playbook) =>
+const fromDefinitions = prefixedSelectors("definitions", {
+  getMovesByName: state => state.movesByName,
+  getPlaybooks: state => state.playbooks,
+  getPlaybooksByName: state => state.playbooksByName
+});
+
+const getMovesByName = createSelector(
+  fromDefinitions.getMovesByName,
+  fromCustom.getCustomMovesByName,
+  (defs, custom) => ({
+    ...defs,
+    ...custom
+  })
+);
+
+const getPlaybookNames = createSelector(
+  fromDefinitions.getPlaybooks,
+  fromCustom.getCustomPlaybookNames,
+  (normal, custom) =>
+    [...normal, ...custom.filter(x => !normal.includes(x))].sort()
+);
+
+const getMoveNamesByPlaybook = createSelector(
+  fromDefinitions.getPlaybooks,
+  fromDefinitions.getPlaybooksByName,
+  fromCustom.getCustomMoveNamesByPlaybook,
+  (playbookNames, playbooksByName, custom) => {
+    const result = { ...custom };
+    playbookNames.forEach(name => {
+      const { moves } = playbooksByName[name];
+      if (!result[name]) result[name] = moves;
+      else result[name] = [...moves, ...result[name]];
+    });
+    return result;
+  }
+);
+
+const getDefinitions = state => state.definitions;
+const getPlaybookDefinition = (state, playbook) =>
   getDefinitions(state).playbooksByName[playbook];
-export const getCharacterPlaybookDefinition = (state, id) =>
+const getCharacterPlaybookDefinition = (state, id) =>
   getPlaybookDefinition(state, getCharacter(state, id).mainCharacter.playbook);
-const getMovesByName = state => getDefinitions(state).movesByName;
 const getAdvancementsById = state => getDefinitions(state).advancementsById;
-export const getGrowingUpMoves = state => getDefinitions(state).growingUpMoves;
-export const getCharacterGrowingUpMoves = (state, id) => {
+const getGrowingUpMoves = state => getDefinitions(state).growingUpMoves;
+const getCharacterGrowingUpMoves = (state, id) => {
   const growingUpMoves = getGrowingUpMoves(state);
   const { moves } = getCharacter(state, id).mainCharacter;
   return moves.filter(name => growingUpMoves.includes(name));
 };
-export const getUnchosenGrowingUpMoves = (state, id) => {
+
+const getUnchosenGrowingUpMoves = (state, id) => {
   const growingUpMoves = getGrowingUpMoves(state);
   const { moves } = getCharacter(state, id).mainCharacter;
   return growingUpMoves.filter(name => !moves.includes(name));
 };
 
-export const getPlaybookAdvancements = (state, playbook) => {
+const getPlaybookAdvancements = (state, playbook) => {
   const advancementsById = getAdvancementsById(state);
   return getPlaybookDefinition(state, playbook).advancements.map(id => ({
     id,
@@ -96,16 +133,15 @@ export const getPlaybookAdvancements = (state, playbook) => {
   }));
 };
 
-const getSeasonAdvancements = state => getDefinitions(state).seasonAdvances;
-export const listSeasonAdvancements = state => {
+const getSeasonAdvancements = state => {
   const advancementsById = getAdvancementsById(state);
-  return getSeasonAdvancements(state).map(id => ({
+  return getDefinitions(state).seasonAdvances.map(id => ({
     id,
     ...advancementsById[id]
   }));
 };
 
-export const getPlaybookMoves = (state, playbook) => {
+const getPlaybookMoves = (state, playbook) => {
   const movesByName = getMovesByName(state);
   return getPlaybookDefinition(state, playbook).moves.map(name => ({
     name,
@@ -114,9 +150,10 @@ export const getPlaybookMoves = (state, playbook) => {
 };
 
 // export const getSeasonFinale = state => state.seasonFinale;
-export const getIsSeasonFinale = state => {
+const getIsSeasonFinale = state => {
   const seasonAdvancements = getSeasonAdvancements(state);
-  return getCharacterIds(state)
+  return fromCharacters
+    .getCharacterIds(state)
     .map(id => getCharacter(state, id))
     .filter(character => character.mainCharacter)
     .some(character =>
@@ -126,14 +163,14 @@ export const getIsSeasonFinale = state => {
     );
 };
 
-export const getCanGetSeasonAdvancements = (state, id) => {
+const getCanGetSeasonAdvancements = (state, id) => {
   const { mainCharacter } = getCharacter(state, id);
   const { advancements } = mainCharacter;
   return advancements.length >= 5 || getIsSeasonFinale(state);
 };
 
-export const getCharacterTabs = (state, { retired = false } = {}) => {
-  const characters = getCharacterIds(state);
+const getCharacterTabs = (state, { retired = false } = {}) => {
+  const characters = fromCharacters.getCharacterIds(state);
   const me = getMe(state);
 
   const mainCharacters = characters
@@ -170,7 +207,7 @@ export const getCharacterTabs = (state, { retired = false } = {}) => {
   return tabs;
 };
 
-export const getDarkestSelf = (state, id) => {
+const getDarkestSelf = (state, id) => {
   const { mainCharacter } = getCharacter(state, id);
   if (!mainCharacter) return null;
   const { darkestSelf, playbook } = mainCharacter;
@@ -179,22 +216,24 @@ export const getDarkestSelf = (state, id) => {
   if (!playbookDef) return null;
   return playbookDef.darkestSelf;
 };
-export const getCanCustomizeDarkestSelf = (state, id) => {
+
+const getCanCustomizeDarkestSelf = (state, id) => {
   if (getReadOnly(state, id)) return false;
   const { mainCharacter } = getCharacter(state, id);
   if (!mainCharacter) return false;
   return mainCharacter.advancements.includes("rrds");
 };
 
-export const getIsLoaded = state => state.loaded;
-export const getChats = state => {
+const getIsLoaded = state => state.loaded;
+const getChats = state => {
   const chatsById = state.chatsById;
   return state.chats.map(id => ({
     id,
     ...chatsById[id]
   }));
 };
-export const getMove = (state, name, characterId = null) => {
+
+const getMove = (state, name, characterId = null) => {
   const def = getMovesByName(state)[name];
   if (!def) {
     return {
@@ -222,9 +261,10 @@ export const getMove = (state, name, characterId = null) => {
     text: def.text
   };
 };
-export const getUnattachedCharacters = (state, id) => {
-  const charactersById = getCharactersById(state);
-  const characters = getCharacterIds(state);
+
+const getUnattachedCharacters = (state, id) => {
+  const charactersById = fromCharacters.getCharactersById(state);
+  const characters = fromCharacters.getCharacterIds(state);
   const strings = fromStrings.getIds(state);
   const stringsById = fromStrings.getById(state);
 
@@ -256,7 +296,8 @@ export const getUnattachedCharacters = (state, id) => {
       else return a.name.localeCompare(b.name);
     });
 };
-export const getCharacterStrings = (state, id) => {
+
+const getCharacterStrings = (state, id) => {
   const stringsById = fromStrings.getById(state);
   const strings = fromStrings.getIds(state);
   const allStrings = {};
@@ -304,25 +345,30 @@ export const getCharacterStrings = (state, id) => {
   });
 };
 
-export const getUnchosenPlaybookMoves = (state, id) => {
+const getUnchosenPlaybookMoves = (state, id) => {
   const { mainCharacter } = getCharacter(state, id);
   const { moves } = mainCharacter;
-  const { playbooksByName, playbooks } = getDefinitions(state);
+  const playbookNames = getPlaybookNames(state);
+  const moveNamesByPlaybook = getMoveNamesByPlaybook(state);
 
-  return playbooks.map(name => ({
-    name,
-    moves: playbooksByName[name].moves.filter(move => !moves.includes(move))
-  }));
+  return playbookNames
+    .filter(name => moveNamesByPlaybook[name])
+    .map(name => ({
+      name,
+      moves: moveNamesByPlaybook[name].filter(move => !moves.includes(move))
+    }));
 };
 
-export const getUnchosenSelfMoves = (state, id) => {
+const getUnchosenSelfMoves = (state, id) => {
   const { moves, playbook } = getCharacter(state, id).mainCharacter;
-  return getPlaybookDefinition(state, playbook).moves.filter(
+  const moveNamesByPlaybook = getMoveNamesByPlaybook(state);
+
+  return moveNamesByPlaybook[playbook].moves.filter(
     move => !moves.includes(move)
   );
 };
 
-export const getEditDone = (state, id) => {
+const getEditDone = (state, id) => {
   const stringsById = fromStrings.getById(state);
   const strings = fromStrings.getIds(state);
   const character = getCharacter(state, id);
@@ -358,4 +404,43 @@ export const getEditDone = (state, id) => {
     backstoryDone,
     allDone: identityDone && statsDone && movesDone && backstoryDone
   };
+};
+
+export default {
+  ...fromCharacters,
+  ...fromCustom,
+  getEditDone,
+  getUnchosenSelfMoves,
+  getUnchosenPlaybookMoves,
+  getCharacterStrings,
+  getUnattachedCharacters,
+  getMove,
+  getChats,
+  getIsLoaded,
+  getCanCustomizeDarkestSelf,
+  getDarkestSelf,
+  getCharacterTabs,
+  getCanGetSeasonAdvancements,
+  getIsSeasonFinale,
+  getPlaybookMoves,
+  getSeasonAdvancements,
+  getPlaybookAdvancements,
+  getUnchosenGrowingUpMoves,
+  getCharacterGrowingUpMoves,
+  getGrowingUpMoves,
+  getCharacterPlaybookDefinition,
+  getPlaybookDefinition,
+  getDefinitions,
+  getReadOnly,
+  getAmIGM,
+  getCharacterNames,
+  getSideCharacterIds,
+  getCharacter,
+  getPlayerNamesById,
+  getMe,
+  getIsChatboxCollapsed,
+  getStringsById,
+  getMyCharacters,
+  getMoveNamesByPlaybook,
+  getPlaybookNames
 };

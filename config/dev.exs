@@ -22,7 +22,7 @@ config :tabletalk, TabletalkWeb.Endpoint,
 #
 # The `http:` config above can be replaced with:
 #
-#     https: [port: 4000, keyfile: "priv/server.key", certfile: "priv/server.pem"],
+#     https: [port: 4000, keyfile: "priv/serveEr.key", certfile: "priv/server.pem"],
 #
 # If desired, both `http:` and `https:` keys can be
 # configured to run both http and https servers on
@@ -49,7 +49,7 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :tabletalk, Tabletalk.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
+  username: "strangerelics",
   password: "postgres",
   database: "tabletalk_dev",
   hostname: "localhost",

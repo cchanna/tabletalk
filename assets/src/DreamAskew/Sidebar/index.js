@@ -1,15 +1,14 @@
-import { connect } from 'react-redux'
-import Sidebar from './Sidebar';
-import { fromDreamAskew } from 'state';
-import { goTo, replace, makeGetHere } from 'Routing';
+import { connect } from "react-redux";
+import Sidebar from "./Sidebar";
+import { fromDreamAskew } from "state";
+import { goTo, replace, makeGetHere } from "Routing";
 
 const {
   getCharacterSummaries,
   getUnpickedRoles,
   getSettingSummaries,
   getMyCharacterId,
-  getVisuals,
-  getMyPlayer
+  getVisuals
 } = fromDreamAskew;
 
 const mapStateToProps = () => {
@@ -21,9 +20,12 @@ const mapStateToProps = () => {
     visuals: getVisuals(state),
     depth,
     here: getHere(state, depth)
-  })
-}
+  });
+};
 
-const mapDispatchToProps = {goTo, replace}
+const mapDispatchToProps = { goTo, replace };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Sidebar);

@@ -1,28 +1,24 @@
-import React, { Component } from 'react';
-import { bool, arrayOf, string, func } from 'prop-types';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import rx from 'resplendence';
+import React, { useEffect, useState } from "react";
 
-import Games from 'Games';
-import Play from 'Play';
-import Auth from 'Auth';
+import rx from "resplendence";
 
-import { fromAuth, fromStatus } from 'state';
-import getStatus from 'common/getStatus';
-import { login, loginReady, signout } from 'Auth';
-import { replace, Route, getPath } from 'Routing';
+import Games from "Games";
+import Play from "Play";
+import Auth from "Auth";
 
-import Spinner from 'common/components/Spinner';
+import Spinner from "common/components/Spinner";
 import "./index.scss";
+
+import { Route, useNavigator } from "Routing";
+import { useAuth } from "store";
+import { useApiEffect } from "common/useApi";
 
 rx`
 @import "~common/styles";
 @import "~common/colors";
-`
+`;
 
-
-const Container = rx('div')`
+const Container = rx("div")`
   display: flex;
   flex-flow: column;
   align-items: center;
@@ -30,18 +26,18 @@ const Container = rx('div')`
   height: 100vh;
   user-select: none;
   overflow: hidden;
-`
+`;
 
-const DownMessage = rx('div')`
+const DownMessage = rx("div")`
   color: white;
   font-family: "League Spartan";
   max-width: 900px;
   font-size: 50px;
   text-shadow: -1px 1px 1px hsla(0, 0%, 0%, .1);
   text-align: center;
-`
+`;
 
-const SignoutButton = rx('button')`
+const SignoutButton = rx("button")`
   @include button;
   font-family: "League Spartan";
   color: fade-out($color-light, 0.6);
@@ -50,7 +46,7 @@ const SignoutButton = rx('button')`
   top: 5px;
   right: 5px;
   height: 20px;
-  transition-properties: top, right, color, font-size, text-shadow;
+  transition-property: top, right, color, font-size, text-shadow;
   transition-duration: .15s;
   z-index: 1;
   &:hover {
@@ -60,9 +56,9 @@ const SignoutButton = rx('button')`
     top: 2px;
     right: 3px;
   }
-`
+`;
 
-const FloatAbove = rx('div')`
+const FloatAbove = rx("div")`
   width: 100%;
   height: 100%;
   position: absolute;
@@ -72,105 +68,164 @@ const FloatAbove = rx('div')`
   &.show {
     display: block;
   }
-`
+`;
 
-class App extends Component {
-static propTypes = {
-    up: bool,
-    loggedInWithGoogle: bool.isRequired,
-    next: string,
-    loggedIn: bool.isRequired,
-    downMessage: string,
-    loggingIn: bool.isRequired,
-    ready: bool.isRequired,
-    loginReady: func.isRequired,
-    getStatus: func.isRequired,
-    login: func.isRequired,
-    replace: func.isRequired,
-    signout: func.isRequired,
-  }
+const onSignIn = args => (window.googleJwt = args.Zi.id_token);
+window.onSignIn = onSignIn;
 
-  componentDidMount() {
-    const { getStatus } = this.props;
-    getStatus();
-  }
-  componentDidUpdate(prevProps) {
-    {
-      const { up, loggedInWithGoogle, login } = this.props;
-
-      const canLogIn = (up && loggedInWithGoogle);
-      const couldLogIn = (prevProps.up && prevProps.loggedInWithGoogle);
-      if (canLogIn && (!couldLogIn || loggedInWithGoogle !== prevProps.loggedInWithGoogle)) {
-        login();
-      }
+const useGoogleJwt = () => {
+  const [jwt, setJwt] = useState(null);
+  useEffect(() => {
+    if (window.googleJwt) {
+      setJwt(window.googleJwt);
+      window.googleJwt = null;
+    } else {
+      window.onSignIn = args => {
+        setJwt(args.Zi.id_token);
+      };
     }
-    {
-      const { up, loginReady } = this.props;
-      if (!prevProps.up && up) {
-        setTimeout(loginReady, 500);
-      }
-    }
-    {
-      const { next, loggedIn, replace } = this.props;
-      if (loggedIn && !next) {
-        replace(["games"]);
-      }
-    }
-  }
+    return () => {
+      window.onSignIn = onSignIn;
+    };
+  });
 
-  pages = [
-    {
-      path: "games",
-      component: Games
+  return jwt;
+};
+
+const STATUS_ERROR_DEFAULT = "Tabletalk is down right now. Sorry!";
+const STATUS_UP = "up";
+
+const useStatus = () => {
+  const [status, setStatusBase] = useState(null);
+  const [{ isStatusUnknown }, { setStatusUnknown }] = useAuth();
+  const setStatus = status => {
+    setStatusUnknown({ value: false });
+    setStatusBase(status);
+  };
+
+  useApiEffect(
+    "status",
+    () => setStatus(STATUS_UP),
+    error => {
+      if (error.response && error.response.status === 503) {
+        error.response
+          .json()
+          .then(({ reason }) => setStatus(reason))
+          .catch(() => setStatus(STATUS_ERROR_DEFAULT));
+      } else {
+        setStatus(STATUS_ERROR_DEFAULT);
+      }
+    },
+    { baseUrl: "", onlyWhen: isStatusUnknown }
+  );
+
+  return status;
+};
+
+const useLoginReady = isUp => {
+  const [isReady, setIsReady] = useState(false);
+  useEffect(
+    () => {
+      let timeout;
+      if (isUp) {
+        timeout = setTimeout(() => setIsReady(true), 500);
+      }
+      return () => clearTimeout(timeout);
+    },
+    [isUp]
+  );
+  return isReady;
+};
+
+const pages = [
+  {
+    path: "games",
+    component: Games
+  },
+  {
+    path: "play",
+    component: Play
+  }
+];
+
+const useLogin = (googleJwt, isUp) => {
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState(null);
+  const [{ isLoggedIn }, { setJWT }] = useAuth();
+
+  useApiEffect(
+    `login?provider=google&jwt=${googleJwt}`,
+    ({ jwt }) => {
+      setJWT({ jwt });
+      setPending(false);
+    },
+    error => {
+      setError(error);
+      setPending(false);
     },
     {
-      path: "play",
-      component: Play
+      baseUrl: "auth",
+      onlyWhen: isUp && googleJwt && !isLoggedIn,
+      onStart: () => {
+        setPending(true);
+      }
     }
-  ]
+  );
 
-  render() {
-    const { up, downMessage, loggedIn, loggingIn, ready, signout } = this.props;
+  return [isLoggedIn, pending, !!error];
+};
 
-    let content
-    if (up === false) {
-      content = <DownMessage>{downMessage}</DownMessage>;
+const App = () => {
+  const { next, replace } = useNavigator();
+  const [_getAuth, { logout }] = useAuth();
+
+  const status = useStatus();
+  const isUp = status === STATUS_UP;
+  const isReady = useLoginReady(isUp);
+  const googleJwt = useGoogleJwt();
+  const [isLoggedIn, isLoggingIn, failedLoggingIn] = useLogin(googleJwt, isUp);
+
+  const signout = () => {
+    logout();
+    if (googleJwt && window.gapi) {
+      window.gapi.auth2.getAuthInstance().signOut();
     }
-    else if (!ready) content = <Spinner/>;
-    else if (loggedIn) {
-      content = <Route pages={this.pages}/>
-    }
+  };
 
-    const signoutButton = loggedIn ? <SignoutButton onClick={signout}>signout</SignoutButton> : null;
+  // console.log(
+  //   status,
+  //   isUp,
+  //   isReady,
+  //   googleJwt,
+  //   isLoggedIn,
+  //   isLoggingIn,
+  //   failedLoggingIn
+  // );
 
-    return (
-      <Container>
-        <FloatAbove rx={{show: (ready && !loggedIn && !loggingIn)}}>
-          <Auth/>
-        </FloatAbove>
-        {signoutButton}
-        {content}
-      </Container>
-    );
-  }
-}
+  useEffect(
+    () => {
+      if (isLoggedIn && !next) replace("games");
+    },
+    [isLoggedIn, next]
+  );
 
-const mapStateToProps = (state) => {
-  const { next } = getPath(state);
-  return {
-    up: fromStatus.getIsUp(state),
-    downMessage: fromStatus.getMessage(state),
-    ready: fromAuth.getIsReady(state),
-    loggedInWithGoogle: fromAuth.getIsLoggedInWithGoogle(state),
-    loggedIn: fromAuth.getIsLoggedIn(state),
-    loggingIn: fromAuth.getIsLoggingIn(state),
-    next
-  }
-}
+  return (
+    <Container>
+      <FloatAbove rx={{ show: isReady && !isLoggedIn && !isLoggingIn }}>
+        <Auth isLoggingIn={isLoggingIn} isFailed={failedLoggingIn} />
+      </FloatAbove>
+      {isLoggedIn ? (
+        <SignoutButton onClick={signout}>signout</SignoutButton>
+      ) : null}
+      {!isUp ? (
+        <DownMessage>{status}</DownMessage>
+      ) : !isReady ? (
+        <Spinner />
+      ) : isLoggedIn ? (
+        <Route pages={pages} />
+      ) : null}
+    </Container>
+  );
+};
 
-const mapDispatchToProps = { getStatus, login, loginReady, replace, signout };
-
-const enhance = compose(
-  connect(mapStateToProps, mapDispatchToProps)
-)
-export default enhance(App);
+export default App;

@@ -1,13 +1,20 @@
-@import '~common/styles';
-@import './colors';
-@import './fonts';
+@import "~common/styles";
+@import "./colors";
+@import "./fonts";
 
-@mixin button-style {
+%button-base {
   @include button;
   font-family: $interact;
   font-size: 20px;
+  transition-property: background-color, color;
+  transition-duration: 150ms;
+  color: $foreground;
+  border-radius: 5px;
+}
+
+@mixin button-style {
+  @extend %button-base;
   color: transparent;
-  transition: 150ms color;
   &:not(:disabled) {
     color: $foreground;
     &:focus {
@@ -18,6 +25,23 @@
     }
     &:active {
       color: darken($accent, 30%);
+    }
+  }
+}
+
+@mixin button-style-accent {
+  @extend %button-base;
+  color: transparent;
+  &:not(:disabled) {
+    color: $accent;
+    &:focus {
+      color: lighten($accent, 10%);
+    }
+    &:hover {
+      color: lighten($accent, 20%);
+    }
+    &:active {
+      color: $foreground;
     }
   }
 }
@@ -56,4 +80,69 @@
       }
     }
   }
+}
+
+%break {
+  border-top: 1px solid fade-out($foreground, 0.1);
+  width: calc(100% - 40px);
+  margin: 60px 20px;
+  height: 0;
+}
+
+%break-weak {
+  @extend %break;
+  border-top-color: fade-out($foreground, 0.5);
+  width: calc(100% - 160px);
+  margin: 20px 80px;
+}
+
+%link {
+  @extend %button-base;
+  text-decoration: none;
+  color: $accent;
+  padding: 3px 5px 0 5px;
+  &.active {
+    background-color: $foreground;
+    color: $background;
+    cursor: default;
+  }
+}
+
+%button-secondary {
+  @include button-style-accent;
+}
+
+%button-colors {
+  background-color: transparent;
+  color: transparent;
+  padding: 3px 5px 0 5px;
+  &:not(:disabled) {
+    background-color: $accent;
+    color: $background;
+    &:focus {
+      background-color: lighten($accent, 20%);
+    }
+    &:hover {
+      background-color: $accent;
+    }
+    &:active {
+      background-color: darken($accent, 30%);
+    }
+  }
+}
+
+%button {
+  @extend %button-base;
+  @extend %button-colors;
+}
+
+%button-icon {
+  @extend %button-base;
+  font-family: $icon;
+  padding: 5px;
+}
+
+%icon-button {
+  @extend %button-icon;
+  @extend %button-colors;
 }
