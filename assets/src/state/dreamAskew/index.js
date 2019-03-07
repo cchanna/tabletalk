@@ -14,7 +14,7 @@ import {
 } from "reselect";
 import update from "immutability-helper";
 import pronounSets from "common/pronouns.json";
-import isEqual from "lodash.isequal";
+import isEqual from "lodash/isEqual";
 
 const LOAD = "LOAD";
 const CHAT = "CHAT";

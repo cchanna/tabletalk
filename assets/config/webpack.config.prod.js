@@ -223,14 +223,7 @@ module.exports = {
       "react-native": "react-native-web"
     },
     plugins: [
-      // Adds support for installing with Plug'n'Play, leading to faster installs and adding
-      // guards against forgotten dependencies and such.
       PnpWebpackPlugin,
-      // Prevents users from importing files from outside of src/ (or node_modules/).
-      // This often causes confusion because we only process files within src/ with babel.
-      // To fix this, we prevent you from importing files out of src/ -- if you'd like to,
-      // please link the files into your node_modules/ and let module-resolution kick in.
-      // Make sure your source files are compiled, as they will not be processed in any way.
       new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])
     ]
   },
@@ -246,23 +239,6 @@ module.exports = {
     rules: [
       // Disable require.ensure as it's not a standard language feature.
       { parser: { requireEnsure: false } },
-
-      // First, run the linter.
-      // It's important to do this before Babel processes the JS.
-      {
-        test: /\.(js|mjs|jsx)$/,
-        enforce: "pre",
-        use: [
-          {
-            options: {
-              formatter: require.resolve("react-dev-utils/eslintFormatter"),
-              eslintPath: require.resolve("eslint")
-            },
-            loader: require.resolve("eslint-loader")
-          }
-        ],
-        include: paths.appSrc
-      },
       {
         // "oneOf" will traverse all following loaders until one will
         // match the requirements. When no loader matches it will fall
@@ -296,37 +272,12 @@ module.exports = {
               }
             ]
           },
-          // Process application JS with Babel.
-          // The preset includes JSX, Flow, TypeScript and some ESnext features.
           {
-            test: /\.(js|mjs|jsx|ts|tsx)$/,
+            test: /\.(t|j)sx?$/,
             include: paths.appSrc,
             use: [
               {
-                loader: require.resolve("babel-loader"),
-                options: {
-                  customize: require.resolve(
-                    "babel-preset-react-app/webpack-overrides"
-                  ),
-
-                  plugins: [
-                    [
-                      require.resolve("babel-plugin-named-asset-import"),
-                      {
-                        loaderMap: {
-                          svg: {
-                            ReactComponent:
-                              "@svgr/webpack?-prettier,-svgo![path]"
-                          }
-                        }
-                      }
-                    ]
-                  ],
-                  cacheDirectory: true,
-                  // Save disk space when time isn't as important
-                  cacheCompression: true,
-                  compact: true
-                }
+                loader: require.resolve("awesome-typescript-loader")
               },
               {
                 loader: require.resolve("resplendence/script-loader"),
@@ -335,33 +286,6 @@ module.exports = {
                 }
               }
             ]
-          },
-          // Process any JS outside of the app with Babel.
-          // Unlike the application JS, we only compile the standard ES features.
-          {
-            test: /\.(js|mjs)$/,
-            exclude: /@babel(?:\/|\\{1,2})runtime/,
-            loader: require.resolve("babel-loader"),
-            options: {
-              babelrc: false,
-              configFile: false,
-              compact: false,
-              presets: [
-                [
-                  require.resolve("babel-preset-react-app/dependencies"),
-                  { helpers: true }
-                ]
-              ],
-              cacheDirectory: true,
-              // Save disk space when time isn't as important
-              cacheCompression: true,
-
-              // If an error happens in a package, it's possible to be
-              // because it was compiled. Thus, we don't want the browser
-              // debugger to show the original code. Instead, the code
-              // being evaluated would be much more helpful.
-              sourceMaps: false
-            }
           },
           // "postcss" loader applies autoprefixer to our CSS.
           // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -445,7 +369,8 @@ module.exports = {
           // ** STOP ** Are you adding a new loader?
           // Make sure to add the new loader(s) before the "file" loader.
         ]
-      }
+      },
+      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
     ]
   },
   plugins: [

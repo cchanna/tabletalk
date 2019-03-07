@@ -142,9 +142,8 @@ module.exports = {
     // https://github.com/facebook/create-react-app/issues/290
     // `web` extension prefixes have been added for better support
     // for React Native Web.
-    extensions: paths.moduleFileExtensions
-      .map(ext => `.${ext}`)
-      .filter(ext => useTypeScript || !ext.includes("ts")),
+    extensions: [".ts", ".tsx", ".js", ".jsx"],
+
     alias: {
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
@@ -152,14 +151,7 @@ module.exports = {
       "react-dom": "@hot-loader/react-dom"
     },
     plugins: [
-      // Adds support for installing with Plug'n'Play, leading to faster installs and adding
-      // guards against forgotten dependencies and such.
       PnpWebpackPlugin,
-      // Prevents users from importing files from outside of src/ (or node_modules/).
-      // This often causes confusion because we only process files within src/ with babel.
-      // To fix this, we prevent you from importing files out of src/ -- if you'd like to,
-      // please link the files into your node_modules/ and let module-resolution kick in.
-      // Make sure your source files are compiled, as they will not be processed in any way.
       new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])
     ]
   },
@@ -175,23 +167,6 @@ module.exports = {
     rules: [
       // Disable require.ensure as it's not a standard language feature.
       { parser: { requireEnsure: false } },
-
-      // First, run the linter.
-      // It's important to do this before Babel processes the JS.
-      {
-        test: /\.(js|mjs|jsx)$/,
-        enforce: "pre",
-        use: [
-          {
-            options: {
-              formatter: require.resolve("react-dev-utils/eslintFormatter"),
-              eslintPath: require.resolve("eslint")
-            },
-            loader: require.resolve("eslint-loader")
-          }
-        ],
-        include: paths.appSrc
-      },
       {
         // "oneOf" will traverse all following loaders until one will
         // match the requirements. When no loader matches it will fall
@@ -221,39 +196,12 @@ module.exports = {
               }
             ]
           },
-          // Process application JS with Babel.
-          // The preset includes JSX, Flow, and some ESnext features.
           {
-            test: /\.(js|mjs|jsx|ts|tsx)$/,
+            test: /\.(t|j)sx?$/,
             include: paths.appSrc,
             use: [
               {
-                loader: require.resolve("babel-loader"),
-                options: {
-                  customize: require.resolve(
-                    "babel-preset-react-app/webpack-overrides"
-                  ),
-
-                  plugins: [
-                    [
-                      require.resolve("babel-plugin-named-asset-import"),
-                      {
-                        loaderMap: {
-                          svg: {
-                            ReactComponent:
-                              "@svgr/webpack?-prettier,-svgo![path]"
-                          }
-                        }
-                      }
-                    ]
-                  ],
-                  // This is a feature of `babel-loader` for webpack (not Babel itself).
-                  // It enables caching results in ./node_modules/.cache/babel-loader/
-                  // directory for faster rebuilds.
-                  cacheDirectory: true,
-                  // Don't waste time on Gzipping the cache
-                  cacheCompression: false
-                }
+                loader: require.resolve("awesome-typescript-loader")
               },
               {
                 loader: require.resolve("resplendence/script-loader"),
@@ -263,39 +211,6 @@ module.exports = {
               }
             ]
           },
-          // Process any JS outside of the app with Babel.
-          // Unlike the application JS, we only compile the standard ES features.
-          {
-            test: /\.(js|mjs)$/,
-            exclude: /@babel(?:\/|\\{1,2})runtime/,
-            loader: require.resolve("babel-loader"),
-            options: {
-              babelrc: false,
-              configFile: false,
-              compact: false,
-              presets: [
-                [
-                  require.resolve("babel-preset-react-app/dependencies"),
-                  { helpers: true }
-                ]
-              ],
-              cacheDirectory: true,
-              // Don't waste time on Gzipping the cache
-              cacheCompression: false,
-
-              // If an error happens in a package, it's possible to be
-              // because it was compiled. Thus, we don't want the browser
-              // debugger to show the original code. Instead, the code
-              // being evaluated would be much more helpful.
-              sourceMaps: false
-            }
-          },
-          // "postcss" loader applies autoprefixer to our CSS.
-          // "css" loader resolves paths in CSS and adds assets as dependencies.
-          // "style" loader turns CSS into JS modules that inject <style> tags.
-          // In production, we use a plugin to extract that CSS to a file, but
-          // in development "style" loader enables hot editing of CSS.
-          // By default we support CSS Modules with the extension .module.css
           {
             test: cssRegex,
             exclude: cssModuleRegex,
@@ -303,8 +218,6 @@ module.exports = {
               importLoaders: 1
             })
           },
-          // Adds support for CSS Modules (https://github.com/css-modules/css-modules)
-          // using the extension .module.css
           {
             test: cssModuleRegex,
             use: getStyleLoaders({
@@ -313,18 +226,11 @@ module.exports = {
               getLocalIdent: getCSSModuleLocalIdent
             })
           },
-          // Opt-in support for SASS (using .scss or .sass extensions).
-          // Chains the sass-loader with the css-loader and the style-loader
-          // to immediately apply all styles to the DOM.
-          // By default we support SASS Modules with the
-          // extensions .module.scss or .module.sass
           {
             test: sassRegex,
             exclude: sassModuleRegex,
             use: getStyleLoaders({ importLoaders: 2 }, "sass-loader")
           },
-          // Adds support for CSS Modules, but using SASS
-          // using the extension .module.scss or .module.sass
           {
             test: sassModuleRegex,
             use: getStyleLoaders(
@@ -354,8 +260,6 @@ module.exports = {
           }
         ]
       }
-      // ** STOP ** Are you adding a new loader?
-      // Make sure to add the new loader(s) before the "file" loader.
     ]
   },
   plugins: [

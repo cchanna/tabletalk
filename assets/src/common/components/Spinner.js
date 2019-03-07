@@ -1,6 +1,7 @@
-import rx from 'resplendence';
+import React from "react";
+import rx from "resplendence";
 
-const Spinner = rx('div')`
+const SPINNER = rx()`
   @mixin shared {
     border-radius: 50%;
     width: 2.5em;
@@ -55,6 +56,8 @@ const Spinner = rx('div')`
       box-shadow: 0 2.5em 0 0;
     }
   }
-`
+`;
+
+const Spinner = () => <div className={SPINNER} />;
 
 export default Spinner;

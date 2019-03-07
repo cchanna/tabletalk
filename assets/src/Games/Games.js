@@ -1,29 +1,38 @@
-import React from 'react';
-import rx from 'resplendence';
-import { string, bool, object, instanceOf, arrayOf, func, number, shape } from 'prop-types';
+import React from "react";
+import rx from "resplendence";
+import {
+  string,
+  bool,
+  object,
+  instanceOf,
+  arrayOf,
+  func,
+  number,
+  shape
+} from "prop-types";
 
-import GameInfo from './GameInfo';
-import GameListItem from './GameListItem';
-import NewGameForm from './NewGameForm';
-import Spinner from 'common/components/Spinner';
+import GameInfo from "./GameInfo";
+import GameListItem from "./GameListItem";
+import NewGameForm from "./NewGameForm";
+import Spinner from "common/components/Spinner";
 
-import expired from 'utils/expired';
+import expired from "utils/expired";
 
 rx`
 @import "~common/styles";
 @import "~common/colors";
-`
+`;
 
-const Container = rx('div')`
+const Container = rx("div")`
   width: 100%;
   height: 100%;
   box-sizing: border-box;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-`
+`;
 
-const Body = rx('div')`
+const Body = rx("div")`
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -34,9 +43,9 @@ const Body = rx('div')`
   &.under-max {
     padding: 0;
   }
-`
+`;
 
-const Title = rx('div')`
+const Title = rx("div")`
   @include card;
   background: $card-background-dark;
   color: $color-light;
@@ -55,9 +64,9 @@ const Title = rx('div')`
   &.tiny {
     font-size: 55px;
   }
-`
+`;
 
-const ReturnButton = rx('button')`
+const ReturnButton = rx("button")`
   @include button;
   font-family: "Icomoon";
   position: absolute;
@@ -78,9 +87,9 @@ const ReturnButton = rx('button')`
   &.narrow {
     top: 40px;
   }
-`
+`;
 
-const GamesList = rx('div')`
+const GAMES_LIST = rx()`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
@@ -105,9 +114,9 @@ const GamesList = rx('div')`
       background-color: lighten($background, 4%);
     }
   }
-`
+`;
 
-const NewGame = rx('button')`
+const NewGame = rx("button")`
   @include button;
   font-family: "League Spartan";
   color: $color-light;
@@ -127,47 +136,47 @@ const NewGame = rx('button')`
     top: -1px;
     left: -1px;
   }
-`
-
+`;
 
 class Games extends React.Component {
   static propTypes = {
     depth: number.isRequired,
     slug: string,
-    games: arrayOf(shape({
-      name: string.isRequired,
-      slug: string.isRequired
-    })),
+    games: arrayOf(
+      shape({
+        name: string.isRequired,
+        slug: string.isRequired
+      })
+    ),
 
     isCurrentGameLoaded: bool.isRequired,
     isFailed: bool.isRequired,
     lastLoaded: instanceOf(Date),
     sizes: arrayOf(string).isRequired,
-    
+
     getGame: func.isRequired,
     getGames: func.isRequired,
     goTo: func.isRequired,
     openGame: func.isRequired,
-    openNewGame: func.isRequired,
-  }
+    openNewGame: func.isRequired
+  };
 
   route = () => {
     const { slug, isCurrentGameLoaded, getGame } = this.props;
-    
     if (slug !== null) {
-      if (slug !== 'new' && !isCurrentGameLoaded) { // TODO need to disallow "new" as slug
-        getGame({slug});
+      if (slug !== "new" && !isCurrentGameLoaded) {
+        // TODO need to disallow "new" as slug
+        getGame({ slug });
       }
-    }
-    else
-    {
+    } else {
       const { isFailed, lastLoaded, getGames } = this.props;
       if (!isFailed && expired(lastLoaded, 10)) {
+        console.log("get games?");
         getGames();
       }
     }
-  }
-  componentDidMount = this.route;
+  };
+  componentDidMount = () => this.route();
   componentDidUpdate(prevProps) {
     if (this.props.slug !== prevProps.slug) {
       this.route();
@@ -176,37 +185,46 @@ class Games extends React.Component {
   return = () => {
     const { goTo, depth } = this.props;
     goTo([], depth);
-  }
+  };
 
   render() {
-    const { slug, isCurrentGameLoaded, games, lastLoaded, isFailed, sizes } = this.props;
+    const {
+      slug,
+      isCurrentGameLoaded,
+      games,
+      lastLoaded,
+      isFailed,
+      sizes
+    } = this.props;
     let content;
     let returnButton;
+    console.log(lastLoaded);
     if (isFailed) {
       content = "Failed!";
-    }
-    else if (!lastLoaded && !isCurrentGameLoaded) {
-      content = <Spinner/>
-    }
-    else if (!isCurrentGameLoaded) {
+    } else if (!lastLoaded && !isCurrentGameLoaded) {
+      console.log("show spinner");
+      content = <Spinner />;
+    } else if (!isCurrentGameLoaded) {
       const { openGame, openNewGame } = this.props;
       content = (
-        <GamesList>
-          {games.map(({slug, name}) => 
-            <GameListItem key={slug} {...{slug, name, openGame, sizes}}/>
-          )}
+        <div className={GAMES_LIST}>
+          {games.map(({ slug, name }) => (
+            <GameListItem key={slug} {...{ slug, name, openGame, sizes }} />
+          ))}
           <NewGame onClick={openNewGame}>New Game</NewGame>
-        </GamesList>
-      )
-    }
-    else {
-      returnButton = <ReturnButton onClick={this.return} rx={sizes}>{"<"}</ReturnButton>
-      
-      if (slug === 'new') {
-        content = <NewGameForm/>
-      }
-      else {
-        content = <GameInfo {...{sizes, slug}}/>
+        </div>
+      );
+    } else {
+      returnButton = (
+        <ReturnButton onClick={this.return} rx={sizes}>
+          {"<"}
+        </ReturnButton>
+      );
+
+      if (slug === "new") {
+        content = <NewGameForm />;
+      } else {
+        content = <GameInfo {...{ sizes, slug }} />;
       }
     }
 
@@ -220,7 +238,7 @@ class Games extends React.Component {
           {content}
         </Body>
       </Container>
-    )
+    );
   }
 }
 

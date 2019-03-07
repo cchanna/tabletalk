@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
 
 const START_LOADING = "START_LOADING";
 const SET_LIST = "SET_LIST";
@@ -16,7 +16,7 @@ export const actions = {
 
 export const reducer = combineReducers({
   list: (state = null, action) => {
-    switch(action.type) {
+    switch (action.type) {
       case START_LOADING:
         return null;
       case SET_LIST:
@@ -27,29 +27,29 @@ export const reducer = combineReducers({
   },
 
   gamesBySlug: (state = {}, action) => {
-    switch(action.type) {
+    switch (action.type) {
       case START_LOADING:
         return {};
       case ADD:
-        return {...state, ...action.gamesBySlug}
+        return { ...state, ...action.gamesBySlug };
       default:
         return state;
     }
   },
 
   playersById: (state = null, action) => {
-    switch(action.type) {
+    switch (action.type) {
       case START_LOADING:
         return null;
       case ADD:
-        return {...state, ...action.playersById}
+        return { ...state, ...action.playersById };
       default:
         return state;
     }
   },
 
   error: (state = false, action) => {
-    switch(action.type) {
+    switch (action.type) {
       case START_LOADING:
         return false;
       case FAIL_LOADING:
@@ -60,7 +60,7 @@ export const reducer = combineReducers({
   },
 
   lastLoaded: (state = null, action) => {
-    switch(action.type) {
+    switch (action.type) {
       case SET_LIST:
         return new Date();
       case FLAG_RELOAD:
@@ -88,17 +88,18 @@ const getGame = (state, slug) => {
   return {
     players: players.map(id => getPlayer(state, id)),
     ...rest
-  } 
-}
+  };
+};
 const getGames = state => {
   if (!state.list) return null;
   return state.list.map(slug => ({
     slug,
     name: state.gamesBySlug[slug].name
   }));
-}
+};
 
-const getIsGameLoaded = (state, id) => !!state.gamesBySlug && !!state.gamesBySlug[id];
+const getIsGameLoaded = (state, id) =>
+  !!state.gamesBySlug && !!state.gamesBySlug[id];
 
 const getIsFailed = state => state.error;
 
