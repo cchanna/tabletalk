@@ -1,7 +1,7 @@
 import React from "react";
 import { bool, string, arrayOf } from "prop-types";
 import rx from "resplendence";
-import { useSize } from "common/withSize";
+import { useSize } from "common/with-size";
 
 rx`
 @import "~common/styles";

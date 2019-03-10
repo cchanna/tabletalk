@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import NewCharacter from "./NewCharacter";
 import { compose } from "redux";
 
-import withSize from "common/withSize";
+import withSize from "common/with-size";
 
 import { goTo, getPath } from "Routing";
 import { forMonsterhearts, fromMonsterhearts } from "state";

@@ -11,14 +11,15 @@ import "./index.scss";
 
 import { Route, useNavigator } from "Routing";
 import { useAuth } from "store";
-import { useApiEffect } from "common/useApi";
+import { useApi } from "common/use-api";
+import cx from "classnames";
 
 rx`
 @import "~common/styles";
 @import "~common/colors";
 `;
 
-const Container = rx("div")`
+const CONTAINER = rx()`
   display: flex;
   flex-flow: column;
   align-items: center;
@@ -58,7 +59,7 @@ const SignoutButton = rx("button")`
   }
 `;
 
-const FloatAbove = rx("div")`
+const FLOAT_ABOVE = rx()`
   width: 100%;
   height: 100%;
   position: absolute;
@@ -70,17 +71,36 @@ const FloatAbove = rx("div")`
   }
 `;
 
-const onSignIn = args => (window.googleJwt = args.Zi.id_token);
+type GoogleSignIn = { Zi: { id_token: string } };
+
+declare global {
+  interface Window {
+    onSignIn: (arg: GoogleSignIn) => void;
+    gapi: {
+      auth2: {
+        getAuthInstance: () => {
+          signOut: () => void;
+        };
+      };
+    };
+  }
+}
+
+let googleJwt = "";
+
+const onSignIn = (arg: GoogleSignIn) => {
+  googleJwt = arg.Zi.id_token;
+};
 window.onSignIn = onSignIn;
 
 const useGoogleJwt = () => {
-  const [jwt, setJwt] = useState(null);
+  const [jwt, setJwt] = useState<string>("");
   useEffect(() => {
-    if (window.googleJwt) {
-      setJwt(window.googleJwt);
-      window.googleJwt = null;
+    if (googleJwt) {
+      setJwt(googleJwt);
+      googleJwt = "";
     } else {
-      window.onSignIn = args => {
+      window.onSignIn = (args: GoogleSignIn) => {
         setJwt(args.Zi.id_token);
       };
     }
@@ -102,38 +122,23 @@ const useStatus = () => {
     setStatusUnknown({ value: false });
     setStatusBase(status);
   };
-
-  useApiEffect(
-    "status",
-    () => setStatus(STATUS_UP),
-    error => {
-      if (error.response && error.response.status === 503) {
-        error.response
-          .json()
-          .then(({ reason }) => setStatus(reason))
-          .catch(() => setStatus(STATUS_ERROR_DEFAULT));
-      } else {
-        setStatus(STATUS_ERROR_DEFAULT);
-      }
-    },
-    { baseUrl: "", onlyWhen: isStatusUnknown }
-  );
+  useApi(isStatusUnknown ? "/status" : null, () => setStatus(STATUS_UP), {
+    endpoint: "root",
+    ignoreAuth: true
+  });
 
   return status;
 };
 
 const useLoginReady = isUp => {
   const [isReady, setIsReady] = useState(false);
-  useEffect(
-    () => {
-      let timeout;
-      if (isUp) {
-        timeout = setTimeout(() => setIsReady(true), 500);
-      }
-      return () => clearTimeout(timeout);
-    },
-    [isUp]
-  );
+  useEffect(() => {
+    let timeout;
+    if (isUp) {
+      timeout = setTimeout(() => setIsReady(true), 500);
+    }
+    return () => clearTimeout(timeout);
+  }, [isUp]);
   return isReady;
 };
 
@@ -149,30 +154,20 @@ const pages = [
 ];
 
 const useLogin = (googleJwt, isUp) => {
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState(null);
-  const [{ isLoggedIn }, { setJWT }] = useAuth();
+  const [{ jwt }, { setJWT }] = useAuth();
 
-  useApiEffect(
-    `login?provider=google&jwt=${googleJwt}`,
-    ({ jwt }) => {
-      setJWT({ jwt });
-      setPending(false);
-    },
-    error => {
-      setError(error);
-      setPending(false);
-    },
+  useApi(
+    isUp && googleJwt && !jwt
+      ? `/auth/login?provider=google&jwt=${googleJwt}`
+      : null,
+    setJWT,
     {
-      baseUrl: "auth",
-      onlyWhen: isUp && googleJwt && !isLoggedIn,
-      onStart: () => {
-        setPending(true);
-      }
+      endpoint: "root",
+      ignoreAuth: true
     }
   );
 
-  return [isLoggedIn, pending, !!error];
+  return [!!jwt, !!isUp && !!googleJwt && !jwt];
 };
 
 const App = () => {
@@ -183,7 +178,7 @@ const App = () => {
   const isUp = status === STATUS_UP;
   const isReady = useLoginReady(isUp);
   const googleJwt = useGoogleJwt();
-  const [isLoggedIn, isLoggingIn, failedLoggingIn] = useLogin(googleJwt, isUp);
+  const [isLoggedIn, isLoggingIn] = useLogin(googleJwt, isUp);
 
   const signout = () => {
     logout();
@@ -192,28 +187,19 @@ const App = () => {
     }
   };
 
-  // console.log(
-  //   status,
-  //   isUp,
-  //   isReady,
-  //   googleJwt,
-  //   isLoggedIn,
-  //   isLoggingIn,
-  //   failedLoggingIn
-  // );
-
-  useEffect(
-    () => {
-      if (isLoggedIn && !next) replace("games");
-    },
-    [isLoggedIn, next]
-  );
+  useEffect(() => {
+    if (isLoggedIn && !next) replace("games");
+  }, [isLoggedIn, next]);
 
   return (
-    <Container>
-      <FloatAbove rx={{ show: isReady && !isLoggedIn && !isLoggingIn }}>
-        <Auth isLoggingIn={isLoggingIn} isFailed={failedLoggingIn} />
-      </FloatAbove>
+    <div className={CONTAINER}>
+      <div
+        className={cx(FLOAT_ABOVE, {
+          show: isReady && !isLoggedIn && !isLoggingIn
+        })}
+      >
+        <Auth isLoggingIn={isLoggingIn} isFailed={false} />
+      </div>
       {isLoggedIn ? (
         <SignoutButton onClick={signout}>signout</SignoutButton>
       ) : null}
@@ -224,7 +210,7 @@ const App = () => {
       ) : isLoggedIn ? (
         <Route pages={pages} />
       ) : null}
-    </Container>
+    </div>
   );
 };
 

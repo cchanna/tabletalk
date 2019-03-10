@@ -14,7 +14,7 @@ import { Route } from "Routing";
 
 import { useNavigator } from "Routing";
 import { useMonsterhearts } from "store";
-import { useSize } from "common/withSize";
+import { useSize } from "common/with-size";
 
 rx`
 @import '~Monsterhearts/styles';
@@ -134,23 +134,17 @@ const MainCharacter = ({ depth }) => {
     readOnly = getReadOnly(id);
   }
 
-  useEffect(
-    () => {
-      if (!next && !editDone && !readOnly) {
-        replace("edit");
-      } else if (next && readOnly) {
-        replace();
-      }
-    },
-    [next, editDone, readOnly]
-  );
+  useEffect(() => {
+    if (!next && !editDone && !readOnly) {
+      replace("edit");
+    } else if (next && readOnly) {
+      replace();
+    }
+  }, [next, editDone, readOnly]);
 
-  useEffect(
-    () => {
-      if (!character || !character.mainCharacter) replace([], -1);
-    },
-    [character]
-  );
+  useEffect(() => {
+    if (!character || !character.mainCharacter) replace([], -1);
+  }, [character]);
 
   const sizes = useSize({ 425: "mobile", 768: "tablet", 1024: "laptop" });
 

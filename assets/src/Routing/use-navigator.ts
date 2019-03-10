@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useRouting } from "store";
+import history from "app-history";
 
 const useNavigator = (depth = 0) => {
   const [{ fullPath }] = useRouting();
@@ -14,18 +15,18 @@ const useNavigator = (depth = 0) => {
       path,
       here,
       next,
-      goTo: (p = [], d = 0) => {
+      goTo: (p: string | string[] = [], d = 0) => {
         if (!Array.isArray(p)) p = [p];
         const newPath = [...fullPath.slice(0, depth + d), ...p];
-        window.tabletalkHistory.push("/" + newPath.join("/"));
+        history.push("/" + newPath.join("/"));
       },
       goBack: () => {
-        window.tabletalkHistory.goBack();
+        history.goBack();
       },
-      replace: (p = [], d = 0) => {
+      replace: (p: string | string[] = [], d = 0) => {
         if (!Array.isArray(p)) p = [p];
         const newPath = [...fullPath.slice(0, depth + d), ...p];
-        window.tabletalkHistory.replace("/" + newPath.join("/"));
+        history.replace("/" + newPath.join("/"));
       }
     }),
     [fullPath, depth]

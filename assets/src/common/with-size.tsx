@@ -1,9 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 
-const convertWidthToBreakpoint = (width, breakPoints) => {
-  const result = [];
-  const breakValues = Object.keys(breakPoints).sort((a, b) => a - b);
-  let i;
+type Breakpoints = { [key: number]: string };
+
+const convertWidthToBreakpoint = (width: number, breakPoints: Breakpoints) => {
+  const result: string[] = [];
+  const breakValues = Object.keys(breakPoints)
+    .map(key => parseInt(key, 10))
+    .sort();
+  let i: number;
   for (i = 0; i < breakValues.length; i++) {
     const breakValue = breakValues[i];
     const breakName = breakPoints[breakValue];
@@ -35,8 +39,8 @@ export default (
       sizes: []
     };
 
-    timeout = null;
-    ref = null;
+    timeout: null | number = null;
+    ref: null | HTMLElement = null;
 
     componentDidMount() {
       window.addEventListener("resize", this.handleResize);
@@ -57,7 +61,9 @@ export default (
     };
 
     handleResize = () => {
-      window.clearTimeout(this.timeout);
+      if (this.timeout) {
+        window.clearTimeout(this.timeout);
+      }
       this.timeout = window.setTimeout(this.resize, 100);
     };
 
@@ -69,7 +75,7 @@ export default (
     render() {
       const props = this.props;
       const { sizes } = this.state;
-      const style = {};
+      const style: React.CSSProperties = {};
       if (fullWidth) style.width = "100%";
       if (fullHeight) style.height = "100%";
       return (
@@ -82,10 +88,12 @@ export default (
   return Breakpoint;
 };
 
-export const useSize = breakpoints => {
-  const [sizes, setSizes] = useState([]);
-  const timeout = useRef(null);
-  const ref = useRef(null);
+export const useSize = (
+  breakpoints: Breakpoints
+): [React.RefObject<HTMLElement>, string[]] => {
+  const [sizes, setSizes] = useState<string[]>([]);
+  const timeout = useRef<number | null>(null);
+  const ref = useRef<HTMLElement>(null);
 
   const resize = () => {
     if (ref.current) {
@@ -98,7 +106,9 @@ export const useSize = breakpoints => {
   };
   useEffect(() => {
     const handleResize = () => {
-      window.clearTimeout(timeout.current);
+      if (timeout.current) {
+        window.clearTimeout(timeout.current);
+      }
       timeout.current = window.setTimeout(resize, 100);
     };
     window.addEventListener("resize", handleResize);

@@ -1,10 +1,10 @@
-import { connect } from 'react-redux'
-import { compose } from 'redux';
-import Swords from './Swords';
-import withSize from 'common/withSize';
+import { connect } from "react-redux";
+import { compose } from "redux";
+import Swords from "./Swords";
+import withSize from "common/with-size";
 
-import { fromSwords, fromSocket, forSwords } from 'state';
-import { load } from './actionCreators';
+import { fromSwords, fromSocket, forSwords } from "state";
+import { load } from "./actionCreators";
 
 const {
   getIsLoaded,
@@ -14,14 +14,10 @@ const {
   getJovialText,
   getOvertone
 } = fromSwords;
-const {
-  getIsConnected
-} = fromSocket;
-const {
-  resolveRoll
-} = forSwords;
+const { getIsConnected } = fromSocket;
+const { resolveRoll } = forSwords;
 
-const mapStateToProps = (state, {depth}) => ({
+const mapStateToProps = (state, { depth }) => ({
   depth,
   loaded: !!getIsLoaded(state),
   connected: getIsConnected(state),
@@ -32,9 +28,12 @@ const mapStateToProps = (state, {depth}) => ({
   tone: getOvertone(state)
 });
 
-const mapDispatchToProps = {load, resolveRoll}
+const mapDispatchToProps = { load, resolveRoll };
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  withSize({1023: "mobile"})
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
+  withSize({ 1023: "mobile" })
 )(Swords);

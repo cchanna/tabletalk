@@ -1,7 +1,7 @@
 import "./rlhConfig";
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
+import App from "./app";
 import "./fonts/fonts.scss";
 import { StoreProvider } from "./store";
 import configureStore from "./configureStore";

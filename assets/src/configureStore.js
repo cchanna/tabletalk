@@ -2,7 +2,7 @@ import { createStore, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 import { reducer, forRouting, forSocket } from "./state";
 import { makeMiddleware } from "redux-state-tools";
-import { createBrowserHistory } from "history";
+import history from "./app-history";
 
 const pathToArray = pathname => {
   let path = pathname.split("/");
@@ -48,8 +48,6 @@ const slowSocketMiddleware = makeMiddleware(
 );
 
 export default () => {
-  window.tabletalkHistory = createBrowserHistory();
-
   const devTools =
     window.__REDUX_DEVTOOLS_EXTENSION__ &&
     window.__REDUX_DEVTOOLS_EXTENSION__();
@@ -57,7 +55,7 @@ export default () => {
   let enhance = applyMiddleware(
     socketMiddleware,
     slowSocketMiddleware,
-    thunk.withExtraArgument({ history: window.tabletalkHistory })
+    thunk.withExtraArgument({ history })
   );
 
   if (devTools) {
@@ -79,8 +77,8 @@ export default () => {
     });
   }
 
-  handleHistoryChange(window.tabletalkHistory.location);
-  window.tabletalkHistory.listen(handleHistoryChange);
+  handleHistoryChange(history.location);
+  history.listen(handleHistoryChange);
 
   return store;
 };

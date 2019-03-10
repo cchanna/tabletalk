@@ -3,7 +3,7 @@ import Link from "./Link";
 import route from "./route";
 import { createSelector } from "reselect";
 import { fromRouting } from "state";
-import useNavigator from "./useNavigator";
+import useNavigator from "./use-navigator";
 export { getPath } from "./selectors";
 export * from "./actionCreators";
 

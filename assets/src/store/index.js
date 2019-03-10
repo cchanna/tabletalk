@@ -5,7 +5,7 @@ import * as state from "state";
 
 export const StoreContext = createContext();
 
-export const useReduxStore = () => {
+const useReduxStore = () => {
   return useContext(StoreContext);
 };
 
@@ -20,17 +20,9 @@ export const useStore = () => {
   return [state, store.dispatch];
 };
 
-const Redux = ({ children }) => {
-  const store = useReduxStore();
-  return <Provider store={store}>{children}</Provider>;
-};
-Redux.propTypes = {
-  children: node.isRequired
-};
-
 export const StoreProvider = ({ children, store }) => (
   <StoreContext.Provider value={store}>
-    <Redux>{children}</Redux>
+    <Provider store={store}>{children}</Provider>
   </StoreContext.Provider>
 );
 StoreProvider.propTypes = {
@@ -38,33 +30,30 @@ StoreProvider.propTypes = {
   store: any.isRequired
 };
 
-const makeStoreHook = (whereFrom, whereFor) => {
-  return () => {
-    const [state, dispatch] = useStore();
-    const fromProxy = new Proxy(whereFrom, {
-      get: (target, prop) => {
-        const getter = "get" + prop[0].toUpperCase() + prop.slice(1);
-        if (!target[getter]) {
-          throw new Error(`Selector ${getter} does not exist.`);
-        }
-        return target[getter](state);
+const useStoreProxy = (whereFrom, whereFor) => {
+  const [state, dispatch] = useStore();
+  const fromProxy = new Proxy(whereFrom, {
+    get: (target, prop) => {
+      const getter = "get" + prop[0].toUpperCase() + prop.slice(1);
+      if (!target[getter]) {
+        throw new Error(`Selector ${getter} does not exist.`);
       }
-    });
-    const forProxy = new Proxy(whereFor, {
-      get: (target, prop) => (...args) => dispatch(target[prop](...args))
-    });
-    const getProxy = new Proxy(whereFrom, {
-      get: (target, prop) => (...args) => target[prop](state, ...args)
-    });
+      return target[getter](state);
+    }
+  });
+  const forProxy = new Proxy(whereFor, {
+    get: (target, prop) => (...args) => dispatch(target[prop](...args))
+  });
+  const getProxy = new Proxy(whereFrom, {
+    get: (target, prop) => (...args) => target[prop](state, ...args)
+  });
 
-    return [fromProxy, forProxy, getProxy];
-  };
+  return [fromProxy, forProxy, getProxy];
 };
 
-export const useMonsterhearts = makeStoreHook(
-  state.fromMonsterhearts,
-  state.forMonsterhearts
-);
-export const useAuth = makeStoreHook(state.fromAuth, state.forAuth);
-export const useRouting = makeStoreHook(state.fromRouting, state.forRouting);
-export const useSocket = makeStoreHook(state.fromSocket, state.forSocket);
+export const useMonsterhearts = () =>
+  useStoreProxy(state.fromMonsterhearts, state.forMonsterhearts);
+export const useAuth = () => useStoreProxy(state.fromAuth, state.forAuth);
+export const useRouting = () =>
+  useStoreProxy(state.fromRouting, state.forRouting);
+export const useSocket = () => useStoreProxy(state.fromSocket, state.forSocket);

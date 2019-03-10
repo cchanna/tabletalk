@@ -11,7 +11,7 @@ import {
   openNewGame
 } from "./actionCreators";
 import { compose } from "redux";
-import withSize from "common/withSize";
+import withSize from "common/with-size";
 
 import { fromGames } from "state";
 export { getGame } from "./actionCreators";

@@ -1,6 +1,6 @@
-import { useSize } from "common/withSize";
+import { useSize } from "common/with-size";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { string, number, func, bool, arrayOf } from "prop-types";
 import rx from "resplendence";
 import TabPicker from "./TabPicker";
@@ -9,7 +9,7 @@ import Spinner from "common/components/Spinner";
 import SocketManager from "Socket";
 
 import { useMonsterhearts, useSocket } from "store";
-import { useApiEffect } from "common/useApi";
+import { useApi } from "common/use-api";
 import { useNavigator } from "Routing";
 
 rx`
@@ -48,22 +48,17 @@ const Content = rx("div")`
 `;
 
 const Monsterhearts = ({ depth }) => {
-  const [
-    { isLoaded, myCharacters, characterIds },
-    { resolveLoad }
-  ] = useMonsterhearts();
+  const [{ myCharacters, characterIds }, { resolveLoad }] = useMonsterhearts();
+  const [isLoaded, setIsLoaded] = useState();
   const [{ isConnected }, { loadEvents }] = useSocket();
   const [ref, sizes] = useSize({ 1023: "mobile" });
   const { fullPath, next, goTo } = useNavigator(depth);
 
-  useApiEffect(
-    `games/${fullPath[1]}/load`,
-    data => {
-      resolveLoad(data);
-      loadEvents({ ids: data.eventIds, byId: data.eventsById });
-    },
-    console.error
-  );
+  useApi<any>(`/games/${fullPath[1]}/load`, data => {
+    resolveLoad(data);
+    setIsLoaded(true);
+    loadEvents({ ids: data.eventIds, byId: data.eventsById });
+  });
 
   useEffect(() => {
     if (isLoaded && isConnected) {

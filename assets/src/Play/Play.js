@@ -1,20 +1,20 @@
-import React, { Component } from 'react'
-import { string, number, func, shape, arrayOf } from 'prop-types'
-import rx from 'resplendence'
+import React, { Component } from "react";
+import { string, number, func, shape, arrayOf } from "prop-types";
+import rx from "resplendence";
 
-import Monsterhearts from 'Monsterhearts';
-import Swords from 'Swords';
-import DreamAskew from 'DreamAskew';
+import Monsterhearts from "Monsterhearts";
+import Swords from "Swords";
+import DreamAskew from "DreamAskew";
 
 rx`
 @import '~common/styles';
 @import '~common/colors';
-`
+`;
 
-const Container = rx('div')`
+const PLAY = rx()`
  height: 100%;
  width: 100%;
-`
+`;
 
 const componentsForKind = [Monsterhearts, Swords, DreamAskew];
 
@@ -28,20 +28,19 @@ class Play extends Component {
     }),
     replace: func.isRequired,
     getGame: func.isRequired
-  }
+  };
 
   route = () => {
     const { game, slug, getGame, replace } = this.props;
-    
+
     if (!game) {
-      if (slug && slug !== 'new') {
-        getGame({slug});
-      }
-      else {
+      if (slug && slug !== "new") {
+        getGame({ slug });
+      } else {
         replace([]);
       }
     }
-  }
+  };
   componentDidMount = this.route;
   componentDidUpdate(prevProps) {
     if (this.props.slug !== prevProps.slug) {
@@ -58,16 +57,12 @@ class Play extends Component {
     let content = null;
     if (game && game.me) {
       const Component = componentsForKind[game.kind];
-      if (Component) content = <Component depth={depth + 1}/>
+      if (Component) content = <Component depth={depth + 1} />;
       else {
         console.error("invalid component!");
       }
     }
-    return (
-      <Container>
-        {content}
-      </Container>
-    );
+    return <div className={PLAY}>{content}</div>;
   }
 }
 

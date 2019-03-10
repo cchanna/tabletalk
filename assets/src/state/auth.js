@@ -33,11 +33,9 @@ export const reducer = combineReducers({
 });
 
 const getJwt = state => state.jwt;
-const getIsLoggedIn = state => !!state.jwt;
 const getIsStatusUnknown = state => state.statusUnknown;
 
 export const selectors = {
   getJwt,
-  getIsLoggedIn,
   getIsStatusUnknown
 };

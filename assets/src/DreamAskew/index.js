@@ -1,22 +1,25 @@
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 
-import DreamAskew from './DreamAskew';
-import withSize from 'common/withSize';
-import { compose } from 'redux';
+import DreamAskew from "./DreamAskew";
+import withSize from "common/with-size";
+import { compose } from "redux";
 
-import { load } from './thunks';
-import { fromDreamAskew, fromSocket } from 'state';
+import { load } from "./thunks";
+import { fromDreamAskew, fromSocket } from "state";
 
-const mapStateToProps = (state, {depth}) => {
+const mapStateToProps = (state, { depth }) => {
   return {
     depth,
-    loaded: fromDreamAskew.getIsLoaded(state), 
+    loaded: fromDreamAskew.getIsLoaded(state),
     connected: fromSocket.getIsConnected(state)
-  }
-}
-const mapDispatchToProps = {load};
+  };
+};
+const mapDispatchToProps = { load };
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  withSize({1023: "mobile"})
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
+  withSize({ 1023: "mobile" })
 )(DreamAskew);
