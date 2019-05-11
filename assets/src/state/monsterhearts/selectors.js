@@ -362,10 +362,7 @@ const getUnchosenPlaybookMoves = (state, id) => {
 const getUnchosenSelfMoves = (state, id) => {
   const { moves, playbook } = getCharacter(state, id).mainCharacter;
   const moveNamesByPlaybook = getMoveNamesByPlaybook(state);
-
-  return moveNamesByPlaybook[playbook].moves.filter(
-    move => !moves.includes(move)
-  );
+  return moveNamesByPlaybook[playbook].filter(move => !moves.includes(move));
 };
 
 const getEditDone = (state, id) => {
