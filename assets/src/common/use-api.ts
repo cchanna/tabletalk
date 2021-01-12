@@ -14,14 +14,14 @@ type OtherApiOptions = {
   ignoreAuth?: boolean;
 };
 
-declare global {
-  const process: {
-    env: {
-      NODE_ENV: "production" | "development";
-      REACT_APP_API_URL: string;
-    };
-  };
-}
+// declare global {
+//   const process: {
+//     env: {
+//       NODE_ENV: "production" | "development";
+//       REACT_APP_API_URL: string;
+//     };
+//   };
+// }
 
 const API_BASE_URL =
   process.env.NODE_ENV === "production"
